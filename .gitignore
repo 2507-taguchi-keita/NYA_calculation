@@ -35,3 +35,13 @@ out/
 
 ### VS Code ###
 .vscode/
+/.gitattributes
+/gradlew
+/gradlew.bat
+/HELP.md
+/README.md
+/settings.gradle
+/gradle
+/.gradle
+/.idea
+/build.gradle
