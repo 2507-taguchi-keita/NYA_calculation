@@ -1,11 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>ホーム</title>
+    <title>経費精算ホーム</title>
+    <style>
+        body { font-family: "Segoe UI", sans-serif; background-color: #f9f9f9; }
+        .container { width: 80%; margin: 40px auto; }
+        .menu-grid { display: flex; gap: 20px; }
+        .menu-item {
+          flex: 1; text-align: center; background: #e7f3ff; border-radius: 8px;
+          padding: 20px; transition: background 0.2s; text-decoration: none; color: #333;
+        }
+        .menu-item:hover { background: #cfe6ff; }
+        .menu-icon { font-size: 40px; margin-bottom: 10px; }
+        .menu-link {
+          display: inline-block; background: #fff; border: 1px solid #ccc;
+          border-radius: 5px; padding: 5px 15px; text-decoration: none; color: #333;
+        }
+    </style>
 </head>
 <body>
-<h2>ホーム（仮）</h2>
-<button type="button">仮</button>
+<div class="container">
+    <h2>経費精算ホーム</h2>
+    <p>所属部門：<span th:text="${department}"></span></p>
+    <p>名前：<span th:text="${userName}"></span></p>
+
+    <div class="menu-grid">
+        <a href="/slip/new" class="menu-item">
+            <div class="menu-icon">🚆</div>
+            <div class="menu-title">交通費精算</div>
+            <div><span class="menu-link">一覧</span></div>
+        </a>
+    </div>
+</div>
 </body>
 </html>

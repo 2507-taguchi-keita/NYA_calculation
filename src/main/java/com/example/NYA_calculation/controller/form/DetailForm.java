@@ -1,0 +1,26 @@
+package com.example.NYA_calculation.controller.form;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+@Getter
+@Setter
+public class DetailForm {
+    private Integer id;
+    private LocalDate billingDate;
+    private LocalTime roundTrip;
+    private Integer amount;
+    private Integer subtotal;
+    private String reason;
+    private String transportation;
+    private String fileName;
+    private Integer slipId;
+    private String remark;
+    private Integer userId;
+    private Timestamp createdDate;
+    private Timestamp updatedDate;
+}
