@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     //ホーム画面表示
-//    @GetMapping("/")
-//    public String home(Model model, @AuthenticationPrincipal LoginUserDetails loginUser) {
-//        model.addAttribute("userName", loginUser.getName());
-//        model.addAttribute("department", loginUser.getDepartmentName());
-//
-//        return "index";
-//    }
+    @GetMapping("/")
+    public String home(Model model, @AuthenticationPrincipal LoginUserDetails loginUser) {
+        model.addAttribute("userName", loginUser.getName());
+        model.addAttribute("department", loginUser.getDepartmentName());
+
+        return "index";
+    }
 }
