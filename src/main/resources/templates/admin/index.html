@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>管理者画面</title>
+</head>
+<body>
+<header>
+    <h1>交通費精算 管理者画面</h1>
+    <nav>
+        <a href="/logout">ログアウト</a>
+        <a href="/">ホーム</a> |
+        <a href="/admin/users">ユーザー一覧</a> |
+        <a href="/admin/requests">申請一覧</a> |
+        <a href="/logout">ログアウト</a>
+    </nav>
+</header>
+<main>
+
+    <section>
+        <h2>管理リンク</h2>
+        <ul>
+            <li><a href="/admin/users">ユーザー一覧を見る</a></li>
+            <li><a href="/admin/requests">申請一覧を見る</a></li>
+        </ul>
+    </section>
+</main>
+<div style="width:400px; margin:0 auto;">
+    <canvas id="summaryChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script th:inline="javascript">
+    const summaryList = /*[[${summaryList}]]*/ [];
+    const labels = summaryList.map(item => item.month);
+    const dataValues = summaryList.map(item => item.totalAmount);
+
+    const ctx = document.getElementById('summaryChart');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '月別経費合計（円）',
+                data: dataValues,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: '月別経費の推移'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1000
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>
