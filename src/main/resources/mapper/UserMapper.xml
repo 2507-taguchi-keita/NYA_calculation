@@ -3,6 +3,25 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.NYA_calculation.repository.UserMapper">
+<mapper namespace="com.example.NYA_calculation.repository.UserRepository">
+
+    <!-- ユーザー情報を account で検索 -->
+    <select id="findByAccount"
+            resultType="com.example.NYA_calculation.repository.entity.User"
+            parameterType="string">
+        SELECT
+            id,
+            account,
+            password,
+            name,
+            department_id,
+            authority,
+            is_stopped,
+            approver_id,
+            created_date,
+            updated_date
+        FROM users
+        WHERE account = #{account}
+    </select>
 
 </mapper>

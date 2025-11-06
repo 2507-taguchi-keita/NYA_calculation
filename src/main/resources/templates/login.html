@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>ログイン画面</title>
-    <link rel="stylesheet" href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
     <header>
@@ -11,6 +11,11 @@
     </header>
 
     <main>
+        <div th:if="${errorMessage != null}" th:text="${errorMessage}"></div>
+        <div th:if="${errorMessages}">
+            <div th:each="msg : ${errorMessages}" th:text="${msg}"></div>
+        </div>
+
         <h1>NYA精算</h1>
         <form th:action="@{/login}" method="post">
             <div>
