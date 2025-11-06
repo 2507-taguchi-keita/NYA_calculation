@@ -10,6 +10,25 @@
             resultType="com.example.NYA_calculation.repository.entity.User"
             parameterType="string">
         SELECT
+        id,
+        account,
+        password,
+        name,
+        department_id,
+        authority,
+        is_stopped,
+        approver_id,
+        created_date,
+        updated_date
+        FROM users
+        WHERE account = #{account}
+    </select>
+
+    <!-- ユーザー情報を id で検索 -->
+    <select id="findById"
+            resultType="com.example.NYA_calculation.repository.entity.User"
+            parameterType="Integer">
+        SELECT
             id,
             account,
             password,
@@ -21,7 +40,7 @@
             created_date,
             updated_date
         FROM users
-        WHERE account = #{account}
+        WHERE id = #{id}
     </select>
 
 </mapper>
