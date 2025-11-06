@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.NYA_calculation.repository.DetailMapper">
+<mapper namespace="com.example.NYA_calculation.repository.DetailRepository">
 
     <select id="getMonthlyTotal" resultType="com.example.dto.ExpenseSummary">
         SELECT

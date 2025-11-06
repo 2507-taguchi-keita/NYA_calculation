@@ -6,6 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
-public interface DetailMapper {
+public interface SlipRepository {
     List<ExpenseSummary> getMonthlyTotal();
 }

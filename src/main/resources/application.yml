@@ -5,10 +5,10 @@ spring:
     username: root
     password: root
 
-  # MyBatis設定
-  mybatis:
-    type-aliases-package: com.example.NYA_calculation.repository.entity
-    mapper-locations: classpath:mapper/*.xml
-    configuration:
-      map-underscore-to-camel-case: true
-      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+# MyBatis設定
+mybatis:
+  type-aliases-package: com.example.NYA_calculation.repository.entity
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
