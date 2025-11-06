@@ -18,6 +18,15 @@ public interface UserRepository {
      * @return Optional<User> 該当ユーザー or empty
      */
     Optional<User> findByAccount(@Param("account") String account);
+
+    /**
+     * IDでユーザーを検索
+     *
+     * @param id ログインユーザーID
+     * @return Optional<User> 該当ユーザー or empty
+     */
+    Optional<User> findById(@Param("id") Integer id);
+
     int updateUser(UserForm userForm);
     UserForm findById(Integer id);
     // 承認者一覧を取得

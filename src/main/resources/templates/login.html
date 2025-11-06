@@ -11,9 +11,11 @@
     </header>
 
     <main>
-        <div th:if="${errorMessage != null}" th:text="${errorMessage}"></div>
+        <div th:if="${errorMessage != null}">
+            <p th:text="${errorMessage}"></p>
+        </div>
         <div th:if="${errorMessages}">
-            <div th:each="msg : ${errorMessages}" th:text="${msg}"></div>
+            <p th:each="msg : ${errorMessages}" th:text="${msg}"></p>
         </div>
 
         <h1>NYA精算</h1>
