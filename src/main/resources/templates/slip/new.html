@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>新規伝票画面</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/slip.css}">
 </head>
 <body>
 <header>
@@ -97,9 +97,70 @@
     </div>
 
     <div class="slip-menu">
-        <a th:href="@{/detail/new}">
-            <button type="button">明細追加</button>
-        </a>
+        <!-- 明細追加ボタン -->
+        <button id="openModalBtn" type="button">明細追加</button>
+
+        <!-- モーダル本体 -->
+        <div id="detailModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>明細追加</h2>
+                    <span class="close">&times;</span>
+                </div>
+
+                <!-- Thymeleafフォーム -->
+                <form th:action="@{/detail/new}" th:object="${detailForm}" method="post">
+
+                    <div class="form-row">
+                        <label>日付<span class="required">*</span></label>
+                        <input type="date" th:field="*{billingDate}">
+
+                        <label>申請理由<span class="required">*</span></label>
+                        <select th:field="*{reason}">
+                            <option value="">選択してください</option>
+                            <option th:each="reason : ${reasonList}"
+                                    th:value="${reason}"
+                                    th:text="${reason}"></option>
+                        </select>
+
+                        <label>交通機関</label>
+                        <select th:field="*{transportation}">
+                            <option value="">選択してください</option>
+                            <option th:each="transport : ${transportList}"
+                                    th:value="${transport}"
+                                    th:text="${transport}"></option>
+                        </select>
+
+                    </div>
+
+                    <div class="form-row">
+                        <label>往復</label>
+                        <select th:field="*{roundTrip}">
+                            <option value=""></option>
+                            <option value="片道">片道</option>
+                            <option value="往復">往復</option>
+                        </select>
+
+                        <label>金額/Km</label>
+                        <input type="number" th:field="*{amount}">
+
+                        <label>小計</label>
+                        <input type="text" th:field="*{subtotal}" readonly>
+
+                    </div>
+
+                    <div class="form-row">
+                        <label>備考</label>
+                        <textarea type="text" th:field="*{remark}"></textarea>
+                    </div>
+
+                    <div class="button-row">
+                        <button type="button" id="cancelBtn">キャンセル</button>
+                        <button type="submit" class="primary-btn">確定</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <a th:href="@{/detail/csv}">
             <button type="button">CSV取込み</button>
@@ -156,5 +217,8 @@
 <footer>
     <p>&copy;NYA</p>
 </footer>
+
+<script th:src="@{/js/slip.js}"></script>
+
 </body>
 </html>

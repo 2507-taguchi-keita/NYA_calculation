@@ -1,5 +1,7 @@
 package com.example.NYA_calculation.controller;
 
+import com.example.NYA_calculation.constant.SlipConstants;
+import com.example.NYA_calculation.controller.form.DetailForm;
 import com.example.NYA_calculation.repository.entity.User;
 import com.example.NYA_calculation.security.LoginUserDetails;
 import com.example.NYA_calculation.service.UserService;
@@ -26,8 +28,11 @@ public class SlipController {
 
         model.addAttribute("loginUser", loginUser);
         model.addAttribute("approver", approver);
+        model.addAttribute("detailForm", new DetailForm());
+        model.addAttribute("reasonList", SlipConstants.REASONS);
+        model.addAttribute("transportList", SlipConstants.TRANSPORTS);
 
-        return "/slip/new";
+        return "slip/new";
     }
 
 }

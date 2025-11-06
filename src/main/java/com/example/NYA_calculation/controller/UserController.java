@@ -1,18 +1,6 @@
 package com.example.NYA_calculation.controller;
 
-import com.example.NYA_calculation.controller.form.UserForm;
-import io.micrometer.common.util.StringUtils;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.example.NYA_calculation.validation.ErrorMessage.E0013;
 
 @Controller
 public class UserController {

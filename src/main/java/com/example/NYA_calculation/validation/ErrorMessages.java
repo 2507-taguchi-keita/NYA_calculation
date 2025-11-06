@@ -1,6 +1,6 @@
 package com.example.NYA_calculation.validation;
 
-public class ErrorMessage {
+public class ErrorMessages {
 
     public static final String E0001 = "社員番号を入力してください";
     public static final String E0002 = "パスワードを入力してください";
@@ -25,9 +25,5 @@ public class ErrorMessage {
     public static final String E0021 = "ログインしてください";
     public static final String E0022 = "無効なアクセスです";
     public static final String E0023 = "ファイルの形式が不正です";
-
-    // インスタンス化防止
-    private ErrorMessage() {
-    }
 
 }

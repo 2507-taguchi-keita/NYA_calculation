@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static com.example.NYA_calculation.validation.ErrorMessage.E0022;
+import static com.example.NYA_calculation.validation.ErrorMessages.E0022;
 
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {

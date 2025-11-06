@@ -6,7 +6,7 @@ import com.example.NYA_calculation.repository.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.example.NYA_calculation.validation.ErrorMessage.E0013;
+import static com.example.NYA_calculation.validation.ErrorMessages.E0013;
 
 @Service
 public class UserService {
