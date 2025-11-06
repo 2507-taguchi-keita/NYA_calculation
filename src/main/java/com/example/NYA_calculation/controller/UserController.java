@@ -21,8 +21,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.NYA_calculation.validation.ErrorMessage.E0013;
-import static com.example.NYA_calculation.validation.ErrorMessage.E0020;
+import static com.example.NYA_calculation.validation.ErrorMessages.E0013;
+import static com.example.NYA_calculation.validation.ErrorMessages.E0020;
 
 @Controller
 public class UserController {

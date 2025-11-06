@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 
-import static com.example.NYA_calculation.validation.ErrorMessage.*;
+import static com.example.NYA_calculation.validation.ErrorMessages.*;
 
 @Getter
 @Setter
