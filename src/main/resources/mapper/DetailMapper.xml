@@ -17,4 +17,35 @@
         month
     </select>
 
+    <insert id="insert" parameterType="com.example.NYA_calculation.repository.entity.Detail" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO details (
+            billing_date,
+            round_trip,
+            amount,
+            subtotal,
+            reason,
+            transportation,
+            file_name,
+            slip_id,
+            remark,
+            user_id,
+            created_date,
+            updated_date
+        )
+        VALUES (
+            #{billingDate},
+            #{roundTrip},
+            #{amount},
+            #{subtotal},
+            #{reason},
+            #{transportation},
+            #{fileName},
+            #{slipId},
+            #{remark},
+            #{userId},
+            CURRENT_TIMESTAMP,
+            CURRENT_TIMESTAMP
+        )
+    </insert>
+
 </mapper>

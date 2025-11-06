@@ -20,8 +20,8 @@ public class SlipController {
     UserService userService;
 
     @GetMapping("/new")
-    public String showNewSlip(Model model,
-                              @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
+    public String showSlip(Model model,
+                           @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
         User loginUser = userService.findById(loginUserDetails.getUser().getId());
         User approver = userService.findById(loginUser.getApproverId());

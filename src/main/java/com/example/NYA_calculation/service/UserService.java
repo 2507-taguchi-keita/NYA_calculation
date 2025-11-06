@@ -1,6 +1,7 @@
 package com.example.NYA_calculation.service;
 
 import com.example.NYA_calculation.controller.form.UserForm;
+import com.example.NYA_calculation.error.RecordNotFoundException;
 import com.example.NYA_calculation.repository.UserRepository;
 import com.example.NYA_calculation.repository.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +9,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.example.NYA_calculation.error.RecordNotFoundException;
 import org.springframework.stereotype.Service;
 
-import static com.example.NYA_calculation.validation.ErrorMessages.E0013;
 import java.util.List;
+
+import static com.example.NYA_calculation.validation.ErrorMessages.E0013;
 
 
 @Service

@@ -109,7 +109,7 @@
                 </div>
 
                 <!-- Thymeleafフォーム -->
-                <form th:action="@{/detail/new}" th:object="${detailForm}" method="post">
+                <form th:action="@{/detail/add}" th:object="${detailForm}" method="post" enctype="multipart/form-data">
 
                     <div class="form-row">
                         <label>日付<span class="required">*</span></label>
@@ -152,6 +152,9 @@
                     <div class="form-row">
                         <label>備考</label>
                         <textarea type="text" th:field="*{remark}"></textarea>
+
+                        <label>領収書/請求書</label>
+                        <input type="file" th:field="*{file}" accept="image/*,application/pdf">
                     </div>
 
                     <div class="button-row">
