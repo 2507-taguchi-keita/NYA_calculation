@@ -1,9 +1,11 @@
 package com.example.NYA_calculation.repository;
 
+import com.example.NYA_calculation.controller.form.UserForm;
 import com.example.NYA_calculation.repository.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mapper
@@ -16,5 +18,8 @@ public interface UserRepository {
      * @return Optional<User> 該当ユーザー or empty
      */
     Optional<User> findByAccount(@Param("account") String account);
-
+    int updateUser(UserForm userForm);
+    UserForm findById(Integer id);
+    // 承認者一覧を取得
+    List<User> findApprovers();
 }

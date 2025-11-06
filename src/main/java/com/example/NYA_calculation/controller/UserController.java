@@ -1,7 +1,10 @@
 package com.example.NYA_calculation.controller;
 
 import com.example.NYA_calculation.controller.form.UserForm;
+import com.example.NYA_calculation.repository.entity.User;
+import com.example.NYA_calculation.security.LoginUserDetails;
 import com.example.NYA_calculation.service.UserService;
+import com.example.NYA_calculation.validation.CreateGroup;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.groups.Default;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,32 +51,39 @@ public class UserController {
             attributes.addFlashAttribute("errorMessages", errorMessages);
             return new ModelAndView("redirect:/");
         }
+        List<User> approvers = userService.getApprovers();
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/setting");
         mav.addObject("formModel", user);
+        mav.addObject("approvers", approvers);
         mav.addObject("loginUser", loginUser);
         return mav;
     }
 
     //個人設定処理
     @PostMapping("/setting/update/{id}")
-    public String updateUser(@ModelAttribute("userForm") @Validated({Default.class}) UserForm userForm,
+    public String updateUser(@ModelAttribute("formModel") @Validated UserForm userForm,
                              BindingResult result,
                              Model model) {
+        System.out.println("DEBUG password=" + userForm.getPassword());
+        System.out.println("DEBUG approverId=" + userForm.getApproverId());
+        System.out.println("DEBUG id=" + userForm.getId());
 
         if (result.hasErrors()) {
-            model.addAttribute("validationErrors", result);
-            model.addAttribute("userForm", userForm);
-            return "user/edit";
+            model.addAttribute("formModel", userForm);
+            model.addAttribute("approvers", userService.getApprovers());
+            return "setting";
         }
 
         boolean success = userService.updateUser(userForm);
 
         if (!success) {
             model.addAttribute("accountError", E0020);
-            model.addAttribute("userForm", userForm);
-            return "/setting";
+            model.addAttribute("formModel", userForm);
+            List<User> approvers = userService.getApprovers();
+            model.addAttribute("approvers", approvers);
+            return "setting";
         }
 
         return "redirect:/";

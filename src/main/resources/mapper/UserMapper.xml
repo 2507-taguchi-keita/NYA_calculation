@@ -27,7 +27,7 @@
     <!-- ユーザーをIDで取得 -->
     <select id="findById"
             parameterType="int"
-            resultType="com.example.form.UserForm">
+            resultType="com.example.NYA_calculation.controller.form.UserForm">
         SELECT
         id,
         account,
@@ -44,14 +44,20 @@
         WHERE
         id = #{id}
     </select>
-    <update id="updateUser" parameterType="com.example.form.UserForm">
+    <update id="updateUser" parameterType="com.example.NYA_calculation.controller.form.UserForm">
         UPDATE users
         SET
         password = #{password},
         approver_id = #{approverId},
         updated_date = CURRENT_TIMESTAMP
-        WHERE
-        id = #{id}
+        WHERE id = #{id}
     </update>
+    <select id="findApprovers" resultType="com.example.NYA_calculation.repository.entity.User">
+        SELECT
+        id,
+        name
+        FROM users
+        WHERE authority = 1
+    </select>
 
 </mapper>

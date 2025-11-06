@@ -80,7 +80,7 @@
 <body>
 
 <header>
-    <h1>楽楽精算</h1>
+    <h1>交通費精算</h1>
     <nav>
         <a href="/logout">ログアウト</a>
     </nav>
@@ -111,7 +111,7 @@
             <div class="menu-icon">↩️</div>
             <div class="menu-title">差し戻し</div>
         </a>
-        <a href="/setting" class="menu-item">
+        <a th:href="@{/setting/{id}(id=${loginUser.user.id})}" class="menu-item">
             <div class="menu-icon">⚙️</div>
             <div class="menu-title">個人設定</div>
         </a>
@@ -125,8 +125,15 @@
         </a>
     </div>
 
-    <a href="/admin" class="menu-item hidden" th:if="${loginUser.role == 'ADMIN'}">管理者画面</a>
-    <a href="/approval" class="menu-item hidden" th:if="${loginUser.role == 'APPROVER'}">未承認一覧</a>
+    <a href="/admin" class="menu-item"
+       th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        管理者画面
+    </a>
+
+    <a href="/approval" class="menu-item"
+       th:if="${#authorization.expression('hasRole(''APPROVER'')')}">
+        未承認一覧
+    </a>
 
 </div>
 

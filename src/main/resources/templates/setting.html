@@ -76,7 +76,7 @@
 <header>
     <h1>個人設定</h1>
     <nav>
-        <a href="/" style="color:#fff; text-decoration:none;">ホームへ戻る</a>
+        <a href="/" style="color:#fff; text-decoration:none;">ホーム</a>
     </nav>
 </header>
 
@@ -85,14 +85,10 @@
     <h2>個人設定変更</h2>
 
     <!-- エラーメッセージ表示 -->
-    <div th:if="${errorMessages}" class="error-messages">
-        <ul>
-            <li th:each="msg : ${errorMessages}" th:text="${msg}"></li>
-        </ul>
-    </div>
+    <div th:if="${errorMessage != null}" th:text="${errorMessage}"></div>
 
     <!-- フォーム開始 -->
-    <form th:action="@{/setting/update}" method="post" th:object="${formModel}">
+    <form th:action="@{/setting/update/{id}(id=${formModel.id})}" method="post" th:object="${formModel}">
         <input type="hidden" th:field="*{id}">
 
         <label for="password">パスワード</label>
@@ -101,7 +97,13 @@
         <label for="confirmPassword">パスワード（確認用）</label>
         <input type="password" id="confirmPassword" th:field="*{confirmPassword}" placeholder="もう一度入力">
 
+        <p>
+            <input id="pwVisible" class="pwVisible" type="checkbox" onclick="passwordVisibility()" >
+            <label>パスワードを表示する</label>
+        </p>
+
         <label for="approverId">承認者</label>
+        <div th:if="${#fields.hasErrors('approverId')}" th:errors="*{approverId}"></div>
         <select id="approverId" th:field="*{approverId}">
             <option value="">選択してください</option>
             <option th:each="approver : ${approvers}"
@@ -111,12 +113,32 @@
         </select>
 
         <div class="btn-area">
-            <button type="submit" class="btn">変更を保存</button>
+            <button type="submit" class="btn">変更</button>
         </div>
     </form>
 
-    <a href="/" class="back-link">ホームに戻る</a>
+    <a href="/" class="back-link">ホーム</a>
 </div>
 
+<script>
+    const form = document.querySelector("form");
+    form.addEventListener("submit", function(e) {
+        const pw = document.getElementById("password").value;
+        const confirmPw = document.getElementById("confirmPassword").value;
+        if (pw !== confirmPw) {
+            alert("パスワードと確認用パスワードが一致しません");
+            e.preventDefault();
+        }
+    });
+
+    <!-- パスワード表示切替 -->
+    function passwordVisibility() {
+        const pw = document.getElementById("password");
+        const confirmPw = document.getElementById("confirmPassword");
+        const visible = document.getElementById("pwVisible").checked;
+        pw.type = visible ? "text" : "password";
+        confirmPw.type = visible ? "text" : "password";
+    }
+</script>
 </body>
 </html>
