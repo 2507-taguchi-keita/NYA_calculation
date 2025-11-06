@@ -43,4 +43,43 @@
         WHERE id = #{id}
     </select>
 
+    <!-- ユーザーをIDで取得 -->
+    <select id="findFormById"
+            parameterType="int"
+            resultType="com.example.NYA_calculation.controller.form.UserForm">
+        SELECT
+        id,
+        account,
+        password,
+        name,
+        department_id,
+        authority,
+        is_stopped,
+        approver_id,
+        created_date,
+        updated_date
+        FROM
+        users
+        WHERE
+        id = #{id}
+    </select>
+    <update id="updateUser" parameterType="com.example.NYA_calculation.controller.form.UserForm">
+        UPDATE users
+        <set>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            approver_id = #{approverId},
+            updated_date = CURRENT_TIMESTAMP
+        </set>
+        WHERE id = #{id}
+    </update>
+    <select id="findApprovers" resultType="com.example.NYA_calculation.repository.entity.User">
+        SELECT
+        id,
+        name
+        FROM users
+        WHERE authority = 1
+    </select>
+
 </mapper>

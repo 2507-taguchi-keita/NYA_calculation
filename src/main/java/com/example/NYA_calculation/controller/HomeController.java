@@ -12,6 +12,7 @@ public class HomeController {
     // ホーム画面表示
     @GetMapping("/")
     public String home(Model model, @AuthenticationPrincipal LoginUserDetails loginUser) {
+        model.addAttribute("loginUser", loginUser);
         model.addAttribute("userName", loginUser.getUser().getName());
         model.addAttribute("department", loginUser.getUser().getDepartmentId());
 

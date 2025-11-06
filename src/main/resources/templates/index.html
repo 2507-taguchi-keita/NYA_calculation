@@ -1,37 +1,141 @@
 <!DOCTYPE html>
-<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>経費精算ホーム</title>
     <style>
-        body { font-family: "Segoe UI", sans-serif; background-color: #f9f9f9; }
-        .container { width: 80%; margin: 40px auto; }
-        .menu-grid { display: flex; gap: 20px; }
+        body {
+            font-family: "Segoe UI", sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #005bac;
+            color: #fff;
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+        nav a {
+            color: #fff;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .container {
+            width: 80%;
+            margin: 30px auto;
+        }
+        .user-info {
+            margin-bottom: 20px;
+            background: #fff;
+            border-radius: 6px;
+            padding: 10px 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .menu-grid {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
         .menu-item {
-          flex: 1; text-align: center; background: #e7f3ff; border-radius: 8px;
-          padding: 20px; transition: background 0.2s; text-decoration: none; color: #333;
+            flex: 1;
+            text-align: center;
+            background: #e7f3ff;
+            border-radius: 8px;
+            padding: 20px;
+            transition: background 0.2s;
+            text-decoration: none;
+            color: #333;
         }
         .menu-item:hover { background: #cfe6ff; }
-        .menu-icon { font-size: 40px; margin-bottom: 10px; }
+        .menu-item.workflow { background: #e7ffe7; }
+        .menu-item.workflow:hover { background: #caffca; }
+        .menu-icon { font-size: 40px; margin-bottom: 8px; }
+        .menu-title { font-weight: bold; margin-bottom: 5px; }
         .menu-link {
-          display: inline-block; background: #fff; border: 1px solid #ccc;
-          border-radius: 5px; padding: 5px 15px; text-decoration: none; color: #333;
+            display: inline-block;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 3px 15px;
+            text-decoration: none;
+            color: #333;
         }
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-<div class="container">
-    <h2>経費精算ホーム</h2>
-    <p>所属部門：<span th:text="${department}"></span></p>
-    <p>名前：<span th:text="${userName}"></span></p>
 
+<header>
+    <h1>交通費精算</h1>
+    <nav>
+        <a href="/logout">ログアウト</a>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="user-info">
+        <p>所属部門：<span th:text="${department}"></span></p>
+        <p>名前：<span th:text="${userName}"></span></p>
+    </div>
+
+    <!-- メインメニュー -->
     <div class="menu-grid">
-        <a href="/slip/new" class="menu-item">
+        <a href="/transport" class="menu-item">
             <div class="menu-icon">🚆</div>
             <div class="menu-title">交通費精算</div>
             <div><span class="menu-link">一覧</span></div>
         </a>
     </div>
+
+    <!-- 下段メニュー -->
+    <div class="menu-grid">
+        <a href="/temporary" class="menu-item">
+            <div class="menu-icon">💾</div>
+            <div class="menu-title">一時保存</div>
+        </a>
+        <a href="/returned" class="menu-item">
+            <div class="menu-icon">↩️</div>
+            <div class="menu-title">差し戻し</div>
+        </a>
+        <a th:href="@{/setting/{id}(id=${loginUser.user.id})}" class="menu-item">
+            <div class="menu-icon">⚙️</div>
+            <div class="menu-title">個人設定</div>
+        </a>
+        <a href="/application-list" class="menu-item">
+            <div class="menu-icon">📋</div>
+            <div class="menu-title">申請一覧</div>
+        </a>
+        <a href="/slip/new" class="menu-item">
+            <div class="menu-icon">📝</div>
+            <div class="menu-title">新規伝票</div>
+        </a>
+    </div>
+
+    <a href="/admin" class="menu-item"
+       th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        管理者画面
+    </a>
+
+    <a href="/approval" class="menu-item"
+       th:if="${#authorization.expression('hasRole(''APPROVER'')')}">
+        未承認一覧
+    </a>
+
 </div>
+
 </body>
 </html>
