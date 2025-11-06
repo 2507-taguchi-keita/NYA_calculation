@@ -20,30 +20,24 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public User findById(Integer id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RecordNotFoundException(E0013));
     }
 
-
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    public UserForm findById(Integer id) {
-        return userRepository.findById(id);
+    public UserForm findFormById(Integer id) {
+        return userRepository.findFormById(id);
     }
 
     public boolean updateUser(UserForm userForm) {
-
-        // パスワードが入力されている場合のみ暗号化
-        if (userForm.getPassword() != null && !userForm.getPassword().isEmpty()) {
-            String encoded = passwordEncoder.encode(userForm.getPassword());
-            userForm.setPassword(encoded);
+        if (userForm.getPassword() == null || userForm.getPassword().isBlank()) {
+            userForm.setPassword(null);
+        } else {
+            userForm.setPassword(passwordEncoder.encode(userForm.getPassword()));
         }
-
         int updatedRows = userRepository.updateUser(userForm);
         return updatedRows > 0;
     }

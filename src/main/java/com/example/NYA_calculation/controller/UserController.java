@@ -45,7 +45,7 @@ public class UserController {
             return new ModelAndView("redirect:/");
         }
 
-        UserForm user = userService.findById(Integer.valueOf(id));
+        UserForm user = userService.findFormById(Integer.valueOf(id));
         if (user == null) {
             errorMessages.add(E0013);
             attributes.addFlashAttribute("errorMessages", errorMessages);
@@ -66,9 +66,6 @@ public class UserController {
     public String updateUser(@ModelAttribute("formModel") @Validated UserForm userForm,
                              BindingResult result,
                              Model model) {
-        System.out.println("DEBUG password=" + userForm.getPassword());
-        System.out.println("DEBUG approverId=" + userForm.getApproverId());
-        System.out.println("DEBUG id=" + userForm.getId());
 
         if (result.hasErrors()) {
             model.addAttribute("formModel", userForm);

@@ -44,7 +44,7 @@
     </select>
 
     <!-- ユーザーをIDで取得 -->
-    <select id="findById"
+    <select id="findFormById"
             parameterType="int"
             resultType="com.example.NYA_calculation.controller.form.UserForm">
         SELECT
@@ -65,10 +65,13 @@
     </select>
     <update id="updateUser" parameterType="com.example.NYA_calculation.controller.form.UserForm">
         UPDATE users
-        SET
-        password = #{password},
-        approver_id = #{approverId},
-        updated_date = CURRENT_TIMESTAMP
+        <set>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            approver_id = #{approverId},
+            updated_date = CURRENT_TIMESTAMP
+        </set>
         WHERE id = #{id}
     </update>
     <select id="findApprovers" resultType="com.example.NYA_calculation.repository.entity.User">

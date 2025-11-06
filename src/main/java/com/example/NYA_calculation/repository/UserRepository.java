@@ -28,7 +28,7 @@ public interface UserRepository {
     Optional<User> findById(@Param("id") Integer id);
 
     int updateUser(UserForm userForm);
-    UserForm findById(Integer id);
+    UserForm findFormById(Integer id);
     // 承認者一覧を取得
     List<User> findApprovers();
 }

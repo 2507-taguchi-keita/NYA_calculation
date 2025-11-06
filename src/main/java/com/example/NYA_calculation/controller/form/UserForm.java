@@ -21,7 +21,7 @@ public class UserForm {
     @Size(max = 7, message = E0018, groups = {CreateGroup.class})
     private String account;
 
-    @NotEmpty(message = E0002)
+    @NotEmpty(message = E0002, groups = {CreateGroup.class})
     @Pattern(regexp = "^(?:$|[\\x21-\\x7E]{6,20})$", message = E0005)
     private String password;
     private String confirmPassword;
