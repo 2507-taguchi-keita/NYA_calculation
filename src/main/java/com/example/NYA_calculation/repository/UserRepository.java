@@ -4,6 +4,8 @@ import com.example.NYA_calculation.controller.form.UserForm;
 import com.example.NYA_calculation.repository.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,4 +33,7 @@ public interface UserRepository {
     UserForm findFormById(Integer id);
     // 承認者一覧を取得
     List<User> findApprovers();
+    List<UserForm> pageUser(@Param("limit") int limit, @Param("offset") int offset);
+    int countUsers();
+    void updateIsStopped(@Param("id") Integer id, @Param("isStopped") boolean isStopped);
 }

@@ -81,5 +81,30 @@
         FROM users
         WHERE authority = 1
     </select>
+    <select id="pageUser" resultType="com.example.NYA_calculation.controller.form.UserForm">
+        SELECT
+        id,
+        account,
+        password,
+        name,
+        department_id,
+        authority,
+        is_stopped,
+        approver_id,
+        created_date,
+        updated_date
+        FROM users
+        ORDER BY name ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+    <select id="countUsers" resultType="int">
+        SELECT COUNT(*) FROM users
+    </select>
+    <update id="updateIsStopped">
+        UPDATE users
+        SET is_stopped = #{isStopped},
+        updated_date = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
 
 </mapper>
