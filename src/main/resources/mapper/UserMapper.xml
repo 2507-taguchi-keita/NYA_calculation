@@ -5,4 +5,34 @@
 
 <mapper namespace="com.example.NYA_calculation.repository.UserMapper">
 
+    <!-- ユーザーをIDで取得 -->
+    <select id="findById"
+            parameterType="int"
+            resultType="com.example.form.UserForm">
+        SELECT
+        id,
+        account,
+        password,
+        name,
+        department_id,
+        authority,
+        is_stopped,
+        approver_id,
+        created_date,
+        updated_date
+        FROM
+        users
+        WHERE
+        id = #{id}
+    </select>
+    <update id="updateUser" parameterType="com.example.form.UserForm">
+        UPDATE users
+        SET
+        password = #{password},
+        approver_id = #{approverId},
+        updated_date = CURRENT_TIMESTAMP
+        WHERE
+        id = #{id}
+    </update>
+
 </mapper>

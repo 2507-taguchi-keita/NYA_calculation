@@ -5,4 +5,16 @@
 
 <mapper namespace="com.example.NYA_calculation.repository.DetailMapper">
 
+    <select id="getMonthlyTotal" resultType="com.example.dto.ExpenseSummary">
+        SELECT
+        DATE_FORMAT(billing_date, '%Y-%m') AS month,
+        SUM(amount) AS totalAmount
+        FROM
+        details
+        GROUP BY
+        DATE_FORMAT(billing_date, '%Y-%m')
+        ORDER BY
+        month
+    </select>
+
 </mapper>
