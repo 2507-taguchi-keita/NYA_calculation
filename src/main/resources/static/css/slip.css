@@ -1,0 +1,68 @@
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+.modal-content {
+  background: #fff;
+  margin: 5% auto;
+  padding: 20px 30px;
+  width: 80%;
+  max-width: 900px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #007bce;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px 6px 0 0;
+}
+.close {
+  font-size: 24px;
+  cursor: pointer;
+}
+.form-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+.form-row label {
+  width: 100px;
+  font-weight: bold;
+  margin-right: 8px;
+}
+.form-row input, .form-row select {
+  margin-right: 12px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.required { color: red; }
+.button-row {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.primary-btn {
+  background-color: #007bce;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+}
+.sub-btn, #cancelBtn {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  padding: 8px 20px;
+  border-radius: 4px;
+}
+.primary-btn:hover { background-color: #005fa3; }

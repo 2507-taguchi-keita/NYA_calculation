@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static com.example.NYA_calculation.validation.ErrorMessage.E0021;
+import static com.example.NYA_calculation.validation.ErrorMessages.E0021;
 
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {

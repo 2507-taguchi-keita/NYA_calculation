@@ -5,14 +5,13 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Getter
 @Setter
 public class DetailForm {
     private Integer id;
     private LocalDate billingDate;
-    private LocalTime roundTrip;
+    private String roundTrip;
     private Integer amount;
     private Integer subtotal;
     private String reason;

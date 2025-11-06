@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 @Table(name = "details")
@@ -22,7 +21,7 @@ public class Detail {
     private LocalDate billingDate;
 
     @Column
-    private LocalTime roundTrip;
+    private String roundTrip;
 
     @Column
     private Integer amount;

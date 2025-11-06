@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.NYA_calculation.validation.ErrorMessage.*;
+import static com.example.NYA_calculation.validation.ErrorMessages.*;
 
 @Component
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
