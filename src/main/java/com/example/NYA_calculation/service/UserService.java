@@ -5,6 +5,9 @@ import com.example.NYA_calculation.error.RecordNotFoundException;
 import com.example.NYA_calculation.repository.UserRepository;
 import com.example.NYA_calculation.repository.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,4 +47,15 @@ public class UserService {
         return userRepository.findApprovers();
     }
 
+    public Page<UserForm> pageUser(int page, int size) {
+        int offset = page * size;
+        List<UserForm> users = userRepository.pageUser(size, offset);
+        int totalCount = userRepository.countUsers(); // 全件数を別で取得
+
+        return new PageImpl<>(users, PageRequest.of(page, size), totalCount);
+    }
+
+    public void changeIsStopped(Integer id, boolean isStopped) {
+        userRepository.updateIsStopped(id, isStopped);
+    }
 }

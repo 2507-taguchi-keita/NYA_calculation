@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>ユーザー一覧画面</title>
+</head>
+<body>
+<header>
+    <h1>交通費精算 管理者画面</h1>
+    <nav>
+        <a href="/logout">ログアウト</a>
+        <a href="/">ホーム</a> |
+        <a href="/admin/users/add">ユーザー登録</a> |
+        <a href="/admin/users/edit">ユーザー編集</a>
+    </nav>
+</header>
+<main class="user-page">
+    <div class="container">
+        <div class="page-users">
+            <div class="admin-users">
+                <h2>ユーザー一覧</h2>
+                <table class="user-table">
+                    <thead>
+                    <tr>
+                        <th scope="col">社員番号</th>
+                        <th scope="col">氏名</th>
+                        <th scope="col">権限</th>
+                        <th scope="col">部署名</th>
+                        <th scope="col">登録日時</th>
+                        <th scope="col">更新日時</th>
+                        <th scope="col">有効/停止</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:classappend="${user.isStopped} ? 'stopped-user' : '' " th:each="user : ${users}">
+                        <th scope="row"><span name="account" th:text="${user.account}"></span></th>
+                        <td class="td-name"><!-- 氏名表示 -->
+                            <span name="name" th:text="${user.name}"></span>
+                        </td>
+                        <td>
+                            <th:block th:switch="${user.authority}">
+                                <span th:case=0 th:text="一般ユーザー"></span>
+                                <span th:case=1 th:text="承認権限あり"></span>
+                            </th:block>
+                        </td>
+                        <td th:text="${user.departmentId}"></td>
+                        <td>
+                            <span th:text="${#dates.format(user.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                        </td>
+                        <td>
+                            <span th:text="${#dates.format(user.updatedDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                        </td>
+                        <td class="td-status">
+                            <!-- 状態表示 -->
+                            <span th:if="${user.isStopped}" th:text="'停止中'"></span>
+                            <span th:unless="${user.isStopped}" th:text="'有効中'"></span>
+
+                            <!-- 自分自身の行は操作不可 -->
+                            <div th:if="${loginUser.user.id != user.id}">
+                                <form method="post" th:if="${user.isStopped}" th:action="@{/admin/users/change/{id}(id=${user.id})}" onsubmit="return CheckValid()">
+                                    <input type="hidden" name="isStopped" value="false"/>
+                                    <input type="submit" value="有効" class="btn-valid"/>
+                                </form>
+
+                                <form method="post" th:unless="${user.isStopped}" th:action="@{/admin/users/change/{id}(id=${user.id})}" onsubmit="return CheckStop()">
+                                    <input type="hidden" name="isStopped" value="true"/>
+                                    <input type="submit" value="停止" class="btn-stop"/>
+                                </form>
+
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- ページネーション -->
+    <div th:if="${page.totalPages > 1}" class="pagination">
+        <ul>
+            <li th:if="${!page.first}">
+                <a th:href="@{/admin/user-list(page=${page.number - 1})}">« 前へ</a>
+            </li>
+
+            <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
+                th:classappend="${i == page.number} ? 'active'">
+                <a th:if="${i != page.number}"
+                   th:href="@{/admin/user-list(page=${i})}"
+                   th:text="${i + 1}"></a>
+                <strong th:if="${i == page.number}" th:text="${i + 1}"></strong>
+            </li>
+
+            <li th:if="${!page.last}">
+                <a th:href="@{/admin/user-list(page=${page.number + 1})}">次へ »</a>
+            </li>
+        </ul>
+    </div>
+</main>
+</body>
+</html>
