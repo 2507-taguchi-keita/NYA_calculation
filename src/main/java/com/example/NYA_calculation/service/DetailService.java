@@ -4,6 +4,7 @@ import com.example.NYA_calculation.controller.form.DetailForm;
 import com.example.NYA_calculation.converter.DetailConverter;
 import com.example.NYA_calculation.dto.ExpenseSummary;
 import com.example.NYA_calculation.repository.DetailRepository;
+import com.example.NYA_calculation.repository.entity.Detail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,10 @@ public class DetailService {
 
     public void save(DetailForm detailForm) throws IOException {
         detailRepository.insert(detailConverter.toEntity(detailForm));
+    }
+
+    public void insert(Detail detail) throws IOException {
+        detailRepository.insert(detail);
     }
 
 }

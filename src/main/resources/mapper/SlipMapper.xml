@@ -5,4 +5,15 @@
 
 <mapper namespace="com.example.NYA_calculation.repository.SlipRepository">
 
+    <insert id="insert"
+            parameterType="com.example.NYA_calculation.repository.entity.Slip"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO slip(
+        status, step, totalAmount, userId, approverId
+        ) VALUES(
+        #{status}, #{step}, #{totalAmount}, #{userId}, #{approverId}
+        )
+    </insert>
+
 </mapper>
