@@ -1,10 +1,14 @@
 package com.example.NYA_calculation.controller;
 
 import com.example.NYA_calculation.controller.form.UserForm;
+import com.example.NYA_calculation.repository.entity.Department;
 import com.example.NYA_calculation.repository.entity.User;
 import com.example.NYA_calculation.security.LoginUserDetails;
+import com.example.NYA_calculation.service.DepartmentService;
 import com.example.NYA_calculation.service.UserService;
+import com.example.NYA_calculation.validation.CreateGroup;
 import io.micrometer.common.util.StringUtils;
+import jakarta.validation.groups.Default;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -29,6 +33,8 @@ public class UserController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    DepartmentService departmentService;
 
     //個人設定画面
     @GetMapping("/setting/{id}")
@@ -82,5 +88,37 @@ public class UserController {
         }
 
         return "redirect:/";
+    }
+
+    //ユーザー登録画面表示（管理者用）
+    @GetMapping("/admin/users/new")
+    public String adminNewUser(Model model){
+        model.addAttribute("userForm", new UserForm());
+        model.addAttribute("departments", departmentService.getDepartments());
+        return "admin/users/new";
+    }
+
+    //ユーザー登録機能（管理者用）
+    @PostMapping("/admin/users/add")
+    public String adminAddUser(@ModelAttribute("userForm") @Validated({Default.class, CreateGroup.class}) UserForm userForm,
+                               BindingResult result,
+                               Model model) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("validationErrors", result);
+            model.addAttribute("userForm", userForm);
+            model.addAttribute("departments", departmentService.getDepartments());
+            return "admin/users";
+        }
+
+        boolean success = userService.addUser(userForm);
+
+        if (!success) {
+            model.addAttribute("accountError", E0020);
+            model.addAttribute("userForm", userForm);
+            model.addAttribute("departments", departmentService.getDepartments());
+            return "admin/users";
+        }
+        return "redirect:/admin/users";
     }
 }

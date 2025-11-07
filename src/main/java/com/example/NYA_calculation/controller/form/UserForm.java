@@ -30,7 +30,9 @@ public class UserForm {
     @Size(max = 10, message = E0019, groups = {CreateGroup.class})
     private String name;
 
+    @NotNull(message = E0016, groups = {CreateGroup.class})
     private Integer departmentId;
+    @NotNull(message = E0017, groups = {CreateGroup.class})
     private Integer authority;
     private boolean isStopped;
 
