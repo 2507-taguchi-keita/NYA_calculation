@@ -37,7 +37,7 @@ public class DetailConverter {
     }
 
     public List<DetailForm> toFormList(List<Detail> results) {
-        List<DetailForm> restaurants = new ArrayList<>();
+        List<DetailForm> detailForms = new ArrayList<>();
 
         for (Detail result : results) {
             DetailForm detailForm = new DetailForm();
@@ -54,9 +54,9 @@ public class DetailConverter {
             detailForm.setUserId(result.getUserId());
             detailForm.setCreatedDate(result.getCreatedDate());
             detailForm.setUpdatedDate(result.getUpdatedDate());
-            restaurants.add(detailForm);
+            detailForms.add(detailForm);
         }
-        return restaurants;
+        return detailForms;
     }
 
     public Detail toEntity(DetailForm form) throws IOException {
@@ -73,7 +73,7 @@ public class DetailConverter {
         detail.setFileName(fileName);
         detail.setSlipId(form.getSlipId());
         detail.setRemark(form.getRemark());
-        detail.setUpdatedDate(form.getUpdatedDate());
+        detail.setUserId(form.getUserId());
 
         if (form.getId() != null) {
             detail.setId(form.getId());
