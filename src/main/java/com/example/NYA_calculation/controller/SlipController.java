@@ -2,6 +2,7 @@ package com.example.NYA_calculation.controller;
 
 import com.example.NYA_calculation.constant.SlipConstants;
 import com.example.NYA_calculation.controller.form.DetailForm;
+import com.example.NYA_calculation.controller.form.SlipForm;
 import com.example.NYA_calculation.repository.entity.Detail;
 import com.example.NYA_calculation.repository.entity.DetailTemp;
 import com.example.NYA_calculation.repository.entity.Slip;
@@ -52,6 +53,7 @@ public class SlipController {
 
         model.addAttribute("loginUser", loginUser);
         model.addAttribute("approver", approver);
+        model.addAttribute("slipForm", new SlipForm());
         model.addAttribute("detailForm", new DetailForm());
         model.addAttribute("reasonList", SlipConstants.REASONS);
         model.addAttribute("transportList", SlipConstants.TRANSPORTS);
@@ -60,13 +62,22 @@ public class SlipController {
     }
 
     @PostMapping("/save")
-    public String saveSlip(HttpSession session) throws IOException {
+    public String saveSlip(HttpSession session,
+                           @AuthenticationPrincipal LoginUserDetails loginUserDetails) throws IOException {
 
         String tempKey = (String) session.getAttribute("slipTempKey");
         if (tempKey == null) return "redirect:/slip/new";
 
         // 1. 伝票をINSERTし slipId を取得（仮）
-        Integer slipId = slipService.createSlip(new Slip());
+        User loginUser = userService.findById(loginUserDetails.getUser().getId());
+
+        Slip slip = new Slip();
+        slip.setStatus(0);
+        slip.setStep(0);
+        slip.setUserId(loginUser.getId());
+        slip.setApproverId(loginUser.getApproverId());
+
+        Integer slipId = slipService.createSlip(slip);
 
         // 2. detail_temp の一覧取得
         List<DetailTemp> tempDetails = detailTempService.getTempDetails(tempKey);
