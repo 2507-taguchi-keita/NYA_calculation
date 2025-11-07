@@ -38,4 +38,5 @@ public interface UserRepository {
     void updateIsStopped(@Param("id") Integer id, @Param("isStopped") boolean isStopped);
     int insertUser(User user);
     Integer countByAccount(@Param("account") String account, @Param("excludeUserId") Integer excludeUserId);
+    int adminEditUser(UserForm userForm);
 }

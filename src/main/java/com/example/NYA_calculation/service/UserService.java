@@ -50,7 +50,7 @@ public class UserService {
     public Page<UserForm> pageUser(int page, int size) {
         int offset = page * size;
         List<UserForm> users = userRepository.pageUser(size, offset);
-        int totalCount = userRepository.countUsers(); // 全件数を別で取得
+        int totalCount = userRepository.countUsers();
 
         return new PageImpl<>(users, PageRequest.of(page, size), totalCount);
     }
@@ -79,11 +79,21 @@ public class UserService {
         user.setAuthority(userForm.getAuthority());
         user.setDepartmentId(userForm.getDepartmentId());
         user.setStopped(false);
+        user.setApproverId(userForm.getApproverId());
         userRepository.insertUser(user);
         return true;
     }
 
-    public List<User> getDepartments() {
-        return null;
+    public boolean adminEditUser(UserForm userForm) {
+
+        // パスワードが入力されていた場合のみエンコードして上書き
+        if (userForm.getPassword() != null && !userForm.getPassword().isBlank()) {
+            userForm.setPassword(passwordEncoder.encode(userForm.getPassword()));
+        } else {
+            userForm.setPassword(null);
+        }
+
+        int updatedRows = userRepository.adminEditUser(userForm);
+        return updatedRows > 0;
     }
 }
