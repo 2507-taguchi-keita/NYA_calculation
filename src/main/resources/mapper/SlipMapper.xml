@@ -9,8 +9,8 @@
             parameterType="com.example.NYA_calculation.repository.entity.Slip"
             useGeneratedKeys="true"
             keyProperty="id">
-        INSERT INTO slip(
-        status, step, totalAmount, userId, approverId
+        INSERT INTO slips(
+        status, step, total_amount, user_id, approver_id
         ) VALUES(
         #{status}, #{step}, #{totalAmount}, #{userId}, #{approverId}
         )
