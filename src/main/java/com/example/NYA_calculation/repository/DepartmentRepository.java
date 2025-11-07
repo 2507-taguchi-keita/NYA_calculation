@@ -7,5 +7,4 @@ import java.util.List;
 
 @Mapper
 public interface DepartmentRepository {
-    List<Department> getDepartments();
 }

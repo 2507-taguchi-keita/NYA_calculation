@@ -42,6 +42,11 @@
                 <input type="password" id="confirmPassword" th:field="*{confirmPassword}">
             </div>
 
+            <p>
+                <input id="pwVisible" class="pwVisible" type="checkbox" onclick="passwordVisibility()" >
+                <label>パスワードを表示する</label>
+            </p>
+
             <!-- 氏名 -->
             <div class="form-group">
                 <label for="name">氏名</label>
@@ -55,9 +60,8 @@
                 <div th:if="${#fields.hasErrors('departmentId')}" th:errors="*{departmentId}" class="error-message"></div>
                 <select id="departmentId" th:field="*{departmentId}">
                     <option value="">選択してください</option>
-                    <option th:each="department : ${departments}"
-                            th:value="${department.id}"
-                            th:text="${department.name}">
+                    <option th:each="department, stat : ${departments}"
+                            th:value="${stat.index + 1}" th:text="${department}">
                     </option>
                 </select>
             </div>
@@ -82,6 +86,24 @@
         <a href="/admin/users" class="back-link">戻る</a>
     </div>
 </main>
-
+<script>
+<!-- パスワード表示切替 -->
+function passwordVisibility() {
+const pw = document.getElementById("password");
+const confirmPw = document.getElementById("confirmPassword");
+const visible = document.getElementById("pwVisible").checked;
+pw.type = visible ? "text" : "password";
+confirmPw.type = visible ? "text" : "password";
+}
+const form = document.querySelector("form");
+    form.addEventListener("submit", function(e) {
+        const pw = document.getElementById("password").value;
+        const confirmPw = document.getElementById("confirmPassword").value;
+        if (pw !== confirmPw) {
+            alert("パスワードと確認用パスワードが一致しません");
+            e.preventDefault();
+        }
+    });
+</script>
 </body>
 </html>

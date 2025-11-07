@@ -13,7 +13,4 @@ public class DepartmentService {
     @Autowired
     DepartmentRepository departmentRepository;
 
-    public List<Department> getDepartments() {
-        return departmentRepository.getDepartments();
-    }
 }

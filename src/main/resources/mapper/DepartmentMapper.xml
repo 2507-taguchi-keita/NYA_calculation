@@ -5,14 +5,4 @@
 
 <mapper namespace="com.example.NYA_calculation.repository.DepartmentRepository">
 
-    <select id="getDepartments" resultType="com.example.NYA_calculation.repository.entity.Department">
-        SELECT
-        id,
-        name
-        FROM
-        departments
-        ORDER BY
-        id
-    </select>
-
 </mapper>

@@ -1,5 +1,6 @@
 package com.example.NYA_calculation.controller;
 
+import com.example.NYA_calculation.constant.DepartmentConstants;
 import com.example.NYA_calculation.controller.form.UserForm;
 import com.example.NYA_calculation.repository.entity.Department;
 import com.example.NYA_calculation.repository.entity.User;
@@ -7,6 +8,7 @@ import com.example.NYA_calculation.security.LoginUserDetails;
 import com.example.NYA_calculation.service.DepartmentService;
 import com.example.NYA_calculation.service.UserService;
 import com.example.NYA_calculation.validation.CreateGroup;
+import com.example.NYA_calculation.validation.UpdateGroup;
 import io.micrometer.common.util.StringUtils;
 import jakarta.validation.groups.Default;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +69,7 @@ public class UserController {
 
     //個人設定処理
     @PostMapping("/setting/update/{id}")
-    public String updateUser(@ModelAttribute("formModel") @Validated UserForm userForm,
+    public String updateUser(@ModelAttribute("formModel") @Validated({Default.class, UpdateGroup.class}) UserForm userForm,
                              BindingResult result,
                              Model model) {
 
@@ -94,7 +96,7 @@ public class UserController {
     @GetMapping("/admin/users/new")
     public String adminNewUser(Model model){
         model.addAttribute("userForm", new UserForm());
-        model.addAttribute("departments", departmentService.getDepartments());
+        model.addAttribute("departments", DepartmentConstants.DEPARTMENTS);
         return "admin/users/new";
     }
 
@@ -105,10 +107,19 @@ public class UserController {
                                Model model) {
 
         if (result.hasErrors()) {
+//            System.out.println("---- バリデーションエラー発生 ----");
+//            result.getFieldErrors().forEach(error -> {
+//                System.out.println("フィールド: " + error.getField());
+//                System.out.println("メッセージ: " + error.getDefaultMessage());
+//            });
+//            result.getGlobalErrors().forEach(error -> {
+//                System.out.println("グローバルエラー: " + error.getDefaultMessage());
+//            });
+//            System.out.println("----------------------------");
             model.addAttribute("validationErrors", result);
             model.addAttribute("userForm", userForm);
-            model.addAttribute("departments", departmentService.getDepartments());
-            return "admin/users";
+            model.addAttribute("departments", DepartmentConstants.DEPARTMENTS);
+            return "admin/users/new";
         }
 
         boolean success = userService.addUser(userForm);
@@ -116,8 +127,8 @@ public class UserController {
         if (!success) {
             model.addAttribute("accountError", E0020);
             model.addAttribute("userForm", userForm);
-            model.addAttribute("departments", departmentService.getDepartments());
-            return "admin/users";
+            model.addAttribute("departments", DepartmentConstants.DEPARTMENTS);
+            return "admin/users/new";
         }
         return "redirect:/admin/users";
     }
