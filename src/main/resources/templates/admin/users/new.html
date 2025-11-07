@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>ユーザー登録画面</title>
+</head>
+<body>
+<header>
+    <h1>ユーザー登録</h1>
+    <nav>
+        <a href="/logout">ログアウト</a>
+        <a href="/">ホーム</a>
+    </nav>
+</header>
+<main class="users-new-page">
+    <div class="users-new-card">
+        <h2>新規ユーザー登録</h2>
+
+        <!-- 共通エラーメッセージ -->
+        <div th:if="${errorMessage != null}" th:text="${errorMessage}" class="error-message"></div>
+
+        <form th:action="@{/admin/users/add}" method="post" th:object="${userForm}">
+            <div class="form-group">
+                <!-- 社員番号 -->
+                <div th:if="${accountError != null}" th:text="${accountError}" class="error-message"></div>
+                <label for="account">社員番号</label>
+                <div th:if="${#fields.hasErrors('account')}" th:errors="*{account}" class="error-message"></div>
+                <input type="text" id="account" th:field="*{account}" placeholder="10文字以下">
+            </div>
+
+            <!-- パスワード -->
+            <div class="form-group">
+                <label for="password">パスワード</label>
+                <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error-message"></div>
+                <input type="password" id="password" th:field="*{password}" placeholder="6〜20桁の半角数字">
+            </div>
+
+            <!-- パスワード確認 -->
+            <div class="form-group">
+                <label for="confirmPassword">パスワード（確認用）</label>
+                <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}" class="error-message"></div>
+                <input type="password" id="confirmPassword" th:field="*{confirmPassword}">
+            </div>
+
+            <p>
+                <input id="pwVisible" class="pwVisible" type="checkbox" onclick="passwordVisibility()" >
+                <label>パスワードを表示する</label>
+            </p>
+
+            <!-- 氏名 -->
+            <div class="form-group">
+                <label for="name">氏名</label>
+                <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error-message"></div>
+                <input type="text" id="name" th:field="*{name}" placeholder="（例）ALH 太郎">
+            </div>
+
+            <!-- 部署 -->
+            <div class="form-group">
+                <label for="departmentId">部署名</label>
+                <div th:if="${#fields.hasErrors('departmentId')}" th:errors="*{departmentId}" class="error-message"></div>
+                <select id="departmentId" th:field="*{departmentId}">
+                    <option value="">選択してください</option>
+                    <option th:each="department, stat : ${departments}"
+                            th:value="${stat.index + 1}" th:text="${department}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- 権限 -->
+            <div class="form-group">
+                <label for="authority">権限</label>
+                <div th:if="${#fields.hasErrors('authority')}" th:errors="*{authority}" class="error-message"></div>
+                <select id="authority" class="classic" th:field="*{authority}">
+                    <option value="" selected>権限を選択</option>
+                    <option value="0">一般</option>
+                    <option value="1">承認者</option>
+                </select>
+            </div>
+
+            <!-- 登録ボタン -->
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">登録</button>
+            </div>
+        </form>
+
+        <a href="/admin/users" class="back-link">戻る</a>
+    </div>
+</main>
+<script>
+<!-- パスワード表示切替 -->
+function passwordVisibility() {
+const pw = document.getElementById("password");
+const confirmPw = document.getElementById("confirmPassword");
+const visible = document.getElementById("pwVisible").checked;
+pw.type = visible ? "text" : "password";
+confirmPw.type = visible ? "text" : "password";
+}
+const form = document.querySelector("form");
+    form.addEventListener("submit", function(e) {
+        const pw = document.getElementById("password").value;
+        const confirmPw = document.getElementById("confirmPassword").value;
+        if (pw !== confirmPw) {
+            alert("パスワードと確認用パスワードが一致しません");
+            e.preventDefault();
+        }
+    });
+</script>
+</body>
+</html>
