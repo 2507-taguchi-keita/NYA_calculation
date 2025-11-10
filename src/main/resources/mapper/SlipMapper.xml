@@ -15,5 +15,17 @@
         #{status}, #{step}, #{totalAmount}, #{userId}, #{approverId}
         )
     </insert>
+    <select id="findAll" resultType="com.example.NYA_calculation.repository.entity.Slip">
+        SELECT
+        id,
+        status,
+        step,
+        total_amount,
+        user_id,
+        approver_id,
+        created_date
+        FROM slips
+        ORDER BY created_date DESC
+    </select>
 
 </mapper>

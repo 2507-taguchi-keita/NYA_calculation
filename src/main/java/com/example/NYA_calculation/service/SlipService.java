@@ -5,6 +5,8 @@ import com.example.NYA_calculation.repository.entity.Slip;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SlipService {
 
@@ -14,5 +16,9 @@ public class SlipService {
     public Integer createSlip(Slip slip) {
         slipRepository.insert(slip);
         return slip.getId();
+    }
+
+    public List<Slip> getAllSlips() {
+        return slipRepository.findAll();
     }
 }

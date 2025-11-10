@@ -42,4 +42,7 @@ public class User {
 
     @Column
     private Timestamp updatedDate;
+
+    @Transient
+    private String departmentLabel;
 }
