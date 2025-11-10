@@ -73,6 +73,7 @@
         SELECT *
         FROM slips
         WHERE user_id = #{userId}
+        AND status = 1
         ORDER BY updated_date DESC
     </select>
 

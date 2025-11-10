@@ -8,11 +8,6 @@
 <header>
     <h1>NYA精算</h1>
 </header>
-<div th:if="${errorMessages != null}" class="error-messages">
-    <ul>
-        <li th:each="err : ${errorMessages}" th:text="${err}"></li>
-    </ul>
-</div>
 <main class="application-detail">
     <h2>申請済み伝票</h2>
     <table class="application-detail">
@@ -36,6 +31,9 @@
             <td th:text="${d.amount}"></td>
             <td th:text="${d.reason}"></td>
             <td th:text="${d.remark}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(details)}">
+            <td colspan="7" style="text-align:center;">明細情報はありません</td>
         </tr>
         </tbody>
     </table>

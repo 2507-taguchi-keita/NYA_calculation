@@ -81,29 +81,24 @@ public class ApplicationController {
     //申請済み伝票画面表示(明細一覧を表示)
     @GetMapping("/application-detail/{id}")
     public ModelAndView submittedInvoice(@AuthenticationPrincipal LoginUserDetails loginUser,
-                                   @PathVariable String id,
-                                   RedirectAttributes attributes) {
-        List<String> errorMessages = new ArrayList<>();
+                                   @PathVariable String id) {
+        ModelAndView mav = new ModelAndView("application/detail");
+
+        // ID形式チェック
         if (StringUtils.isBlank(id) || !id.matches("^[0-9]+$")) {
-            errorMessages.add(E0013);
-            attributes.addFlashAttribute("errorMessages", errorMessages);
-            return new ModelAndView("redirect:/application-list");
+            mav.addObject("details", new ArrayList<Detail>());
+            mav.addObject("loginUser", loginUser);
+            return mav;
         }
 
         Integer slipId = Integer.valueOf(id);
 
         // 明細情報を取得
         List<Detail> details = detailService.findBySlipId(slipId);
-
-        // 明細が存在しない場合（ID不正または紐づく伝票なし）
-        if (details == null || details.isEmpty()) {
-            errorMessages.add(E0013);
-            attributes.addFlashAttribute("errorMessages", errorMessages);
-            return new ModelAndView("redirect:/application-list");
+        if (details == null) {
+            details = new ArrayList<>();
         }
 
-        // 正常時：画面へフォワード
-        ModelAndView mav = new ModelAndView("application/detail");
         mav.addObject("details", details);
         mav.addObject("loginUser", loginUser);
         return mav;

@@ -16,13 +16,6 @@
         ORDER BY
         month
     </select>
-
-    <select id="findBySlipId" resultType="com.example.NYA_calculation.repository.entity.Detail">
-        SELECT *
-        FROM details
-        WHERE slip_id = #{slipId}
-    </select>
-
     <insert id="insert" parameterType="com.example.NYA_calculation.repository.entity.Detail" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO details (
             billing_date,
@@ -53,6 +46,7 @@
             CURRENT_TIMESTAMP
         )
     </insert>
+    <!-- 明細取得（slip_id指定） -->
     <select id="findBySlipId" parameterType="int"
             resultType="com.example.NYA_calculation.repository.entity.Detail">
         SELECT
