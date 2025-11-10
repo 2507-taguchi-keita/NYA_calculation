@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -66,10 +67,25 @@ public class AdminController {
 
     //管理者用申請一覧画面
     @GetMapping("/admin/requests")
-    public ModelAndView adminApplication(){
+    public ModelAndView adminApplication(@RequestParam(defaultValue = "0") int page){
         ModelAndView mav = new ModelAndView("admin/application");
         // すべての申請データを取得
-        List<Slip> slipList = slipService.getAllSlips();
+        List<Slip> allSlips = slipService.getAllSlips();
+        int pageSize = 10;
+        int fromIndex = page * pageSize;
+        int toIndex = Math.min(fromIndex + pageSize, allSlips.size());
+        List<Slip> slipList = new ArrayList<>();
+
+        if (fromIndex < allSlips.size()) {
+            slipList = allSlips.subList(fromIndex, toIndex);
+        }
+
+        int totalPages = (int) Math.ceil((double) allSlips.size() / pageSize);
+        int currentPage = page;
+        int displayRange = 5;
+        int startPage = Math.max(0, currentPage - displayRange);
+        int endPage = Math.min(totalPages - 1, currentPage + displayRange);
+
         // 数値 → 状態名変換
         for (Slip s : slipList) {
             String label = switch (s.getStatus()) {
@@ -93,6 +109,10 @@ public class AdminController {
             s.setStepLabel(stepLabel);
         }
         mav.addObject("slipList", slipList);
+        mav.addObject("currentPage", page);
+        mav.addObject("totalPages", totalPages);
+        mav.addObject("startPage", startPage);
+        mav.addObject("endPage", endPage);
         return mav;
     }
 }

@@ -1,6 +1,5 @@
 package com.example.NYA_calculation.controller;
 
-import com.example.NYA_calculation.controller.form.UserForm;
 import com.example.NYA_calculation.repository.entity.Detail;
 import com.example.NYA_calculation.repository.entity.Slip;
 import com.example.NYA_calculation.security.LoginUserDetails;
@@ -11,9 +10,7 @@ import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -81,27 +78,56 @@ public class ApplicationController {
     //申請済み伝票画面表示(明細一覧を表示)
     @GetMapping("/application-detail/{id}")
     public ModelAndView submittedInvoice(@AuthenticationPrincipal LoginUserDetails loginUser,
-                                   @PathVariable String id) {
-        ModelAndView mav = new ModelAndView("application/detail");
+                                   @PathVariable String id,
+                                   RedirectAttributes redirectAttributes) {
 
-        // ID形式チェック
-        if (StringUtils.isBlank(id) || !id.matches("^[0-9]+$")) {
-            mav.addObject("details", new ArrayList<Detail>());
-            mav.addObject("loginUser", loginUser);
-            return mav;
+        //ID形式チェック
+        if (id == null || id.isBlank() || !id.matches("^[0-9]+$")) {
+            redirectAttributes.addFlashAttribute("errorMessages", List.of(E0013));
+            return new ModelAndView("redirect:/application-list");
         }
 
         Integer slipId = Integer.valueOf(id);
+        Slip slip = slipService.findById(slipId);
 
-        // 明細情報を取得
+        //DBに存在するかのチェック(存在しなければ一覧画面へ）
+        if (slip == null) {
+            redirectAttributes.addFlashAttribute("errorMessages", List.of(E0013));
+            return new ModelAndView("redirect:/application-list");
+        }
+
+        //明細が空の場合はそのまま表示
         List<Detail> details = detailService.findBySlipId(slipId);
         if (details == null) {
             details = new ArrayList<>();
         }
 
+        ModelAndView mav = new ModelAndView("application/detail");
+        mav.addObject("slip", slip);
         mav.addObject("details", details);
         mav.addObject("loginUser", loginUser);
         return mav;
     }
 
+    //申請取り消し機能
+    @PostMapping("/application-list/cancel/{id}")
+    public ModelAndView cancelSlips(
+            @PathVariable("id") String id,
+            @AuthenticationPrincipal LoginUserDetails loginUser,
+            RedirectAttributes redirectAttributes){
+
+        List<String> errorMessages = new ArrayList<>();
+
+        // ID形式チェック
+        if (StringUtils.isBlank(id) || !id.matches("^[0-9]+$")) {
+            errorMessages.add(E0013);
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
+            return new ModelAndView("redirect:/application-list");
+        }
+
+        Integer slipId = Integer.valueOf(id);
+        slipService.cancelSlip(slipId, loginUser.getUser().getId());
+        redirectAttributes.addFlashAttribute("successMessage", "申請を取り消しました。");
+        return new ModelAndView("redirect:/application-list");
+    }
 }

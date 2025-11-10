@@ -3,10 +3,9 @@ package com.example.NYA_calculation.controller;
 import com.example.NYA_calculation.constant.DepartmentConstants;
 import com.example.NYA_calculation.controller.form.UserForm;
 import com.example.NYA_calculation.converter.UserConverter;
-import com.example.NYA_calculation.error.UnauthorizedAccessException;
+import com.example.NYA_calculation.error.RecordNotFoundException;
 import com.example.NYA_calculation.repository.entity.User;
 import com.example.NYA_calculation.security.LoginUserDetails;
-import com.example.NYA_calculation.service.DepartmentService;
 import com.example.NYA_calculation.service.UserService;
 import com.example.NYA_calculation.validation.CreateGroup;
 import com.example.NYA_calculation.validation.SettingGroup;
@@ -139,27 +138,45 @@ public class UserController {
 
     //ユーザー編集画面表示（管理者用）
     @GetMapping("/admin/users/edit/{id}")
-    public String adminEditUser(@PathVariable Integer id,
+    public String adminEditUser(@PathVariable String id,
                                 @RequestParam(required = false) String referer,
                                 HttpSession session,
                                 @AuthenticationPrincipal LoginUserDetails loginUser,
-                                Model model) {
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
 
-        if (!loginUser.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
-            throw new UnauthorizedAccessException(E0013);
+        // 管理者チェック
+        if (loginUser.getAuthorities().stream()
+                .noneMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
+            redirectAttributes.addFlashAttribute("errorMessages", List.of(E0013));
+            return "redirect:/admin/users";
         }
 
-        User user = userService.findById(id);
-        UserForm userForm = userConverter.toForm(user);
-
-        if (referer != null) {
-            session.setAttribute("lastPage", referer);
+        // ID形式チェック
+        if (id == null || id.isBlank() || !id.matches("^[0-9]+$")) {
+            redirectAttributes.addFlashAttribute("errorMessages", List.of(E0013));
+            return "redirect:/admin/users";
         }
-        model.addAttribute("departments", DepartmentConstants.DEPARTMENTS);
-        model.addAttribute("userForm", userForm);
-        return "admin/users/edit";
+
+        Integer userId = Integer.valueOf(id);
+
+        try {
+            User user = userService.findById(userId);
+            UserForm userForm = userConverter.toForm(user);
+
+            if (referer != null) {
+                session.setAttribute("lastPage", referer);
+            }
+
+            model.addAttribute("departments", DepartmentConstants.DEPARTMENTS);
+            model.addAttribute("userForm", userForm);
+            return "admin/users/edit";
+        } catch (RecordNotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessages", List.of(e.getMessage()));
+            return "redirect:/admin/users";
+        }
     }
+
 
     //ユーザー編集処理（管理者用）
     @PostMapping("/admin/users/update/{id}")

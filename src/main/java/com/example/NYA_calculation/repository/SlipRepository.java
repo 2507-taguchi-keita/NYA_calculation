@@ -4,6 +4,7 @@ import com.example.NYA_calculation.dto.ExpenseSummary;
 import com.example.NYA_calculation.dto.SlipWithUserDto;
 import com.example.NYA_calculation.repository.entity.Slip;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface SlipRepository {
     List<SlipWithUserDto> findTempByUserId(Integer userId);
 
     List<SlipWithUserDto> findApprovalByApproverId(Integer approverId);
+
+    int updateStatus(@Param("id") Integer id, @Param("status") Integer status);
 }
