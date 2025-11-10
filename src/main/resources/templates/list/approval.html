@@ -1,10 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>承認一覧画面</title>
 </head>
 <body>
+<header>
+
+</header>
+
+<main>
+    <h1>承認一覧画面</h1>
+
+    <div>
+        <table>
+            <thead>
+            <th>伝票No.</th>
+            <th>申請日</th>
+            <th>入力者</th>
+            <th>合計</th>
+            <th>状態</th>
+            </thead>
+            <tbody th:each="slipForm : ${slipForms}">
+            <td>
+                <a th:href="@{/slip/approval/{id}(id=${slipForm.id})}"
+                   th:text="${slipForm.id}">
+                </a>
+            </td>
+            <td></td>
+            <td th:text="${slipForm.userName}"></td>
+            <td th:text="${slipForm.totalAmount}"></td>
+            <td th:text="${slipForm.status}"></td>
+            </tbody>
+        </table>
+    </div>
+
+</main>
+
+<footer>
+    <p>&copy;NYA</p>
+</footer>
 
 </body>
 </html>

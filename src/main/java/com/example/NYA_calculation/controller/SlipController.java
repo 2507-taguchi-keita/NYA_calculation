@@ -40,9 +40,9 @@ public class SlipController {
     DetailTempService detailTempService;
 
     @GetMapping("/new")
-    public String showSlip(Model model,
-                           HttpSession session,
-                           @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
+    public String showNewSlip(Model model,
+                              HttpSession session,
+                              @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
         String tempKey = (String) session.getAttribute("slipTempKey");
         if (tempKey != null) {
@@ -64,7 +64,7 @@ public class SlipController {
 
 
     @GetMapping("/temp/{id}")
-    public String showSlipTemp(Model model,
+    public String showTempSlip(Model model,
                                @PathVariable Integer id,
                                HttpSession session,
                                @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
@@ -82,7 +82,28 @@ public class SlipController {
         model.addAttribute("reasonList", SlipConstants.REASONS);
         model.addAttribute("transportList", SlipConstants.TRANSPORTS);
 
-        return "slip/new";
+        return "slip/temp";
+    }
+
+    @GetMapping("/approval/{id}")
+    public String showApprovalSlip(Model model,
+                                   @PathVariable Integer id,
+                                   HttpSession session,
+                                   @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
+
+        User User = userService.findById(loginUserDetails.getUser().getId());
+        User approver = userService.findById(User.getApproverId());
+        SlipForm slipForm = slipService.getSlip(id);
+        List<DetailForm> detailForms = detailService.getDetails(slipForm.getId());
+
+        model.addAttribute("loginUser", User);
+        model.addAttribute("approver", approver);
+        model.addAttribute("slipForm", slipForm);
+        model.addAttribute("detailForms", detailForms);
+        model.addAttribute("reasonList", SlipConstants.REASONS);
+        model.addAttribute("transportList", SlipConstants.TRANSPORTS);
+
+        return "slip/approval";
     }
 
     @PostMapping("/save")

@@ -20,11 +20,18 @@ public class ListController {
     UserService userService;
 
     @GetMapping("/temp")
-    public String showTempList(Model model,
-                               @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
+    public String showTempList(Model model, @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
-        model.addAttribute("slipForms", slipService.getSlips(loginUserDetails.getUser().getId()));
+        model.addAttribute("slipForms", slipService.getSTempSlips(loginUserDetails.getUser().getId()));
 
         return "list/temp";
+    }
+
+    @GetMapping("/approval")
+    public String showApprovalList(Model model, @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
+
+        model.addAttribute("slipForms", slipService.getApprovalSlips(loginUserDetails.getUser().getId()));
+
+        return "list/approval";
     }
 }

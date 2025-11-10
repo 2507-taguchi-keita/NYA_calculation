@@ -31,7 +31,11 @@ public class SlipService {
         return slipConverter.toForm(slipRepository.findById(id));
     }
 
-    public List<SlipWithUserDto> getSlips(Integer userId) {
-        return slipRepository.findByUserId(userId);
+    public List<SlipWithUserDto> getSTempSlips(Integer userId) {
+        return slipRepository.findTempByUserId(userId);
+    }
+
+    public Object getApprovalSlips(Integer approverId) {
+        return slipRepository.findApprovalByApproverId(approverId);
     }
 }

@@ -2,7 +2,7 @@
 <html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>承認伝票画面</title>
+    <title>一次保存伝票画面</title>
     <link rel="stylesheet" th:href="@{/css/slip.css}">
 </head>
 <body>
@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    <h1>承認伝票画面</h1>
+    <h1>一次保存伝票画面</h1>
 
     <div class="slip-info">
         <table class="user-info">
@@ -96,6 +96,14 @@
         </table>
     </div>
 
+    <div class="slip-menu">
+        <!-- 明細追加ボタン -->
+        <button id="openModalBtn" type="button">明細追加</button>
+        <a th:href="@{/detail/csv}">
+            <button type="button">CSV取込み</button>
+        </a>
+    </div>
+
     <div class="slip-main">
         <table>
             <thead>
@@ -145,10 +153,76 @@
                 <button type="button">戻る</button>
             </a>
 
-            <button type="submit" formaction="/slip/remand/{id}(id=${slipForm.id})">差戻</button>
-            <button type="submit" formaction="/slip/approval/{id}(id=${slipForm.id})">承認</button>
+            <button type="submit">一時保存</button>
+
+            <button type="submit" formaction="/slip/application">申請</button>
         </div>
     </form>
+
+    <!-- モーダル本体 -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>明細追加</h2>
+                <span class="close">&times;</span>
+            </div>
+
+            <!-- Thymeleafフォーム -->
+            <form th:action="@{/detail/temp}" th:object="${detailForm}" method="post" enctype="multipart/form-data">
+
+                <div class="form-row">
+                    <label>日付<span class="required">*</span></label>
+                    <input type="date" th:field="*{billingDate}">
+
+                    <label>申請理由<span class="required">*</span></label>
+                    <select th:field="*{reason}">
+                        <option value="">選択してください</option>
+                        <option th:each="reason : ${reasonList}"
+                                th:value="${reason}"
+                                th:text="${reason}"></option>
+                    </select>
+
+                    <label>交通機関</label>
+                    <select th:field="*{transportation}">
+                        <option value="">選択してください</option>
+                        <option th:each="transport : ${transportList}"
+                                th:value="${transport}"
+                                th:text="${transport}"></option>
+                    </select>
+
+                </div>
+
+                <div class="form-row">
+                    <label>往復</label>
+                    <select th:field="*{roundTrip}">
+                        <option value=""></option>
+                        <option value="片道">片道</option>
+                        <option value="往復">往復</option>
+                    </select>
+
+                    <label>金額/Km</label>
+                    <input type="number" th:field="*{amount}">
+
+                    <label>小計</label>
+                    <input type="text" th:field="*{subtotal}" readonly>
+
+                </div>
+
+                <div class="form-row">
+                    <label>備考</label>
+                    <textarea type="text" th:field="*{remark}"></textarea>
+
+                    <label>領収書/請求書</label>
+                    <input type="file" th:field="*{file}" accept="image/*,application/pdf">
+                </div>
+
+                <div class="button-row">
+                    <button type="button" id="cancelBtn">キャンセル</button>
+                    <button type="submit" id="detailSubmit" class="primary-btn">確定</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
 </main>
 

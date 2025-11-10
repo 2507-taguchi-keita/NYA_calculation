@@ -16,5 +16,7 @@ public interface SlipRepository {
 
     Slip findById(Integer id);
 
-    List<SlipWithUserDto> findByUserId(Integer userId);
+    List<SlipWithUserDto> findTempByUserId(Integer userId);
+
+    List<SlipWithUserDto> findApprovalByApproverId(Integer approverId);
 }
