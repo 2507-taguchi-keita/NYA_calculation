@@ -31,4 +31,7 @@ public class DetailService {
         detailRepository.insert(detail);
     }
 
+    public List<Detail> findBySlipId(Integer slipId) {
+        return detailRepository.findBySlipId(slipId);
+    }
 }

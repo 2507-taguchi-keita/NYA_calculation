@@ -12,4 +12,5 @@ public interface SlipRepository {
 
     void insert(Slip slip);
     List<Slip> findAll();
+    List<Slip> findByUserId(Integer id);
 }

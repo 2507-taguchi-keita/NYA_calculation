@@ -27,5 +27,11 @@
         FROM slips
         ORDER BY created_date DESC
     </select>
+    <select id="findByUserId" parameterType="int" resultType="com.example.NYA_calculation.repository.entity.Slip">
+        SELECT *
+        FROM slips
+        WHERE user_id = #{userId}
+        ORDER BY updated_date DESC
+    </select>
 
 </mapper>

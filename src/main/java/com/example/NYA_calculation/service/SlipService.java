@@ -21,4 +21,8 @@ public class SlipService {
     public List<Slip> getAllSlips() {
         return slipRepository.findAll();
     }
+    public List<Slip> findByUserId(Integer id) {
+        return slipRepository.findByUserId(id);
+    }
+
 }

@@ -16,9 +16,6 @@ import java.util.List;
 @Controller
 public class HomeController {
 
-    @Autowired
-    UserService userService;
-
     // ホーム画面表示
     @GetMapping("/")
     public String home(Model model, @AuthenticationPrincipal LoginUserDetails loginUser) {

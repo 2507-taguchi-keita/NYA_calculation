@@ -47,5 +47,24 @@
             CURRENT_TIMESTAMP
         )
     </insert>
+    <select id="findBySlipId" parameterType="int"
+            resultType="com.example.NYA_calculation.repository.entity.Detail">
+        SELECT
+        d.id,
+        d.billing_date AS billingDate,
+        d.round_trip AS roundTrip,
+        d.amount,
+        d.subtotal,
+        d.reason,
+        d.transportation,
+        d.file_name AS fileName,
+        d.remark,
+        d.created_date AS createdDate,
+        d.updated_date AS updatedDate
+        FROM details d
+        WHERE d.slip_id = #{slipId}
+        ORDER BY d.billing_date DESC
+    </select>
+
 
 </mapper>
