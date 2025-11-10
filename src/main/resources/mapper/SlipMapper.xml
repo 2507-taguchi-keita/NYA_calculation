@@ -65,8 +65,20 @@
         approver_id,
         created_date
         FROM slips
-        ORDER BY created_date DESC
+        ORDER BY id ASC
     </select>
+    <select id="findByUserId" parameterType="int" resultType="com.example.NYA_calculation.repository.entity.Slip">
+        SELECT *
+        FROM slips
+        WHERE user_id = #{userId}
+        AND status = 1
+        ORDER BY updated_date DESC
+    </select>
+    <update id="updateStatus">
+        UPDATE slips
+        SET status = #{status}, updated_date = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
 
     <update id="update" parameterType="com.example.NYA_calculation.repository.entity.Slip">
         UPDATE slips

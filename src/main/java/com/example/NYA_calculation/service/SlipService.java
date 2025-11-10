@@ -43,4 +43,20 @@ public class SlipService {
         slipRepository.update(slipConverter.toEntity(applySlip));
         return applySlip;
     }
+    public List<Slip> findByUserId(Integer id) {
+        return slipRepository.findByUserId(id);
+    }
+
+    public boolean cancelSlip(Integer slipId, Integer userId) {
+        Slip slip = slipRepository.findById(slipId);
+        if (slip == null || !slip.getUserId().equals(userId)) {
+            return false;
+        }
+        return slipRepository.updateStatus(slipId, 0) > 0; // 一時保存に戻す
+    }
+
+    // IDで伝票を1件取得
+    public Slip findById(Integer slipId) {
+        return slipRepository.findById(slipId);
+    }
 }

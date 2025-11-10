@@ -34,4 +34,7 @@ public class DetailService {
     public List<DetailForm> getDetails(Integer sLipId) {
         return detailConverter.toFormList(detailRepository.findBySlipId(sLipId));
     }
+    public List<Detail> findBySlipId(Integer slipId) {
+        return detailRepository.findBySlipId(slipId);
+    }
 }

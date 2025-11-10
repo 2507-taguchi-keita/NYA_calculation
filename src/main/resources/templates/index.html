@@ -80,12 +80,16 @@
 <body>
 
 <header>
-    <h1>交通費精算</h1>
+    <h1>NYA精算</h1>
     <nav>
         <a href="/logout">ログアウト</a>
     </nav>
 </header>
-
+<div th:if="${errorMessages != null}" class="error-messages">
+    <ul>
+        <li th:each="err : ${errorMessages}" th:text="${err}"></li>
+    </ul>
+</div>
 <div class="container">
     <div class="user-info">
         <p>所属部門：<span th:text="${department}"></span></p>
@@ -136,6 +140,8 @@
     </a>
 
 </div>
-
+<footer>
+    <p>&copy;NYA</p>
+</footer>
 </body>
 </html>
