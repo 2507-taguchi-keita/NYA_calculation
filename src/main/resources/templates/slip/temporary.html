@@ -142,7 +142,7 @@
         </table>
     </div>
 
-    <form th:action="@{/slip/save}" th:object="${slipForm}" method="post">
+    <form th:action="@{/slip/temporary}" th:object="${slipForm}" method="post">
         <div>
             <label>合計</label>
             <input type="text" th:field="*{totalAmount}" readonly>
@@ -152,9 +152,7 @@
             <a th:href="@{/}">
                 <button type="button">戻る</button>
             </a>
-
-            <button type="submit">一時保存</button>
-
+            <button type="submit" formaction="/slip/temporary">一時保存</button>
             <button type="submit" formaction="/slip/application">申請</button>
         </div>
     </form>

@@ -19,12 +19,12 @@ public class ListController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/temp")
+    @GetMapping("/temporary")
     public String showTempList(Model model, @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
         model.addAttribute("slipForms", slipService.getSTempSlips(loginUserDetails.getUser().getId()));
 
-        return "list/temp";
+        return "list/temporary";
     }
 
     @GetMapping("/approval")

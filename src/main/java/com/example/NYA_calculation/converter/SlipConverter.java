@@ -50,7 +50,7 @@ public class SlipConverter {
         slip.setStatus(form.getStatus());
         slip.setStep(form.getStep());
         slip.setTotalAmount(form.getTotalAmount());
-        slip.setUpdatedDate(form.getUpdatedDate());
+        slip.setUserId(form.getUserId());
         slip.setApproverId(form.getApproverId());
 
         if (form.getId() != null) {
