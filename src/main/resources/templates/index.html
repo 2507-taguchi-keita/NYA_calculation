@@ -103,7 +103,7 @@
 
     <!-- 下段メニュー -->
     <div class="menu-grid">
-        <a href="/temporary" class="menu-item">
+        <a th:href="@{/list/temp}" class="menu-item">
             <div class="menu-icon">💾</div>
             <div class="menu-title">一時保存</div>
         </a>
@@ -119,7 +119,7 @@
             <div class="menu-icon">📋</div>
             <div class="menu-title">申請一覧</div>
         </a>
-        <a href="/slip/new" class="menu-item">
+        <a th:href="@{/slip/new}" class="menu-item">
             <div class="menu-icon">📝</div>
             <div class="menu-title">新規伝票</div>
         </a>
@@ -130,7 +130,7 @@
         管理者画面
     </a>
 
-    <a href="/approval" class="menu-item"
+    <a th:href="@{/list/approval}" class="menu-item"
        th:if="${#authorization.expression('hasRole(''APPROVER'')')}">
         未承認一覧
     </a>

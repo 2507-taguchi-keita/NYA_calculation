@@ -1,7 +1,6 @@
 package com.example.NYA_calculation.controller.form;
 
 import com.example.NYA_calculation.validation.CreateGroup;
-import com.example.NYA_calculation.validation.UpdateGroup;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -22,7 +21,7 @@ public class UserForm {
     @Size(max = 7, message = E0018, groups = {CreateGroup.class})
     private String account;
 
-    @NotEmpty(message = E0002, groups = {CreateGroup.class, UpdateGroup.class})
+    @NotEmpty(message = E0002, groups = {CreateGroup.class})
     @Pattern(regexp = "^(?:$|[\\x21-\\x7E]{6,20})$", message = E0005)
     private String password;
     private String confirmPassword;
@@ -31,13 +30,11 @@ public class UserForm {
     @Size(max = 10, message = E0019, groups = {CreateGroup.class})
     private String name;
 
-    @NotNull(message = E0016, groups = {CreateGroup.class})
     private Integer departmentId;
-    @NotNull(message = E0017, groups = {CreateGroup.class})
     private Integer authority;
     private boolean isStopped;
 
-    @NotNull(message = E0004, groups = {UpdateGroup.class})
+    @NotNull(message = E0004)
     private Integer approverId;
     private Timestamp createdDate;
     private Timestamp updatedDate;

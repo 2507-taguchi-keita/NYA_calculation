@@ -36,6 +36,4 @@ public interface UserRepository {
     List<UserForm> pageUser(@Param("limit") int limit, @Param("offset") int offset);
     int countUsers();
     void updateIsStopped(@Param("id") Integer id, @Param("isStopped") boolean isStopped);
-    int insertUser(User user);
-    Integer countByAccount(@Param("account") String account, @Param("excludeUserId") Integer excludeUserId);
 }

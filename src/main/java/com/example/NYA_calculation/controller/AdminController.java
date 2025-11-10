@@ -5,8 +5,10 @@ import com.example.NYA_calculation.dto.ExpenseSummary;
 import com.example.NYA_calculation.security.LoginUserDetails;
 import com.example.NYA_calculation.service.DetailService;
 import com.example.NYA_calculation.service.UserService;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -52,7 +54,9 @@ public class AdminController {
         return mav;
     }
 
-    //ユーザー停止・有効切り替え
+    /*
+     * ユーザー停止・有効切り替え
+     */
     @PostMapping("admin/users/change/{id}")
     public ModelAndView changeIsStopped(@PathVariable("id") Integer id,
                                         @RequestParam("isStopped") boolean isStopped) {

@@ -58,32 +58,4 @@ public class UserService {
     public void changeIsStopped(Integer id, boolean isStopped) {
         userRepository.updateIsStopped(id, isStopped);
     }
-
-    // アカウント重複判定用
-    public boolean isAccountExists(String account, Integer excludeUserId) {
-        Integer count = userRepository.countByAccount(account, excludeUserId);
-        return count != null && count > 0;
-    }
-
-    public boolean addUser(UserForm userForm) {
-
-        //既に登録されている社員番号かを確認
-        if (isAccountExists(userForm.getAccount(), null)) {
-            return false;
-        }
-
-        User user = new User();
-        user.setAccount(userForm.getAccount());
-        user.setPassword(passwordEncoder.encode(userForm.getPassword()));
-        user.setName(userForm.getName());
-        user.setAuthority(userForm.getAuthority());
-        user.setDepartmentId(userForm.getDepartmentId());
-        user.setStopped(false);
-        userRepository.insertUser(user);
-        return true;
-    }
-
-    public List<User> getDepartments() {
-        return null;
-    }
 }

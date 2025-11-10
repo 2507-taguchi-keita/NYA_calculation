@@ -31,4 +31,7 @@ public class DetailService {
         detailRepository.insert(detail);
     }
 
+    public List<DetailForm> getDetails(Integer sLipId) {
+        return detailConverter.toFormList(detailRepository.findBySlipId(sLipId));
+    }
 }

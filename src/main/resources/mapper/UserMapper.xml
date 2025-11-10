@@ -106,16 +106,5 @@
         updated_date = CURRENT_TIMESTAMP
         WHERE id = #{id}
     </update>
-    <select id="countByAccount" parameterType="map" resultType="int">
-        SELECT COUNT(*) FROM users
-        WHERE account = #{account}
-        <if test="excludeUserId != null">
-            AND id != #{excludeUserId}
-        </if>
-    </select>
-    <insert id="insertUser" parameterType="com.example.NYA_calculation.controller.form.UserForm">
-        INSERT INTO users (account, password, name, authority, department_id, is_stopped, created_date, updated_date)
-        VALUES (#{account}, #{password}, #{name}, #{authority}, #{departmentId}, #{isStopped}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    </insert>
 
 </mapper>

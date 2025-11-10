@@ -17,6 +17,12 @@
         month
     </select>
 
+    <select id="findBySlipId" resultType="com.example.NYA_calculation.repository.entity.Detail">
+        SELECT *
+        FROM details
+        WHERE slip_id = #{slipId}
+    </select>
+
     <insert id="insert" parameterType="com.example.NYA_calculation.repository.entity.Detail" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO details (
             billing_date,

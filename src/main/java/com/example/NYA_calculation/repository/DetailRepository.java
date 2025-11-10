@@ -15,4 +15,5 @@ public interface DetailRepository {
      */
     void insert(Detail detail);
 
+    List<Detail> findBySlipId(Integer slipId);
 }

@@ -120,22 +120,22 @@
                 <th>領収書/請求書</th>
             </tr>
             </thead>
-            <tbody th:each="detailTemp : ${detailTemps}">
+            <tbody th:each="detailForm : ${detailForms}">
             <tr>
-                <td th:text="${detailTemp.billingDate}"></td>
-                <td th:text="${detailTemp.reason}"></td>
-                <td th:text="${detailTemp.transportation}"></td>
-                <td th:text="${detailTemp.roundTrip}"></td>
-                <td th:text="${detailTemp.amount}"></td>
-                <td th:text="${detailTemp.subtotal}"></td>
+                <td th:text="${detailForm.billingDate}"></td>
+                <td th:text="${detailForm.reason}"></td>
+                <td th:text="${detailForm.transportation}"></td>
+                <td th:text="${detailForm.roundTrip}"></td>
+                <td th:text="${detailForm.amount}"></td>
+                <td th:text="${detailForm.subtotal}"></td>
             </tr>
             <tr>
-                <td colspan="4" th:text="${detailTemp.remark}"></td>
-                <td colspan="2" th:text="${detailTemp.fileName}">
-                    <a th:if="${detailTemp.fileName}"
-                       th:href="@{/receipt/{file}(file=${detailTemp.fileName})}"
-                       th:text="${detailTemp.fileName}"></a>
-                    <span th:if="${detailTemp.fileName == null}">なし</span>
+                <td colspan="4" th:text="${detailForm.remark}"></td>
+                <td colspan="2" th:text="${detailForm.fileName}">
+                    <a th:if="${detailForm.fileName}"
+                       th:href="@{/receipt/{file}(file=${detailForm.fileName})}"
+                       th:text="${detailForm.fileName}"></a>
+                    <span th:if="${detailForm.fileName == null}">なし</span>
                 </td>
             </tr>
             </tbody>
