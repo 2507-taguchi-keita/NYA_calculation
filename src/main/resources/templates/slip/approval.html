@@ -134,7 +134,7 @@
         </table>
     </div>
 
-    <form th:action="@{/slip/save}" th:object="${slipForm}" method="post">
+    <form th:action="@{/slip/approval/{id}(id=${slipForm.id})}" th:object="${slipForm}" method="post">
         <div>
             <label>合計</label>
             <input type="text" th:field="*{totalAmount}" readonly>

@@ -29,7 +29,6 @@ public class DetailTempController {
             HttpSession session
     ) throws IOException {
 
-        // 画面初回アクセス時になければ tempKey を作る
         String tempKey = (String) session.getAttribute("slipTempKey");
         if (tempKey == null) {
             tempKey = UUID.randomUUID().toString();
@@ -38,6 +37,12 @@ public class DetailTempController {
 
         detailTempForm.setSlipTempKey(tempKey);
         detailTempForm.setUserId(loginUserDetails.getUser().getId());
+
+        int amount = detailTempForm.getAmount() != null ? detailTempForm.getAmount() : 0;
+        String roundTrip = detailTempForm.getRoundTrip();
+
+        int subtotal = roundTrip.equals("往復") ? amount * 2 : amount;
+        detailTempForm.setSubtotal(subtotal);
 
         detailTempService.addDetailTemp(detailTempForm);
 

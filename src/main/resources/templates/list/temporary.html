@@ -23,7 +23,7 @@
             </thead>
             <tbody th:each="slipForm : ${slipForms}">
             <td>
-                <a th:href="@{/slip/temp/{id}(id=${slipForm.id})}"
+                <a th:href="@{/slip/temporary/{id}(id=${slipForm.id})}"
                    th:text="${slipForm.id}">
                 </a>
             </td>

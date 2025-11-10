@@ -18,9 +18,9 @@ public class SlipService {
     @Autowired
     SlipConverter slipConverter;
 
-    public Integer createSlip(Slip slip) {
-        slipRepository.insert(slip);
-        return slip.getId();
+    public SlipForm createSlip(SlipForm slipForm) {
+        slipRepository.insert(slipConverter.toEntity(slipForm));
+        return slipForm;
     }
 
     public List<Slip> getAllSlips() {
@@ -32,10 +32,15 @@ public class SlipService {
     }
 
     public List<SlipWithUserDto> getSTempSlips(Integer userId) {
-        return slipRepository.findTempByUserId(userId);
+        return slipRepository.findTemporaryByUserId(userId);
     }
 
     public Object getApprovalSlips(Integer approverId) {
         return slipRepository.findApprovalByApproverId(approverId);
+    }
+
+    public SlipForm updateSlips(SlipForm applySlip) {
+        slipRepository.update(slipConverter.toEntity(applySlip));
+        return applySlip;
     }
 }

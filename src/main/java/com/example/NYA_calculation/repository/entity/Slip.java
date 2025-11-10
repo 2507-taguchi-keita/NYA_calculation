@@ -22,7 +22,7 @@ public class Slip {
     @Column
     private Integer step;
 
-    @Column
+    @Column(insertable = false)
     private Integer totalAmount;
 
     @Column

@@ -142,7 +142,8 @@
         </table>
     </div>
 
-    <form th:action="@{/slip/save}" th:object="${slipForm}" method="post">
+    <form th:action="@{/slip/temporary}" th:object="${slipForm}" method="post">
+        <input type="hidden" th:field="*{id}">
         <div>
             <label>合計</label>
             <input type="text" th:field="*{totalAmount}" readonly>
@@ -153,8 +154,7 @@
                 <button type="button">戻る</button>
             </a>
 
-            <button type="submit">一時保存</button>
-
+            <button type="submit" formaction="/slip/temporary">一時保存</button>
             <button type="submit" formaction="/slip/application">申請</button>
         </div>
     </form>
@@ -193,18 +193,18 @@
                 </div>
 
                 <div class="form-row">
+                    <label>金額/Km</label>
+                    <input type="number" th:field="*{amount}" id="amount">
+
                     <label>往復</label>
-                    <select th:field="*{roundTrip}">
+                    <select th:field="*{roundTrip}" id="roundTrip">
                         <option value=""></option>
                         <option value="片道">片道</option>
                         <option value="往復">往復</option>
                     </select>
 
-                    <label>金額/Km</label>
-                    <input type="number" th:field="*{amount}">
-
                     <label>小計</label>
-                    <input type="text" th:field="*{subtotal}" readonly>
+                    <input type="text" th:field="*{subtotal}" id="subtotal" readonly>
 
                 </div>
 
