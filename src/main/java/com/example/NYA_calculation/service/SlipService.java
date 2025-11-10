@@ -1,5 +1,8 @@
 package com.example.NYA_calculation.service;
 
+import com.example.NYA_calculation.controller.form.SlipForm;
+import com.example.NYA_calculation.converter.SlipConverter;
+import com.example.NYA_calculation.dto.SlipWithUserDto;
 import com.example.NYA_calculation.repository.SlipRepository;
 import com.example.NYA_calculation.repository.entity.Slip;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,8 @@ public class SlipService {
 
     @Autowired
     SlipRepository slipRepository;
+    @Autowired
+    SlipConverter slipConverter;
 
     public Integer createSlip(Slip slip) {
         slipRepository.insert(slip);
@@ -20,6 +25,18 @@ public class SlipService {
 
     public List<Slip> getAllSlips() {
         return slipRepository.findAll();
+    }
+
+    public SlipForm getSlip(Integer id) {
+        return slipConverter.toForm(slipRepository.findById(id));
+    }
+
+    public List<SlipWithUserDto> getSTempSlips(Integer userId) {
+        return slipRepository.findTempByUserId(userId);
+    }
+
+    public Object getApprovalSlips(Integer approverId) {
+        return slipRepository.findApprovalByApproverId(approverId);
     }
     public List<Slip> findByUserId(Integer id) {
         return slipRepository.findByUserId(id);

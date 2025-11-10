@@ -19,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -39,13 +40,13 @@ public class SlipController {
     DetailTempService detailTempService;
 
     @GetMapping("/new")
-    public String showSlip(Model model,
-                           HttpSession session,
-                           @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
+    public String showNewSlip(Model model,
+                              HttpSession session,
+                              @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
         String tempKey = (String) session.getAttribute("slipTempKey");
         if (tempKey != null) {
-            model.addAttribute("detailTemps", detailTempService.getTempDetails(tempKey));
+            model.addAttribute("detailForms", detailTempService.getTempDetails(tempKey));
         }
 
         User loginUser = userService.findById(loginUserDetails.getUser().getId());
@@ -61,6 +62,50 @@ public class SlipController {
         return "slip/new";
     }
 
+
+    @GetMapping("/temp/{id}")
+    public String showTempSlip(Model model,
+                               @PathVariable Integer id,
+                               HttpSession session,
+                               @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
+
+        User loginUser = userService.findById(loginUserDetails.getUser().getId());
+        User approver = userService.findById(loginUser.getApproverId());
+        SlipForm slipForm = slipService.getSlip(id);
+        List<DetailForm> detailForms = detailService.getDetails(slipForm.getId());
+
+        model.addAttribute("loginUser", loginUser);
+        model.addAttribute("approver", approver);
+        model.addAttribute("detailForm", new DetailForm());
+        model.addAttribute("slipForm", slipForm);
+        model.addAttribute("detailForms", detailForms);
+        model.addAttribute("reasonList", SlipConstants.REASONS);
+        model.addAttribute("transportList", SlipConstants.TRANSPORTS);
+
+        return "slip/temp";
+    }
+
+    @GetMapping("/approval/{id}")
+    public String showApprovalSlip(Model model,
+                                   @PathVariable Integer id,
+                                   HttpSession session,
+                                   @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
+
+        User User = userService.findById(loginUserDetails.getUser().getId());
+        User approver = userService.findById(User.getApproverId());
+        SlipForm slipForm = slipService.getSlip(id);
+        List<DetailForm> detailForms = detailService.getDetails(slipForm.getId());
+
+        model.addAttribute("loginUser", User);
+        model.addAttribute("approver", approver);
+        model.addAttribute("slipForm", slipForm);
+        model.addAttribute("detailForms", detailForms);
+        model.addAttribute("reasonList", SlipConstants.REASONS);
+        model.addAttribute("transportList", SlipConstants.TRANSPORTS);
+
+        return "slip/approval";
+    }
+
     @PostMapping("/save")
     public String saveSlip(HttpSession session,
                            @AuthenticationPrincipal LoginUserDetails loginUserDetails) throws IOException {
@@ -68,7 +113,6 @@ public class SlipController {
         String tempKey = (String) session.getAttribute("slipTempKey");
         if (tempKey == null) return "redirect:/slip/new";
 
-        // 1. 伝票をINSERTし slipId を取得（仮）
         User loginUser = userService.findById(loginUserDetails.getUser().getId());
 
         Slip slip = new Slip();

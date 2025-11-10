@@ -5,6 +5,48 @@
 
 <mapper namespace="com.example.NYA_calculation.repository.SlipRepository">
 
+    <select id="findById" resultType="com.example.NYA_calculation.repository.entity.Slip">
+        SELECT *
+        FROM slips
+        WHERE id = #{id}
+    </select>
+
+    <select id="findTempByUserId" resultType="com.example.NYA_calculation.dto.SlipWithUserDto">
+        SELECT
+        s.id,
+        s.status,
+        s.step,
+        s.total_amount,
+        s.user_id,
+        u.name AS user_name,
+        s.approver_id,
+        s.created_date,
+        s.updated_date
+        FROM slips s
+        JOIN users u
+        ON s.user_id = u.id
+        WHERE s.user_id = #{userId}
+        AND s.status = 0;
+    </select>
+
+    <select id="findApprovalByApproverId" resultType="com.example.NYA_calculation.dto.SlipWithUserDto">
+        SELECT
+        s.id,
+        s.status,
+        s.step,
+        s.total_amount,
+        s.user_id,
+        u.name AS user_name,
+        s.approver_id,
+        s.created_date,
+        s.updated_date
+        FROM slips s
+        JOIN users u
+        ON s.user_id = u.id
+        WHERE s.user_id = #{userId}
+        AND s.status = 1;
+    </select>
+
     <insert id="insert"
             parameterType="com.example.NYA_calculation.repository.entity.Slip"
             useGeneratedKeys="true"

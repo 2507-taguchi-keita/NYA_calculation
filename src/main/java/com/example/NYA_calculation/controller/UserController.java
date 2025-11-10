@@ -6,6 +6,7 @@ import com.example.NYA_calculation.converter.UserConverter;
 import com.example.NYA_calculation.error.UnauthorizedAccessException;
 import com.example.NYA_calculation.repository.entity.User;
 import com.example.NYA_calculation.security.LoginUserDetails;
+import com.example.NYA_calculation.service.DepartmentService;
 import com.example.NYA_calculation.service.UserService;
 import com.example.NYA_calculation.validation.CreateGroup;
 import com.example.NYA_calculation.validation.SettingGroup;
