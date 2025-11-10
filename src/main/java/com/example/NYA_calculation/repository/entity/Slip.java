@@ -36,4 +36,10 @@ public class Slip {
 
     @Column
     private Timestamp updatedDate;
+
+    @Transient  // DBのカラムに対応しないフィールド
+    private String statusLabel;
+
+    @Transient
+    private String stepLabel;
 }

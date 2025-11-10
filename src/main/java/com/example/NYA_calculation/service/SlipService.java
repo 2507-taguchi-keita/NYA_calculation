@@ -23,6 +23,10 @@ public class SlipService {
         return slip.getId();
     }
 
+    public List<Slip> getAllSlips() {
+        return slipRepository.findAll();
+    }
+
     public SlipForm getSlip(Integer id) {
         return slipConverter.toForm(slipRepository.findById(id));
     }

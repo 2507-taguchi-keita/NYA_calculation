@@ -63,6 +63,7 @@
         WHERE
         id = #{id}
     </select>
+
     <update id="updateUser" parameterType="com.example.NYA_calculation.controller.form.UserForm">
         UPDATE users
         <set>
@@ -74,13 +75,17 @@
         </set>
         WHERE id = #{id}
     </update>
+
     <select id="findApprovers" resultType="com.example.NYA_calculation.repository.entity.User">
         SELECT
         id,
         name
         FROM users
         WHERE authority = 1
+        AND is_stopped = false
+        ORDER BY account ASC
     </select>
+
     <select id="pageUser" resultType="com.example.NYA_calculation.controller.form.UserForm">
         SELECT
         id,
@@ -94,16 +99,46 @@
         created_date,
         updated_date
         FROM users
-        ORDER BY name ASC
+        ORDER BY account ASC
         LIMIT #{limit} OFFSET #{offset}
     </select>
+
     <select id="countUsers" resultType="int">
         SELECT COUNT(*) FROM users
     </select>
+
     <update id="updateIsStopped">
         UPDATE users
         SET is_stopped = #{isStopped},
         updated_date = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <select id="countByAccount" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM users
+        WHERE account = #{account}
+        <if test="excludeUserId != null">
+            AND id != #{excludeUserId}
+        </if>
+    </select>
+
+    <insert id="insertUser" parameterType="com.example.NYA_calculation.controller.form.UserForm">
+        INSERT INTO users (account, password, name, authority, department_id, is_stopped, approver_id, created_date, updated_date)
+        VALUES (#{account}, #{password}, #{name}, #{authority}, #{departmentId}, #{isStopped}, #{approverId}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    </insert>
+
+    <!-- 管理者用ユーザー編集 -->
+    <update id="adminEditUser" parameterType="com.example.NYA_calculation.controller.form.UserForm">
+        UPDATE users
+        SET
+        account = #{account},
+        name = #{name},
+        department_id = #{departmentId},
+        authority = #{authority},
+        updated_date = CURRENT_TIMESTAMP
+        <if test="password != null and password != ''">
+            , password = #{password}
+        </if>
         WHERE id = #{id}
     </update>
 

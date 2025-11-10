@@ -12,6 +12,7 @@ public interface SlipRepository {
     List<ExpenseSummary> getMonthlyTotal();
 
     void insert(Slip slip);
+    List<Slip> findAll();
 
     Slip findById(Integer id);
 

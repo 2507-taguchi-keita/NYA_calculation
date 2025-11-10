@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>管理者用申請一覧画面</title>
+</head>
+<body>
+<header>
+    <h2>管理者用 申請一覧画面</h2>
+    <nav>
+        <a href="/admin">戻る</a>
+    </nav>
+</header>
+<main class="application-list">
+    <table class="application-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>承認ステータス</th>
+            <th>承認ステップ</th>
+            <th>合計金額</th>
+            <th>申請者ID</th>
+            <th>承認者ID</th>
+            <th>作成日</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="s : ${slipList}">
+            <td th:text="${s.id}"></td>
+            <td th:text="${s.statusLabel}"></td>
+            <td th:text="${s.stepLabel}"></td>
+            <td th:text="${s.totalAmount}"></td>
+            <td th:text="${s.userId}"></td>
+            <td th:text="${s.approverId}"></td>
+            <td th:text="${#dates.format(s.createdDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
