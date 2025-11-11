@@ -27,7 +27,7 @@
             <tbody>
             <tr>
                 <th>伝票No.</th>
-                <td></td>
+                <td th:text="${slipForm.id}"></td>
             </tr>
             <tr>
                 <th>申請日</th>
@@ -43,53 +43,40 @@
             </tr>
             </tbody>
         </table>
-        <table>
-            <tbody>
-            <tr>
-                <th>備考</th>
-                <td>
-                    <textarea></textarea>
-                </td>
-            </tr>
-            </tbody>
-        </table>
 
         <table class="approval-info">
             <thead>
             <tr>
-                <th>-</th>
+                <th>承認履歴</th>
                 <th>
                     <p>経理部</p>
-                    <p>社員番号</p>
                 </th>
                 <th>
                     <p>経理部長</p>
-                    <p>社員番号</p>
                 </th>
                 <th>
-                    <p th:text="${approver.name}">所属上長</p>
-                    <p th:text="${approver.account}">社員番号</p>
+                    <p>所属部長</p>
                 </th>
             </tr>
             </thead>
             <tbody>
-            <tr>
+            <tr th:each="history : ${approvalHistoryList}">
                 <td>
                 </td>
-                <td>
-                    <p>日付</p>
-                    <p>承認者名</p>
-                    <p>ステータス</p>
+                <td th:if="${history.role = 1}">
+                    <p th:text="${#temporals.format(history.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
+                    <p th:text="${history.userName}"></p>
+                    <p>承認</p>
                 </td>
-                <td>
-                    <p>日付</p>
-                    <p>承認者名</p>
-                    <p>ステータス</p>
+                <td th:if="${history.role = 2}">
+                    <p th:text="${#temporals.format(history.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
+                    <p th:text="${history.userName}"></p>
+                    <p>承認</p>
                 </td>
-                <td>
-                    <p>日付</p>
-                    <p>承認者名</p>
-                    <p>ステータス</p>
+                <td th:if="${history.role = 3}">
+                    <p th:text="${#temporals.format(history.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
+                    <p th:text="${history.userName}"></p>
+                    <p>承認</p>
                 </td>
             </tr>
             </tbody>
@@ -135,6 +122,7 @@
     </div>
 
     <form th:action="@{/slip/approval/{id}(id=${slipForm.id})}" th:object="${slipForm}" method="post">
+        <input type="hidden" th:field="*{id}">
         <div>
             <label>合計</label>
             <input type="text" th:field="*{totalAmount}" readonly>
@@ -145,8 +133,8 @@
                 <button type="button">戻る</button>
             </a>
 
-            <button type="submit" formaction="/slip/remand/{id}(id=${slipForm.id})">差戻</button>
-            <button type="submit" formaction="/slip/approval/{id}(id=${slipForm.id})">承認</button>
+            <button type="submit" formaction="/slip/remand">差戻</button>
+            <button type="submit" formaction="/slip/approval">承認</button>
         </div>
     </form>
 
