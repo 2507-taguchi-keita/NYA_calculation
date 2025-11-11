@@ -3,8 +3,11 @@ package com.example.NYA_calculation.service;
 import com.example.NYA_calculation.controller.form.SlipForm;
 import com.example.NYA_calculation.converter.SlipConverter;
 import com.example.NYA_calculation.dto.SlipWithUserDto;
+import com.example.NYA_calculation.repository.DetailRepository;
 import com.example.NYA_calculation.repository.SlipRepository;
+import com.example.NYA_calculation.repository.entity.Detail;
 import com.example.NYA_calculation.repository.entity.Slip;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +20,8 @@ public class SlipService {
     SlipRepository slipRepository;
     @Autowired
     SlipConverter slipConverter;
-
-    public SlipForm createSlip(SlipForm slipForm) {
-        Slip slip = slipConverter.toEntity(slipForm);
-        slipRepository.insert(slip);
-        slipForm.setId(slip.getId());
-        return slipForm;
-    }
+    @Autowired
+    DetailRepository detailRepository;
 
     public List<Slip> getAllSlips() {
         return slipRepository.findAll();
@@ -33,20 +31,14 @@ public class SlipService {
         return slipConverter.toForm(slipRepository.findById(id));
     }
 
-    public List<SlipWithUserDto> getSTempSlips(Integer userId) {
+    public List<SlipWithUserDto> getSTemporarySlips(Integer userId) {
         return slipRepository.findTemporaryByUserId(userId);
     }
 
-    public Object getApprovalSlips(Integer approverId) {
+    public List<SlipWithUserDto> getApprovalSlips(Integer approverId) {
         return slipRepository.findApprovalByApproverId(approverId);
     }
 
-    public SlipForm updateSlips(SlipForm applySlip) {
-        Slip slip = slipConverter.toEntity(applySlip);
-        slipRepository.update(slip);
-        applySlip.setId(slip.getId());
-        return applySlip;
-    }
     public List<Slip> findByUserId(Integer id) {
         return slipRepository.findByUserId(id);
     }
@@ -62,5 +54,32 @@ public class SlipService {
     // IDで伝票を1件取得
     public Slip findById(Integer slipId) {
         return slipRepository.findById(slipId);
+    }
+
+    @Transactional
+    public void saveSlip(SlipForm slipForm) {
+
+        Slip slip = slipConverter.toEntity(slipForm);
+
+        if (slip.getId() == null) {
+            slipRepository.insertSlip(slip);
+            slipForm.setId(slip.getId());
+        } else {
+            slipRepository.updateSlip(slip);
+            detailRepository.deleteBySlipId(slip.getId());
+        }
+
+        // 明細を SlipDetail に変換
+        List<Detail> details = slipConverter.toDetailEntities(slipForm.getDetailForms(), slip.getId(), slip.getUserId());
+
+        if (!details.isEmpty()) {
+            detailRepository.insertDetails(details);
+        }
+    }
+
+    @Transactional
+    public void deleteSlip(SlipForm slipForm) {
+        slipRepository.deleteSlip(slipForm.getId());
+        detailRepository.deleteBySlipId(slipForm.getId());
     }
 }

@@ -22,7 +22,7 @@ public class ListController {
     @GetMapping("/temporary")
     public String showTempList(Model model, @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
-        model.addAttribute("slipForms", slipService.getSTempSlips(loginUserDetails.getUser().getId()));
+        model.addAttribute("slipForms", slipService.getSTemporarySlips(loginUserDetails.getUser().getId()));
 
         return "list/temporary";
     }

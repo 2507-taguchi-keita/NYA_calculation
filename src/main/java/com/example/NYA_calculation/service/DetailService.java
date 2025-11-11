@@ -8,7 +8,6 @@ import com.example.NYA_calculation.repository.entity.Detail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -23,18 +22,12 @@ public class DetailService {
         return detailRepository.getMonthlyTotal();
     }
 
-    public void save(DetailForm detailForm) throws IOException {
-        detailRepository.insert(detailConverter.toEntity(detailForm));
-    }
-
-    public void insert(Detail detail) throws IOException {
-        detailRepository.insert(detail);
-    }
-
     public List<DetailForm> getDetails(Integer sLipId) {
         return detailConverter.toFormList(detailRepository.findBySlipId(sLipId));
     }
+
     public List<Detail> findBySlipId(Integer slipId) {
         return detailRepository.findBySlipId(slipId);
     }
+
 }

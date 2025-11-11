@@ -9,11 +9,12 @@ import java.util.List;
 
 @Mapper
 public interface DetailRepository {
+
+    void insertDetails(@Param("list") List<Detail> details);
+    void deleteBySlipId(Integer slipId);
+
     List<ExpenseSummary> getMonthlyTotal();
 
-    /**
-     * 明細追加
-     */
-    void insert(Detail detail);
     List<Detail> findBySlipId(@Param("slipId") Integer slipId);
+
 }

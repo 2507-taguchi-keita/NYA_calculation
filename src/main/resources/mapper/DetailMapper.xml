@@ -5,6 +5,21 @@
 
 <mapper namespace="com.example.NYA_calculation.repository.DetailRepository">
 
+    <insert id="insertDetails">
+        INSERT INTO details
+        (slip_id, billing_date, reason, transportation, round_trip, amount, subtotal, remark, file_name, user_id, created_date, updated_date)
+        VALUES
+        <foreach collection="list" item="d" separator=",">
+            (#{d.slipId}, #{d.billingDate}, #{d.reason}, #{d.transportation}, #{d.roundTrip}, #{d.amount}, #{d.subtotal}, #{d.remark}, #{d.fileName}, #{d.userId}, NOW(), NOW())
+        </foreach>
+    </insert>
+
+    <delete id="deleteBySlipId">
+        DELETE
+        FROM details
+        WHERE slip_id = #{slipId}
+    </delete>
+
     <select id="getMonthlyTotal" resultType="com.example.NYA_calculation.dto.ExpenseSummary">
         SELECT
         DATE_FORMAT(billing_date, '%Y-%m') AS month,
@@ -16,36 +31,7 @@
         ORDER BY
         month
     </select>
-    <insert id="insert" parameterType="com.example.NYA_calculation.repository.entity.Detail" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO details (
-            billing_date,
-            round_trip,
-            amount,
-            subtotal,
-            reason,
-            transportation,
-            file_name,
-            slip_id,
-            remark,
-            user_id,
-            created_date,
-            updated_date
-        )
-        VALUES (
-            #{billingDate},
-            #{roundTrip},
-            #{amount},
-            #{subtotal},
-            #{reason},
-            #{transportation},
-            #{fileName},
-            #{slipId},
-            #{remark},
-            #{userId},
-            CURRENT_TIMESTAMP,
-            CURRENT_TIMESTAMP
-        )
-    </insert>
+
     <!-- 明細取得（slip_id指定） -->
     <select id="findBySlipId" parameterType="int"
             resultType="com.example.NYA_calculation.repository.entity.Detail">
@@ -65,6 +51,5 @@
         WHERE d.slip_id = #{slipId}
         ORDER BY d.billing_date DESC
     </select>
-
 
 </mapper>

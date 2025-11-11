@@ -2,6 +2,8 @@
 <html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>新規伝票画面</title>
     <link rel="stylesheet" th:href="@{/css/slip.css}">
 </head>
@@ -27,7 +29,7 @@
             <tbody>
             <tr>
                 <th>伝票No.</th>
-                <td></td>
+                <td th:text="${slipForm.id}"></td>
             </tr>
             <tr>
                 <th>申請日</th>
@@ -43,56 +45,22 @@
             </tr>
             </tbody>
         </table>
-        <table>
-            <tbody>
-            <tr>
-                <th>備考</th>
-                <td>
-                    <textarea></textarea>
-                </td>
-            </tr>
-            </tbody>
-        </table>
 
         <table class="approval-info">
             <thead>
             <tr>
-                <th>-</th>
+                <th>承認履歴</th>
                 <th>
                     <p>経理部</p>
-                    <p>社員番号</p>
                 </th>
                 <th>
                     <p>経理部長</p>
-                    <p>社員番号</p>
                 </th>
                 <th>
-                    <p th:text="${approver.name}">所属上長</p>
-                    <p th:text="${approver.account}">社員番号</p>
+                    <p>所属部長</p>
                 </th>
             </tr>
             </thead>
-            <tbody>
-            <tr>
-                <td>
-                </td>
-                <td>
-                    <p>日付</p>
-                    <p>承認者名</p>
-                    <p>ステータス</p>
-                </td>
-                <td>
-                    <p>日付</p>
-                    <p>承認者名</p>
-                    <p>ステータス</p>
-                </td>
-                <td>
-                    <p>日付</p>
-                    <p>承認者名</p>
-                    <p>ステータス</p>
-                </td>
-            </tr>
-            </tbody>
         </table>
     </div>
 
@@ -104,7 +72,7 @@
         </a>
     </div>
 
-    <div class="slip-main">
+    <div class="slip-main" id="detailArea" th:fragment="detailFragment">
         <table>
             <thead>
             <tr>
@@ -114,50 +82,51 @@
                 <th>往復</th>
                 <th>金額</th>
                 <th>小計</th>
-            </tr>
-            <tr>
-                <th colspan="4">備考</th>
+                <th>備考</th>
                 <th>領収書/請求書</th>
+                <th></th>
             </tr>
             </thead>
-            <tbody th:each="detailForm : ${detailForms}">
-            <tr>
+            <tbody id="detailTableBody">
+            <tr th:each="detailForm, iterStat : ${slipForm.detailForms}">
                 <td th:text="${detailForm.billingDate}"></td>
                 <td th:text="${detailForm.reason}"></td>
                 <td th:text="${detailForm.transportation}"></td>
                 <td th:text="${detailForm.roundTrip}"></td>
                 <td th:text="${detailForm.amount}"></td>
                 <td th:text="${detailForm.subtotal}"></td>
-            </tr>
-            <tr>
                 <td colspan="4" th:text="${detailForm.remark}"></td>
-                <td colspan="2" th:text="${detailForm.fileName}">
-                    <a th:if="${detailForm.fileName}"
-                       th:href="@{/receipt/{file}(file=${detailForm.fileName})}"
+                <td>
+                    <a th:if="${detailForm.fileName}" th:href="@{/receipt/{file}(file=${detailForm.fileName})}"
                        th:text="${detailForm.fileName}"></a>
                     <span th:if="${detailForm.fileName == null}">なし</span>
+                </td>
+                <td>
+                    <button type="button" class="editDetailBtn" th:data-index="${iterStat.index}">編集</button>
+                    <button type="button" class="deleteDetailBtn" th:data-index="${iterStat.index}">削除</button>
                 </td>
             </tr>
             </tbody>
         </table>
+
+        <form th:action="@{/slip/temporary}" th:object="${slipForm}" method="post">
+            <input type="hidden" th:field="*{id}">
+            <div>
+                <label>合計</label>
+                <input type="text" th:field="*{totalAmount}" readonly>
+            </div>
+
+            <div class="slip-button">
+                <a th:href="@{/}">
+                    <button type="button">戻る</button>
+                </a>
+
+                <button type="submit" formaction="/slip/temporary">一時保存</button>
+                <button type="submit" formaction="/slip/application">申請</button>
+            </div>
+        </form>
     </div>
 
-    <form th:action="@{/slip/temporary}" th:object="${slipForm}" method="post">
-        <input type="hidden" th:field="*{id}">
-        <div>
-            <label>合計</label>
-            <input type="text" th:field="*{totalAmount}" readonly>
-        </div>
-
-        <div class="slip-button">
-            <a th:href="@{/}">
-                <button type="button">戻る</button>
-            </a>
-
-            <button type="submit" formaction="/slip/temporary">一時保存</button>
-            <button type="submit" formaction="/slip/application">申請</button>
-        </div>
-    </form>
 
     <!-- モーダル本体 -->
     <div id="detailModal" class="modal">
@@ -168,7 +137,7 @@
             </div>
 
             <!-- Thymeleafフォーム -->
-            <form th:action="@{/detail/temp}" th:object="${detailForm}" method="post" enctype="multipart/form-data">
+            <form id="detailForm" th:action="@{/detail/temp}" th:object="${detailForm}" method="post" enctype="multipart/form-data">
 
                 <div class="form-row">
                     <label>日付<span class="required">*</span></label>
