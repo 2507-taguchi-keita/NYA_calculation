@@ -59,4 +59,8 @@ public class SlipService {
     public Slip findById(Integer slipId) {
         return slipRepository.findById(slipId);
     }
+
+    public List<Slip> findByUserIdSlips(Integer id) {
+        return slipRepository.findByUserIdSlips(id);
+    }
 }

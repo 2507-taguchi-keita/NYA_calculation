@@ -5,7 +5,6 @@ import com.example.NYA_calculation.repository.entity.Slip;
 import com.example.NYA_calculation.security.LoginUserDetails;
 import com.example.NYA_calculation.service.DetailService;
 import com.example.NYA_calculation.service.SlipService;
-import com.example.NYA_calculation.service.UserService;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,8 +23,6 @@ public class ApplicationController {
 
     @Autowired
     SlipService slipService;
-    @Autowired
-    UserService userService;
     @Autowired
     DetailService detailService;
 
@@ -65,6 +62,14 @@ public class ApplicationController {
                 default -> "不明";
             };
             s.setStepLabel(stepLabel);
+
+            String departmentName = switch (s.getUserId()) {
+                case 1 -> "経理部";
+                case 2 -> "人事部";
+                case 3 -> "営業部";
+                default -> "未所属";
+            };
+            s.setDepartmentName(departmentName);
         }
 
         mav.addObject("slipList", slipList);

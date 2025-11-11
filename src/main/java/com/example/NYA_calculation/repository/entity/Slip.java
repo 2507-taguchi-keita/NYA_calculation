@@ -42,4 +42,13 @@ public class Slip {
 
     @Transient
     private String stepLabel;
+
+    @Transient
+    private String departmentName;
+
+    @Transient
+    private String userName;
+
+    @Transient
+    private String userAccount;;
 }

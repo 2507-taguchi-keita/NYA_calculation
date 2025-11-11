@@ -42,4 +42,6 @@ public class UserForm {
     private Integer approverId;
     private Timestamp createdDate;
     private Timestamp updatedDate;
+
+    private String departmentLabel;
 }

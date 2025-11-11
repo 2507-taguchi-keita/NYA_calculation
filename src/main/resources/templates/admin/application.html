@@ -6,7 +6,7 @@
 </head>
 <body>
 <header>
-    <h2>NYA清算 申請管理画面</h2>
+    <h2>NYA精算 申請管理画面</h2>
     <nav>
         <a href="/admin">戻る</a>
     </nav>
@@ -15,10 +15,12 @@
     <table class="application-table">
         <thead>
         <tr>
-            <th>ID</th>
+            <th>社員番号</th>
+            <th>氏名</th>
             <th>承認ステータス</th>
             <th>承認ステップ</th>
             <th>合計金額</th>
+            <th>部署名</th>
             <th>申請者ID</th>
             <th>承認者ID</th>
             <th>作成日</th>
@@ -26,10 +28,12 @@
         </thead>
         <tbody>
         <tr th:each="s : ${slipList}">
-            <td th:text="${s.id}"></td>
+            <td th:text="${s.userAccount}"></td>
+            <td th:text="${s.userName}"></td>
             <td th:text="${s.statusLabel}"></td>
             <td th:text="${s.stepLabel}"></td>
             <td th:text="${s.totalAmount}"></td>
+            <td th:text="${s.departmentName}"></td>
             <td th:text="${s.userId}"></td>
             <td th:text="${s.approverId}"></td>
             <td th:text="${#dates.format(s.createdDate, 'yyyy/MM/dd HH:mm:ss')}"></td>

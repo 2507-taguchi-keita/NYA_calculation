@@ -51,20 +51,33 @@
             resultType="com.example.NYA_calculation.repository.entity.Detail">
         SELECT
         d.id,
-        d.billing_date AS billingDate,
-        d.round_trip AS roundTrip,
+        d.billing_date,
+        d.round_trip,
         d.amount,
         d.subtotal,
         d.reason,
         d.transportation,
-        d.file_name AS fileName,
+        d.file_name,
         d.remark,
-        d.created_date AS createdDate,
-        d.updated_date AS updatedDate
+        d.created_date,
+        d.updated_date
         FROM details d
         WHERE d.slip_id = #{slipId}
         ORDER BY d.billing_date DESC
     </select>
-
+    <update id="update" parameterType="com.example.NYA_calculation.repository.entity.Detail">
+        UPDATE details
+        SET
+        billing_date = #{billingDate},
+        round_trip = #{roundTrip},
+        amount = #{amount},
+        subtotal = #{subtotal},
+        reason = #{reason},
+        transportation = #{transportation},
+        file_name = #{fileName},
+        remark = #{remark},
+        updated_date = NOW()
+        WHERE id = #{id}
+    </update>
 
 </mapper>

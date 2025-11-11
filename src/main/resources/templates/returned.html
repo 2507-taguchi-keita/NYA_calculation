@@ -2,7 +2,7 @@
 <html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>申請一覧画面</title>
+    <title>差し戻し一覧画面</title>
 </head>
 <body>
 <header>
@@ -13,9 +13,9 @@
         <li th:each="err : ${errorMessages}" th:text="${err}"></li>
     </ul>
 </div>
-<main class="user-application-list">
-    <h2>申請一覧</h2>
-    <table class="user-application-table">
+<main class="returned-slips">
+    <h2>差し戻し一覧</h2>
+    <table class="returned-slips-table">
         <thead>
         <tr>
             <th>ID</th>
@@ -29,7 +29,7 @@
         <tbody>
         <tr th:each="s : ${slipList}">
             <td>
-                <a th:href="@{'/application-detail/' + ${s.id}}" th:text="${s.id}"></a>
+                <a th:href="@{'/remand/' + ${s.id}}" th:text="${s.id}"></a>
             </td>
             <td th:text="${#dates.format(s.updatedDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
             <td th:text="${userName}"></td>

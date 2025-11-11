@@ -65,7 +65,8 @@
         approver_id,
         created_date
         FROM slips
-        ORDER BY id ASC
+        WHERE status = 1
+        ORDER BY user_id ASC
     </select>
     <select id="findByUserId" parameterType="int" resultType="com.example.NYA_calculation.repository.entity.Slip">
         SELECT *
@@ -85,8 +86,15 @@
         SET
         status = #{status},
         step = #{step},
-        total_amount = #{totalAmount},
+        total_amount = #{totalAmount}
         WHERE id = #{id}
     </update>
+    <select id="findByUserIdSlips" parameterType="int" resultType="com.example.NYA_calculation.repository.entity.Slip">
+        SELECT *
+        FROM slips
+        WHERE user_id = #{userId}
+        AND status = 2
+        ORDER BY updated_date DESC
+    </select>
 
 </mapper>
