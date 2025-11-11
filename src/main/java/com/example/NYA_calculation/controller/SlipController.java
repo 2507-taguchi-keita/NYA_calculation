@@ -3,14 +3,12 @@ package com.example.NYA_calculation.controller;
 import com.example.NYA_calculation.constant.SlipConstants;
 import com.example.NYA_calculation.controller.form.DetailForm;
 import com.example.NYA_calculation.controller.form.SlipForm;
+import com.example.NYA_calculation.dto.ApprovalHistoryWithUserDto;
 import com.example.NYA_calculation.repository.entity.Detail;
 import com.example.NYA_calculation.repository.entity.DetailTemp;
 import com.example.NYA_calculation.repository.entity.User;
 import com.example.NYA_calculation.security.LoginUserDetails;
-import com.example.NYA_calculation.service.DetailService;
-import com.example.NYA_calculation.service.DetailTempService;
-import com.example.NYA_calculation.service.SlipService;
-import com.example.NYA_calculation.service.UserService;
+import com.example.NYA_calculation.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +32,8 @@ public class SlipController {
     DetailService detailService;
     @Autowired
     DetailTempService detailTempService;
+    @Autowired
+    ApprovalHistoryService approvalHistoryService;
 
     @GetMapping("/new")
     public String showNewSlip(Model model,
@@ -80,11 +80,13 @@ public class SlipController {
 
         User User = userService.findById(loginUserDetails.getUser().getId());
         User approver = userService.findById(User.getApproverId());
+        List<ApprovalHistoryWithUserDto> approvalHistoryList = approvalHistoryService.getHistory(id);
         SlipForm slipForm = slipService.getSlip(id);
         List<DetailForm> detailForms = detailService.getDetails(slipForm.getId());
 
         model.addAttribute("loginUser", User);
         model.addAttribute("approver", approver);
+        model.addAttribute("approvalHistoryList", approvalHistoryList);
         model.addAttribute("slipForm", slipForm);
         model.addAttribute("detailForms", detailForms);
         model.addAttribute("reasonList", SlipConstants.REASONS);
@@ -144,6 +146,53 @@ public class SlipController {
             slipForm.setStep(1);
             slipService.updateSlips(slipForm);
         }
+
+        return "redirect:/";
+    }
+
+    @PostMapping("/approval")
+    public String approveSlip(@ModelAttribute("slipForm") SlipForm slipForm,
+                              @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
+
+        User approver = userService.findById(loginUserDetails.getUser().getApproverId());
+        SlipForm targetSlip = slipService.getSlip(slipForm.getId());
+        int currentStep = targetSlip.getStep();
+
+        switch (currentStep) {
+            case 1:
+                if (approver.getDepartmentId() == 1 && approver.getAuthority() == 0) {
+                    targetSlip.setStep(2);
+                }
+                break;
+
+            case 2:
+                if (approver.getDepartmentId() == 1 && approver.getAuthority() == 1) {
+                    targetSlip.setStep(3);
+                }
+                break;
+
+            case 3:
+                if (approver.getAuthority() == 1) {
+                    targetSlip.setStep(4);
+                    targetSlip.setStatus(3);
+                }
+                break;
+        }
+
+        slipService.updateSlips(targetSlip);
+
+        approvalHistoryService.saveApprovalHistory(targetSlip.getId(), loginUserDetails.getUser().getId(), currentStep);
+
+        return "redirect:/";
+    }
+
+    @PostMapping("/remand")
+    public String remandSlip(@ModelAttribute("slipForm") SlipForm slipForm,
+                             @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
+
+        SlipForm targetSlip = slipService.getSlip(slipForm.getId());
+        targetSlip.setStatus(2);
+        slipService.updateSlips(targetSlip);
 
         return "redirect:/";
     }

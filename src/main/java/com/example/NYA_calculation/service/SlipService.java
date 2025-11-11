@@ -19,7 +19,9 @@ public class SlipService {
     SlipConverter slipConverter;
 
     public SlipForm createSlip(SlipForm slipForm) {
-        slipRepository.insert(slipConverter.toEntity(slipForm));
+        Slip slip = slipConverter.toEntity(slipForm);
+        slipRepository.insert(slip);
+        slipForm.setId(slip.getId());
         return slipForm;
     }
 
@@ -40,7 +42,9 @@ public class SlipService {
     }
 
     public SlipForm updateSlips(SlipForm applySlip) {
-        slipRepository.update(slipConverter.toEntity(applySlip));
+        Slip slip = slipConverter.toEntity(applySlip);
+        slipRepository.update(slip);
+        applySlip.setId(slip.getId());
         return applySlip;
     }
     public List<Slip> findByUserId(Integer id) {

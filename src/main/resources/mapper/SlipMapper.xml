@@ -67,6 +67,7 @@
         FROM slips
         ORDER BY id ASC
     </select>
+
     <select id="findByUserId" parameterType="int" resultType="com.example.NYA_calculation.repository.entity.Slip">
         SELECT *
         FROM slips
@@ -74,6 +75,7 @@
         AND status = 1
         ORDER BY updated_date DESC
     </select>
+
     <update id="updateStatus">
         UPDATE slips
         SET status = #{status}, updated_date = CURRENT_TIMESTAMP

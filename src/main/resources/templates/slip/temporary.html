@@ -143,6 +143,7 @@
     </div>
 
     <form th:action="@{/slip/temporary}" th:object="${slipForm}" method="post">
+        <input type="hidden" th:field="*{id}">
         <div>
             <label>合計</label>
             <input type="text" th:field="*{totalAmount}" readonly>
