@@ -1,14 +1,19 @@
 package com.example.NYA_calculation.controller;
 
+import com.example.NYA_calculation.constant.SlipConstants;
 import com.example.NYA_calculation.controller.form.DetailForm;
 import com.example.NYA_calculation.repository.entity.Detail;
 import com.example.NYA_calculation.repository.entity.Slip;
 import com.example.NYA_calculation.security.LoginUserDetails;
 import com.example.NYA_calculation.service.DetailService;
 import com.example.NYA_calculation.service.SlipService;
+import io.micrometer.common.util.StringUtils;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -104,19 +109,77 @@ public class ReturnedController {
         }
 
         ModelAndView mav = new ModelAndView("returned/detail");
+        mav.addObject("transportList", SlipConstants.TRANSPORTS);
         mav.addObject("slip", slip);
         mav.addObject("details", details);
         mav.addObject("loginUser", loginUser);
+        mav.addObject("detailForm", new DetailForm());
         return mav;
     }
 
     //差し戻された明細編集処理
     @PostMapping("/remand/edit/{id}")
     public String editDetail(@PathVariable("id") Integer id,
-                                   @ModelAttribute DetailForm form) throws IOException {
-        System.out.println("---- slipId = " + form.getSlipId());
+                             @Valid @ModelAttribute DetailForm form,
+                             BindingResult result,
+                             RedirectAttributes redirectAttributes) throws IOException {
+
+        // バリデーションエラー時の処理
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessages",
+                    result.getAllErrors().stream()
+                            .map(e -> e.getDefaultMessage())
+                            .toList());
+            redirectAttributes.addFlashAttribute("openModal", id);
+            return "redirect:/remand/" + form.getSlipId();
+        }
+
         form.setId(id);
         detailService.updateDetail(form);
         return "redirect:/remand/" + form.getSlipId();
+    }
+
+    //差し戻し伝票再申請処理
+    @PostMapping("/remand/reapplication/{id}")
+    public ModelAndView reapplicationSlip(@PathVariable("id") String id,
+                                          @AuthenticationPrincipal LoginUserDetails loginUser,
+                                          RedirectAttributes redirectAttributes){
+
+        List<String> errorMessages = new ArrayList<>();
+
+        // ID形式チェック
+        if (StringUtils.isBlank(id) || !id.matches("^[0-9]+$")) {
+            errorMessages.add(E0013);
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
+            return new ModelAndView("redirect:/application-list");
+        }
+
+        Integer slipId = Integer.valueOf(id);
+        slipService.reapplicationSlip(slipId, loginUser.getUser().getId());
+        slipService.cancelSlip(slipId, loginUser.getUser().getId());
+        redirectAttributes.addFlashAttribute("successMessage", "再申請を受け付けました。");
+        return new ModelAndView("redirect:/returned");
+    }
+
+    //申請取り消し機能
+    @PostMapping("/remand/cancel/{id}")
+    public ModelAndView cancelSlip(
+            @PathVariable("id") String id,
+            @AuthenticationPrincipal LoginUserDetails loginUser,
+            RedirectAttributes redirectAttributes){
+
+        List<String> errorMessages = new ArrayList<>();
+
+        // ID形式チェック
+        if (StringUtils.isBlank(id) || !id.matches("^[0-9]+$")) {
+            errorMessages.add(E0013);
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
+            return new ModelAndView("redirect:/returned");
+        }
+
+        Integer slipId = Integer.valueOf(id);
+        slipService.cancelSlip(slipId, loginUser.getUser().getId());
+        redirectAttributes.addFlashAttribute("successMessage", "申請を取り消しました。");
+        return new ModelAndView("redirect:/returned");
     }
 }

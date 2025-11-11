@@ -42,17 +42,17 @@
     <!-- ページネーション -->
     <div th:if="${totalPages > 1}" class="pagination">
         <a th:if="${currentPage > 0}"
-           th:href="@{/application-list(page=${currentPage - 1})}">« 前へ</a>
+           th:href="@{/returned(page=${currentPage - 1})}">« 前へ</a>
 
         <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
         <a th:if="${i != currentPage}"
-           th:href="@{/application-list(page=${i})}"
+           th:href="@{/returned(page=${i})}"
            th:text="${i + 1}"></a>
         <strong th:if="${i == currentPage}" th:text="${i + 1}"></strong>
         </span>
 
         <a th:if="${currentPage + 1 < totalPages}"
-           th:href="@{/application-list(page=${currentPage + 1})}">次へ »</a>
+           th:href="@{/returned(page=${currentPage + 1})}">次へ »</a>
     </div>
     <a href="/" class="back-link">戻る</a>
 </main>

@@ -110,42 +110,73 @@
                 <span class="close">&times;</span>
             </div>
 
-            <form th:object="${detailForm}" method="post">
+            <form th:object="${detailForm}" method="post" enctype="multipart/form-data">
+                <div class="error-message" th:if="${errorMessages}">
+                    <ul>
+                        <li th:each="msg : ${errorMessages}" th:text="${msg}"></li>
+                    </ul>
+                </div>
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}">
                 <input type="hidden" name="id" id="detailId">
                 <input type="hidden" name="slipId" th:value="${slip.id}">
+
                 <div class="form-row">
-                    <label>日付</label>
+                    <label>日付<span class="required">*</span></label>
                     <input type="date" name="billingDate" id="billingDate">
 
-                    <label>申請理由</label>
+                    <label>申請理由<span class="required">*</span></label>
                     <input type="text" name="reason" id="reason">
 
-                    <label>交通手段</label>
-                    <input type="text" name="transportation" id="transportation">
+                    <label>交通機関</label>
+                    <select th:field="*{transportation}" id="transportation">
+                        <option value="">選択してください</option>
+                        <option th:each="transport : ${transportList}"
+                                th:value="${transport}"
+                                th:text="${transport}"></option>
+                    </select>
                 </div>
 
                 <div class="form-row">
-                    <label>区間</label>
-                    <input type="text" name="roundTrip" id="roundTrip">
-
-                    <label>金額</label>
+                    <label>金額/Km</label>
                     <input type="number" name="amount" id="amount">
 
+                    <label>区間</label>
+                    <select name="roundTrip" id="roundTrip">
+                        <option value=""></option>
+                        <option value="片道">片道</option>
+                        <option value="往復">往復</option>
+                    </select>
+
+                    <label>小計</label>
+                    <input type="text" name="subtotal" id="subtotal" readonly>
+                </div>
+
+                <div class="form-row">
                     <label>備考</label>
                     <textarea name="remark" id="remark"></textarea>
+
+                    <label>領収書/請求書</label>
+                    <input type="file" name="file" accept="image/*,application/pdf">
                 </div>
 
                 <div class="button-row">
                     <button type="button" id="cancelBtn">キャンセル</button>
-                    <button type="submit" id="detailSubmit">確定</button>
+                    <button type="submit" id="detailSubmit" class="primary-btn">確定</button>
                 </div>
             </form>
         </div>
     </div>
-    <div class="form-actions">
-        <button type="submit" class="btn-submit">再申請</button>
-    </div>
+    <form th:if="${slip != null and slip.status == 2}"
+          th:action="@{'/remand/reapplication/' + ${slip.id}}"
+          method="post"
+          onsubmit="return confirm('再度申請を行いますか？');">
+        <button type="submit">再申請</button>
+    </form>
+    <form th:action="@{'/remand/cancel/' + ${slip.id}}"
+          method="post"
+          onsubmit="return confirm('申請を取り消しますか？');">
+        <button type="submit">取り下げ</button>
+    </form>
     <a href="/returned" class="back-link">戻る</a>
 </main>
 <script>
@@ -155,12 +186,15 @@
         const cancelBtn = document.getElementById("cancelBtn");
         const form = modal.querySelector("form");
         const editLinks = document.querySelectorAll(".edit-link");
+        const amountInput = form.querySelector("#amount");
+        const roundTripSelect = form.querySelector("#roundTrip");
+        const subtotalInput = form.querySelector("#subtotal");
 
+        // 編集リンククリック時の動作
         editLinks.forEach(link => {
             link.addEventListener("click", function(e) {
                 e.preventDefault();
 
-                // data属性の値を取得
                 const id = this.dataset.id;
                 const date = this.dataset.date;
                 const roundTrip = this.dataset.roundtrip;
@@ -169,7 +203,6 @@
                 const reason = this.dataset.reason;
                 const remark = this.dataset.remark;
 
-                // 値をフォームに反映
                 form.action = `/remand/edit/${id}`;
                 form.querySelector("#detailId").value = id;
                 form.querySelector("#billingDate").value = date || "";
@@ -179,21 +212,38 @@
                 form.querySelector("#reason").value = reason || "";
                 form.querySelector("#remark").value = remark || "";
 
-                // モーダルを表示
+                calcSubtotal();
                 modal.style.display = "block";
             });
         });
 
-        // 閉じる動作
+        // 金額 or 往復区分が変更されたら再計算
+        amountInput.addEventListener("input", calcSubtotal);
+        roundTripSelect.addEventListener("change", calcSubtotal);
+
+        function calcSubtotal() {
+            const amount = parseInt(amountInput.value) || 0;
+            const roundTrip = roundTripSelect.value === "往復" ? 2 : 1;
+            subtotalInput.value = amount * roundTrip;
+        }
+
         [closeBtn, cancelBtn].forEach(btn => {
             btn.addEventListener("click", () => modal.style.display = "none");
         });
 
-        // 外枠クリックで閉じる
         window.addEventListener("click", e => {
             if (e.target === modal) modal.style.display = "none";
         });
     });
+</script>
+<script th:inline="javascript">
+    const openModalId = /*[[${openModal}]]*/ null;
+    if (openModalId) {
+        document.addEventListener("DOMContentLoaded", () => {
+            const modal = document.getElementById("detailModal");
+            modal.style.display = "block";
+        });
+    }
 </script>
 </body>
 </html>
