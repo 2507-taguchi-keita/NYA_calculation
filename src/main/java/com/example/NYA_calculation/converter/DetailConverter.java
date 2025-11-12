@@ -30,7 +30,6 @@ public class DetailConverter {
         detailForm.setFileName(result.getFileName());
         detailForm.setSlipId(result.getSlipId());
         detailForm.setRemark(result.getRemark());
-        detailForm.setUserId(result.getUserId());
         detailForm.setCreatedDate(result.getCreatedDate());
         detailForm.setUpdatedDate(result.getUpdatedDate());
         return detailForm;
@@ -51,7 +50,6 @@ public class DetailConverter {
             detailForm.setFileName(result.getFileName());
             detailForm.setSlipId(result.getSlipId());
             detailForm.setRemark(result.getRemark());
-            detailForm.setUserId(result.getUserId());
             detailForm.setCreatedDate(result.getCreatedDate());
             detailForm.setUpdatedDate(result.getUpdatedDate());
             detailForms.add(detailForm);
@@ -73,7 +71,6 @@ public class DetailConverter {
         detail.setFileName(fileName);
         detail.setSlipId(form.getSlipId());
         detail.setRemark(form.getRemark());
-        detail.setUserId(form.getUserId());
 
         if (form.getId() != null) {
             detail.setId(form.getId());

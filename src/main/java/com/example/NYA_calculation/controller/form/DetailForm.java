@@ -17,7 +17,7 @@ import static com.example.NYA_calculation.validation.ErrorMessages.*;
 @Setter
 public class DetailForm {
     private Integer id;
-    @NotEmpty(message = E0007)
+    @NotNull(message = E0007)
     private LocalDate billingDate;
     private String roundTrip;
     @NotNull(message = E0009)
@@ -32,7 +32,6 @@ public class DetailForm {
     private Integer slipId;
     @Size(max = 50, message = E0012)
     private String remark;
-    private Integer userId;
     private Timestamp createdDate;
     private Timestamp updatedDate;
     // 画像添付用

@@ -4,20 +4,22 @@
     <meta charset="UTF-8">
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
-    <title>新規伝票画面</title>
+    <title>CSV取り込み</title>
     <link rel="stylesheet" th:href="@{/css/slip.css}">
 </head>
 <body>
 <header>
-
+    <h2>CSV取込み</h2>
 </header>
 
 <main>
 
-    <form th:action="@{/csv/preview}" method="post" enctype="multipart/form-data">
-        <input type="file" name="file">
+    <form th:action="@{/csv/upload}" method="post" enctype="multipart/form-data">
+        <input type="file" name="csvFile" accept=".csv" required>
         <button type="submit">アップロード</button>
     </form>
+
+    <a th:href="@{/slip}">戻る</a>
 
 </main>
 

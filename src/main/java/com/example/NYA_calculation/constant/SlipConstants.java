@@ -15,6 +15,7 @@ public class SlipConstants {
 
     // 交通機関
     public static final List<String> TRANSPORTS = List.of(
+            "--",
             "電車",
             "バス",
             "タクシー",

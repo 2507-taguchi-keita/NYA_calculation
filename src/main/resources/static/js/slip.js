@@ -25,10 +25,15 @@ $(document).ready(function() {
     });
 
     // 明細追加・編集 Ajax
-    $("#detailSubmit").click(function(e) {
+    $("#detailSubmit").click(function (e) {
         e.preventDefault();
+
+        let form = $("#detailForm");
         let formData = new FormData(form[0]);
-        if (editIndex !== null) formData.append("index", editIndex);
+
+        if (editIndex !== null) {
+            formData.append("index", editIndex);
+        }
 
         $.ajax({
             url: "/detail/submit",
@@ -36,12 +41,19 @@ $(document).ready(function() {
             data: formData,
             processData: false,
             contentType: false,
-            success: function(response) {
-                $("#detailArea").html(response);
-                modal.hide();
-                form[0].reset();
-                editIndex = null;
-            },
+            success: function(html) {
+                console.log(html);
+                // サーバーで「hasErrors=true」を model に追加しておく
+                const hasErrors = $(html).find('#hasErrors').val() === 'true';  // hidden input で返却
+                if (hasErrors) {
+                    $("#modalContent").html(html);   // モーダル内容だけ更新
+                } else {
+                    $("#detailArea").html(html);     // 明細一覧更新
+                    $("#detailModal").hide();        // モーダル閉じる
+                    $("#detailForm")[0].reset();     // フォームリセット
+                    editIndex = null;
+                }
+            }
         });
     });
 
@@ -95,5 +107,12 @@ $(document).ready(function() {
             }
         });
     });
+
+    document.getElementById("registerBtn").addEventListener("click", () => {
+
+            fetch('/slip/temp/bulk-add', { method: 'POST' })
+                .then(() => window.location.href = '/slip/new')
+                .catch(err => alert("追加に失敗しました"));
+        });
 
 });

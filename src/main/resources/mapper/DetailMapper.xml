@@ -7,10 +7,10 @@
 
     <insert id="insertDetails">
         INSERT INTO details
-        (slip_id, billing_date, reason, transportation, round_trip, amount, subtotal, remark, file_name, user_id, created_date, updated_date)
+        (slip_id, billing_date, reason, transportation, round_trip, amount, subtotal, remark, file_name, created_date, updated_date)
         VALUES
         <foreach collection="list" item="d" separator=",">
-            (#{d.slipId}, #{d.billingDate}, #{d.reason}, #{d.transportation}, #{d.roundTrip}, #{d.amount}, #{d.subtotal}, #{d.remark}, #{d.fileName}, #{d.userId}, NOW(), NOW())
+            (#{d.slipId}, #{d.billingDate}, #{d.reason}, #{d.transportation}, #{d.roundTrip}, #{d.amount}, #{d.subtotal}, #{d.remark}, #{d.fileName}, NOW(), NOW())
         </foreach>
     </insert>
 
