@@ -1,10 +1,13 @@
 package com.example.NYA_calculation.service;
 
 import com.example.NYA_calculation.controller.form.UserForm;
+import com.example.NYA_calculation.converter.UserConverter;
 import com.example.NYA_calculation.error.RecordNotFoundException;
 import com.example.NYA_calculation.repository.UserRepository;
 import com.example.NYA_calculation.repository.entity.User;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +26,8 @@ public class UserService {
     UserRepository userRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    UserConverter userConverter;
 
     public User findById(Integer id) {
         return userRepository.findById(id)
@@ -84,6 +89,7 @@ public class UserService {
         return true;
     }
 
+    @Transactional
     public boolean adminEditUser(UserForm userForm) {
 
         // パスワードが入力されていた場合のみエンコードして上書き
@@ -93,7 +99,11 @@ public class UserService {
             userForm.setPassword(null);
         }
 
-        int updatedRows = userRepository.adminEditUser(userForm);
-        return updatedRows > 0;
+        try {
+            int updatedRows = userRepository.adminEditUser(userForm);
+            return updatedRows > 0;
+        } catch (DuplicateKeyException e) {
+            return false;
+        }
     }
 }

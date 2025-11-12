@@ -125,7 +125,12 @@
                     <input type="date" th:field="*{billingDate}" id="billingDate">
 
                     <label>申請理由<span class="required">*</span></label>
-                    <input type="text" th:field="*{reason}" id="reason">
+                    <select th:field="*{reason}">
+                        <option value="">選択してください</option>
+                        <option th:each="reason : ${reasonList}"
+                                th:value="${reason}"
+                                th:text="${reason}"></option>
+                    </select>
 
                     <label>交通機関</label>
                     <select th:field="*{transportation}" id="transportation">
@@ -248,6 +253,8 @@
     if (openModalId) {
         document.addEventListener("DOMContentLoaded", () => {
             const modal = document.getElementById("detailModal");
+            const form = modal.querySelector("form");
+            form.action = `/remand/edit/${openModalId}`;
             modal.style.display = "block";
         });
     }

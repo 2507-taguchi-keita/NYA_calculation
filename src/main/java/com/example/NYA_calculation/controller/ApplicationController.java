@@ -53,6 +53,15 @@ public class ApplicationController {
         // 総ページ数
         int totalPages = (int) Math.ceil((double) allSlips.size() / pageSize);
         for (Slip s : slipList) {
+            String label = switch (s.getStatus()) {
+                case 0 -> "一時保存";
+                case 1 -> "申請中";
+                case 2 -> "差し戻し";
+                case 3 -> "承認済み";
+                default -> "不明";
+            };
+            s.setStatusLabel(label);
+
             String stepLabel = switch (s.getStep()) {
                 case 0 -> "未申請";
                 case 1 -> "経理部";

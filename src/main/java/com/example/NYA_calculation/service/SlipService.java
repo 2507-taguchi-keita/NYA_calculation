@@ -92,6 +92,6 @@ public class SlipService {
         if (slip == null || !slip.getUserId().equals(id)) {
             return false;
         }
-        return slipRepository.updateStatus(slipId, 1) > 1;
+        return slipRepository.updateStatus(slipId, 1) > 0;
     }
 }

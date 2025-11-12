@@ -20,11 +20,11 @@ public class UserForm {
     private Integer id;
 
     @NotEmpty(message = E0001, groups = {CreateGroup.class, UpdateGroup.class})
-    @Size(max = 7, message = E0018, groups = {CreateGroup.class, UpdateGroup.class})
+    @Pattern(regexp = "^$|^[0-9]{7}$", message = E0018, groups = {CreateGroup.class, UpdateGroup.class})
     private String account;
 
-    @NotEmpty(message = E0002, groups = {CreateGroup.class, SettingGroup.class})
-    @Pattern(regexp = "^(?:$|[\\x21-\\x7E]{6,20})$", message = E0005)
+    @NotEmpty(message = E0002, groups = {CreateGroup.class})
+    @Pattern(regexp = "^(?:$|[\\x21-\\x7E]{6,20})$", message = E0005, groups = {CreateGroup.class, SettingGroup.class, UpdateGroup.class})
     private String password;
     private String confirmPassword;
 

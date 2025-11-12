@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -112,6 +113,7 @@ public class ReturnedController {
         }
 
         ModelAndView mav = new ModelAndView("returned/detail");
+        mav.addObject("reasonList", SlipConstants.REASONS);
         mav.addObject("transportList", SlipConstants.TRANSPORTS);
         mav.addObject("slip", slip);
         mav.addObject("details", details);
@@ -165,7 +167,6 @@ public class ReturnedController {
 
         Integer slipId = Integer.valueOf(id);
         slipService.reapplicationSlip(slipId, loginUser.getUser().getId());
-        slipService.cancelSlip(slipId, loginUser.getUser().getId());
         redirectAttributes.addFlashAttribute("successMessage", "再申請を受け付けました。");
         return new ModelAndView("redirect:/returned");
     }
@@ -190,5 +191,11 @@ public class ReturnedController {
         slipService.cancelSlip(slipId, loginUser.getUser().getId());
         redirectAttributes.addFlashAttribute("successMessage", "申請を取り消しました。");
         return new ModelAndView("redirect:/returned");
+    }
+
+    //URLに数字以外のIDが入力された際にキャッチする処理
+    @InitBinder("detailForm")
+    public void initBinder(WebDataBinder binder) {
+        binder.setDisallowedFields("id");
     }
 }

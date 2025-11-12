@@ -3,6 +3,7 @@ package com.example.NYA_calculation.controller.form;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
@@ -17,6 +18,7 @@ public class DetailForm {
     private Integer id;
 
     @NotNull(message = E0007)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate billingDate;
 
     private String roundTrip;
