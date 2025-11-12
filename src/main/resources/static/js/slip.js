@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
     // CSRF Token を取得
     const csrfToken = $("meta[name='_csrf']").attr("content");
     const csrfHeader = $("meta[name='_csrf_header']").attr("content");
@@ -30,7 +31,7 @@ $(document).ready(function() {
         if (editIndex !== null) formData.append("index", editIndex);
 
         $.ajax({
-            url: "/detail/temp/ajax",
+            url: "/detail/submit",
             type: "POST",
             data: formData,
             processData: false,
@@ -61,8 +62,38 @@ $(document).ready(function() {
     // 削除ボタン Ajax
     $(document).on("click", ".deleteDetailBtn", function() {
         let index = $(this).data("index");
-        $.post("/detail/delete/ajax", { index: index }, function(response) {
+        $.post("/detail/delete", { index: index }, function(response) {
             $("#detailArea").html(response);
         });
     });
+
+    // CSV取込み
+    $("#csvImportBtn").click(function() {
+        $("#csvInput").click();
+    });
+
+    $("#csvInput").change(function() {
+
+        let file = this.files[0];
+        if (!file) return;
+
+        let formData = new FormData();
+        formData.append("file", file);
+
+        $.ajax({
+            url: "/csv/import",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $("#detailArea").html(response);   // << 既存コードと同じ
+                alert("CSV取込みが完了しました！");
+            },
+            error: function() {
+                alert("CSV取込みに失敗しました");
+            }
+        });
+    });
+
 });

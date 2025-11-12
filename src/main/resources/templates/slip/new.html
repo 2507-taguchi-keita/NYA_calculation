@@ -65,11 +65,9 @@
     </div>
 
     <div class="slip-menu">
-        <!-- 明細追加ボタン -->
         <button id="openModalBtn" type="button">明細追加</button>
-        <a th:href="@{/detail/csv}">
-            <button type="button">CSV取込み</button>
-        </a>
+        <input id="csvInput" type="file" accept=".csv" style="display:none;">
+        <button id="csvImportBtn" type="button">CSV取込み</button>
     </div>
 
     <div class="slip-main" id="detailArea" th:fragment="detailFragment">

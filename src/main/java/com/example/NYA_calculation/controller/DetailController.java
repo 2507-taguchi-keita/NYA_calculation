@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @SessionAttributes("slipForm")
 public class DetailController {
 
-    @PostMapping("/temp/ajax")
+    @PostMapping("/submit")
     public String addOrUpdateDetailAjax(@ModelAttribute("slipForm") SlipForm slipForm,
                                         @ModelAttribute DetailForm detailForm,
                                         @RequestParam(required = false) Integer index,
@@ -36,7 +36,7 @@ public class DetailController {
         return "slip/new :: detailFragment";
     }
 
-    @PostMapping("/delete/ajax")
+    @PostMapping("/delete")
     public String deleteDetailAjax(@ModelAttribute("slipForm") SlipForm slipForm,
                                    @RequestParam Integer index,
                                    Model model) {
