@@ -105,13 +105,16 @@
 
         <label for="approverId">承認者</label>
         <div th:if="${#fields.hasErrors('approverId')}" th:errors="*{approverId}"></div>
-        <select id="approverId" th:field="*{approverId}">
+        <select id="approverId" name="approverId">
             <option value="">選択してください</option>
-            <option th:each="approver : ${approvers}"
-                    th:value="${approver.id}"
-                    th:text="${approver.name}">
+            <option th:each="a : ${approvers}"
+                    th:value="${a.id}"
+                    th:text="${a.name}"
+                    th:selected="${a.id == formModel.approverId}">
             </option>
         </select>
+
+
 
         <div class="btn-area">
             <button type="submit" class="btn">変更</button>

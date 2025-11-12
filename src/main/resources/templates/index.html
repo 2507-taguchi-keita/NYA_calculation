@@ -130,12 +130,13 @@
     </div>
 
     <a href="/admin" class="menu-item"
-       th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+       th:if="${loginUser.user.departmentId == 1}">
         管理者画面
     </a>
 
+    <!-- 未承認一覧：authority が 1 の人 -->
     <a th:href="@{/list/approval}" class="menu-item"
-       th:if="${#authorization.expression('hasRole(''APPROVER'')')}">
+       th:if="${loginUser.user.authority == 1}">
         未承認一覧
     </a>
 

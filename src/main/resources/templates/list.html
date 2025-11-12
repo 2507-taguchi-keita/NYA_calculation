@@ -24,6 +24,7 @@
             <th>部署名</th>
             <th>合計金額</th>
             <th>承認ステップ</th>
+            <th>承認ステータス</th>
         </tr>
         </thead>
         <tbody>
@@ -36,6 +37,7 @@
             <td th:text="${s.departmentName}"></td>
             <td th:text="${s.totalAmount}"></td>
             <td th:text="${s.stepLabel}"></td>
+            <td th:text="${s.statusLabel}"></td>
         </tr>
         </tbody>
     </table>
