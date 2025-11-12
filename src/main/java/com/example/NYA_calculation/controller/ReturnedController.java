@@ -84,9 +84,12 @@ public class ReturnedController {
 
     //差し戻し伝票画面(差し戻された明細を一覧表示)
     @GetMapping("/remand/{id}")
-    public ModelAndView returnSlip(@AuthenticationPrincipal LoginUserDetails loginUser,
-                                   @PathVariable String id,
-                                   RedirectAttributes redirectAttributes) {
+    public ModelAndView returnSlip(
+            @AuthenticationPrincipal LoginUserDetails loginUser,
+            @PathVariable String id,
+            @ModelAttribute("detailForm") DetailForm form, // 🔹 Flash Attributeを受け取る
+            RedirectAttributes redirectAttributes) {
+
         //ID形式チェック
         if (id == null || id.isBlank() || !id.matches("^[0-9]+$")) {
             redirectAttributes.addFlashAttribute("errorMessages", List.of(E0013));
@@ -113,7 +116,11 @@ public class ReturnedController {
         mav.addObject("slip", slip);
         mav.addObject("details", details);
         mav.addObject("loginUser", loginUser);
-        mav.addObject("detailForm", new DetailForm());
+        if (form == null || form.getId() == null) {
+            mav.addObject("detailForm", new DetailForm());
+        } else {
+            mav.addObject("detailForm", form);
+        }
         return mav;
     }
 
@@ -126,10 +133,12 @@ public class ReturnedController {
 
         // バリデーションエラー時の処理
         if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("hasError", true);
             redirectAttributes.addFlashAttribute("errorMessages",
                     result.getAllErrors().stream()
                             .map(e -> e.getDefaultMessage())
                             .toList());
+            redirectAttributes.addFlashAttribute("detailForm", form);
             redirectAttributes.addFlashAttribute("openModal", id);
             return "redirect:/remand/" + form.getSlipId();
         }

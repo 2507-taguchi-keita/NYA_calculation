@@ -122,10 +122,10 @@
 
                 <div class="form-row">
                     <label>日付<span class="required">*</span></label>
-                    <input type="date" name="billingDate" id="billingDate">
+                    <input type="date" th:field="*{billingDate}" id="billingDate">
 
                     <label>申請理由<span class="required">*</span></label>
-                    <input type="text" name="reason" id="reason">
+                    <input type="text" th:field="*{reason}" id="reason">
 
                     <label>交通機関</label>
                     <select th:field="*{transportation}" id="transportation">
@@ -138,25 +138,25 @@
 
                 <div class="form-row">
                     <label>金額/Km</label>
-                    <input type="number" name="amount" id="amount">
+                    <input type="text" th:field="*{amount}" id="amount">
 
                     <label>区間</label>
-                    <select name="roundTrip" id="roundTrip">
+                    <select th:field="*{roundTrip}" id="roundTrip">
                         <option value=""></option>
                         <option value="片道">片道</option>
                         <option value="往復">往復</option>
                     </select>
 
                     <label>小計</label>
-                    <input type="text" name="subtotal" id="subtotal" readonly>
+                    <input type="text" th:field="*{subtotal}" id="subtotal" readonly>
                 </div>
 
                 <div class="form-row">
                     <label>備考</label>
-                    <textarea name="remark" id="remark"></textarea>
+                    <textarea th:field="*{remark}" id="remark"></textarea>
 
                     <label>領収書/請求書</label>
-                    <input type="file" name="file" accept="image/*,application/pdf">
+                    <input type="file" th:field="*{file}" accept="image/*,application/pdf">
                 </div>
 
                 <div class="button-row">
@@ -228,7 +228,14 @@
         }
 
         [closeBtn, cancelBtn].forEach(btn => {
-            btn.addEventListener("click", () => modal.style.display = "none");
+            btn.addEventListener("click", () => {
+                modal.style.display = "none";
+
+                const errorBox = modal.querySelector(".error-message");
+                if (errorBox) {
+                    errorBox.innerHTML = "";
+                }
+            });
         });
 
         window.addEventListener("click", e => {
