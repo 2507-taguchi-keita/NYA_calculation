@@ -4,24 +4,21 @@ import com.example.NYA_calculation.constant.SlipConstants;
 import com.example.NYA_calculation.controller.form.DetailForm;
 import com.example.NYA_calculation.controller.form.SlipForm;
 import com.example.NYA_calculation.dto.ApprovalHistoryWithUserDto;
-import com.example.NYA_calculation.repository.entity.Detail;
-import com.example.NYA_calculation.repository.entity.DetailTemp;
 import com.example.NYA_calculation.repository.entity.User;
 import com.example.NYA_calculation.security.LoginUserDetails;
 import com.example.NYA_calculation.service.*;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @Controller
 @RequestMapping("/slip")
+@SessionAttributes("slipForm")
 public class SlipController {
 
     @Autowired
@@ -31,12 +28,11 @@ public class SlipController {
     @Autowired
     DetailService detailService;
     @Autowired
-    DetailTempService detailTempService;
-    @Autowired
     ApprovalHistoryService approvalHistoryService;
 
     @GetMapping("/new")
     public String showNewSlip(Model model,
+                              HttpSession session,
                               @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
         User loginUser = userService.findById(loginUserDetails.getUser().getId());
@@ -59,13 +55,14 @@ public class SlipController {
 
         User loginUser = userService.findById(loginUserDetails.getUser().getId());
         User approver = userService.findById(loginUser.getApproverId());
+        List<ApprovalHistoryWithUserDto> approvalHistoryList = approvalHistoryService.getHistory(id);
         SlipForm slipForm = slipService.getSlip(id);
-        List<DetailForm> detailForms = detailService.getDetails(slipForm.getId());
+        slipForm.setDetailForms(detailService.getDetails(slipForm.getId()));
 
         model.addAttribute("loginUser", loginUser);
         model.addAttribute("approver", approver);
+        model.addAttribute("approvalHistoryList", approvalHistoryList);
         model.addAttribute("slipForm", slipForm);
-        model.addAttribute("detailForms", detailForms);
         model.addAttribute("detailForm", new DetailForm());
         model.addAttribute("reasonList", SlipConstants.REASONS);
         model.addAttribute("transportList", SlipConstants.TRANSPORTS);
@@ -82,52 +79,37 @@ public class SlipController {
         User approver = userService.findById(User.getApproverId());
         List<ApprovalHistoryWithUserDto> approvalHistoryList = approvalHistoryService.getHistory(id);
         SlipForm slipForm = slipService.getSlip(id);
-        List<DetailForm> detailForms = detailService.getDetails(slipForm.getId());
+        slipForm.setDetailForms(detailService.getDetails(slipForm.getId()));
 
         model.addAttribute("loginUser", User);
         model.addAttribute("approver", approver);
         model.addAttribute("approvalHistoryList", approvalHistoryList);
         model.addAttribute("slipForm", slipForm);
-        model.addAttribute("detailForms", detailForms);
-        model.addAttribute("reasonList", SlipConstants.REASONS);
-        model.addAttribute("transportList", SlipConstants.TRANSPORTS);
 
         return "slip/approval";
     }
 
     @PostMapping("/temporary")
     public String saveSlip(@ModelAttribute("slipForm") SlipForm slipForm,
-                           @AuthenticationPrincipal LoginUserDetails loginUserDetails,
-                           HttpSession session) throws IOException {
+                           @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
-        SlipForm result = new SlipForm();
-        if (slipForm.getId() == null) {
-            User loginUser = userService.findById(loginUserDetails.getUser().getId());
-            slipForm.setUserId(loginUser.getId());
-            slipForm.setApproverId(loginUser.getApproverId());
-            slipForm.setStatus(0);
-            slipForm.setStep(0);
-            result = slipService.createSlip(slipForm);
-        } else {
-            slipForm.setStatus(0);
-            slipForm.setStep(0);
-            result = slipService.updateSlips(slipForm);
-        }
+        slipForm.setUserId(loginUserDetails.getUser().getId());
+        slipForm.setApproverId(loginUserDetails.getUser().getApproverId());
+        slipForm.setStatus(0);
+        slipForm.setStep(0);
 
-        String tempKey = (String) session.getAttribute("slipTempKey");
-        List<DetailTemp> tempDetails = detailTempService.getTempDetails(tempKey);
+        slipService.saveSlip(slipForm);
 
-        for (DetailTemp temp : tempDetails) {
-            Detail detail = new Detail();
-            BeanUtils.copyProperties(temp, detail);
-            detail.setSlipId(result.getId());
-            detailService.insert(detail);
-        }
+        return "redirect:/list/temporary";
+    }
 
-        detailTempService.removeTemp(tempKey);
-        session.removeAttribute("slipTempKey");
+    @PostMapping("/delete")
+    public String deleteSlip(@ModelAttribute("slipForm") SlipForm slipForm,
+                             @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
-        return "redirect:/";
+        slipService.deleteSlip(slipForm);
+
+        return "redirect:/list/temporary";
     }
 
     @PostMapping("/application")
@@ -135,17 +117,12 @@ public class SlipController {
                             @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
         if (slipForm.getId() == null) {
-            User loginUser = userService.findById(loginUserDetails.getUser().getId());
-            slipForm.setUserId(loginUser.getId());
-            slipForm.setApproverId(loginUser.getApproverId());
-            slipForm.setStatus(1);
-            slipForm.setStep(1);
-            slipService.createSlip(slipForm);
-        } else {
-            slipForm.setStatus(1);
-            slipForm.setStep(1);
-            slipService.updateSlips(slipForm);
+            slipForm.setUserId(loginUserDetails.getUser().getId());
+            slipForm.setApproverId(loginUserDetails.getUser().getApproverId());
         }
+        slipForm.setStatus(1);
+        slipForm.setStep(1);
+        slipService.saveSlip(slipForm);
 
         return "redirect:/";
     }
@@ -179,8 +156,7 @@ public class SlipController {
                 break;
         }
 
-        slipService.updateSlips(targetSlip);
-
+        slipService.saveSlip(targetSlip);
         approvalHistoryService.saveApprovalHistory(targetSlip.getId(), loginUserDetails.getUser().getId(), currentStep);
 
         return "redirect:/";
@@ -192,7 +168,7 @@ public class SlipController {
 
         SlipForm targetSlip = slipService.getSlip(slipForm.getId());
         targetSlip.setStatus(2);
-        slipService.updateSlips(targetSlip);
+        slipService.saveSlip(targetSlip);
 
         return "redirect:/";
     }

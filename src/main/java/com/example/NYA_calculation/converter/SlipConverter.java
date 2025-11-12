@@ -1,6 +1,8 @@
 package com.example.NYA_calculation.converter;
 
+import com.example.NYA_calculation.controller.form.DetailForm;
 import com.example.NYA_calculation.controller.form.SlipForm;
+import com.example.NYA_calculation.repository.entity.Detail;
 import com.example.NYA_calculation.repository.entity.Slip;
 import org.springframework.stereotype.Component;
 
@@ -58,6 +60,33 @@ public class SlipConverter {
             slip.setUpdatedDate(Timestamp.valueOf(LocalDateTime.now()));
         }
         return slip;
+    }
+
+    public Detail toDetailEntity(DetailForm form) {
+        Detail entity = new Detail();
+        entity.setId(form.getId());
+        entity.setSlipId(form.getSlipId());
+        entity.setBillingDate(form.getBillingDate());
+        entity.setReason(form.getReason());
+        entity.setTransportation(form.getTransportation());
+        entity.setRoundTrip(form.getRoundTrip());
+        entity.setAmount(form.getAmount());
+        entity.setSubtotal(form.getSubtotal());
+        entity.setRemark(form.getRemark());
+        entity.setFileName(form.getFileName());
+        entity.setUserId(form.getUserId());
+        entity.setCreatedDate(form.getCreatedDate());
+        entity.setUpdatedDate(form.getUpdatedDate());
+        return entity;
+    }
+
+    public List<Detail> toDetailEntities(List<DetailForm> forms, Integer slipId, Integer userId) {
+        return forms.stream().map(f -> {
+            Detail d = toDetailEntity(f);
+            d.setSlipId(slipId);
+            d.setUserId(userId);
+            return d;
+        }).toList();
     }
 
 }

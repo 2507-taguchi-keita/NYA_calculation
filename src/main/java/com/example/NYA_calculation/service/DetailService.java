@@ -26,14 +26,6 @@ public class DetailService {
         return detailRepository.getMonthlyTotal();
     }
 
-    public void save(DetailForm detailForm) throws IOException {
-        detailRepository.insert(detailConverter.toEntity(detailForm));
-    }
-
-    public void insert(Detail detail) throws IOException {
-        detailRepository.insert(detail);
-    }
-
     public List<DetailForm> getDetails(Integer sLipId) {
         return detailConverter.toFormList(detailRepository.findBySlipId(sLipId));
     }
