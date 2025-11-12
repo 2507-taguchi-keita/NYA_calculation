@@ -74,7 +74,6 @@ public class SlipConverter {
         entity.setSubtotal(form.getSubtotal());
         entity.setRemark(form.getRemark());
         entity.setFileName(form.getFileName());
-        entity.setUserId(form.getUserId());
         entity.setCreatedDate(form.getCreatedDate());
         entity.setUpdatedDate(form.getUpdatedDate());
         return entity;
@@ -84,7 +83,6 @@ public class SlipConverter {
         return forms.stream().map(f -> {
             Detail d = toDetailEntity(f);
             d.setSlipId(slipId);
-            d.setUserId(userId);
             return d;
         }).toList();
     }

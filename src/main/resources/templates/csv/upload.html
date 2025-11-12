@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <title>CSV取り込み</title>
+    <link rel="stylesheet" th:href="@{/css/slip.css}">
+</head>
+<body>
+<header>
+    <h2>CSV取込み</h2>
+</header>
+
+<main>
+
+    <form th:action="@{/csv/upload}" method="post" enctype="multipart/form-data">
+        <input type="file" name="csvFile" accept=".csv" required>
+        <button type="submit">アップロード</button>
+    </form>
+
+    <a th:href="@{/slip}">戻る</a>
+
+</main>
+
+<footer>
+    <p>&copy;NYA</p>
+</footer>
+
+<script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
+<script th:src="@{/js/slip.js}"></script>
+
+</body>
+</html>

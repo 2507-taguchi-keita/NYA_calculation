@@ -41,7 +41,6 @@ public class DetailForm {
 
     @Size(max = 50, message = E0012)
     private String remark;
-    private Integer userId;
     private Timestamp createdDate;
     private Timestamp updatedDate;
     // 画像添付用

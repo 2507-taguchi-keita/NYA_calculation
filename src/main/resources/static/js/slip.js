@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
     // CSRF Token を取得
     const csrfToken = $("meta[name='_csrf']").attr("content");
     const csrfHeader = $("meta[name='_csrf_header']").attr("content");
@@ -24,23 +25,35 @@ $(document).ready(function() {
     });
 
     // 明細追加・編集 Ajax
-    $("#detailSubmit").click(function(e) {
+    $("#detailSubmit").click(function (e) {
         e.preventDefault();
+
+        let form = $("#detailForm");
         let formData = new FormData(form[0]);
-        if (editIndex !== null) formData.append("index", editIndex);
+
+        if (editIndex !== null) {
+            formData.append("index", editIndex);
+        }
 
         $.ajax({
-            url: "/detail/temp/ajax",
+            url: "/detail/submit",
             type: "POST",
             data: formData,
             processData: false,
             contentType: false,
-            success: function(response) {
-                $("#detailArea").html(response);
-                modal.hide();
-                form[0].reset();
-                editIndex = null;
-            },
+            success: function(html) {
+                console.log(html);
+                // サーバーで「hasErrors=true」を model に追加しておく
+                const hasErrors = $(html).find('#hasErrors').val() === 'true';  // hidden input で返却
+                if (hasErrors) {
+                    $("#modalContent").html(html);   // モーダル内容だけ更新
+                } else {
+                    $("#detailArea").html(html);     // 明細一覧更新
+                    $("#detailModal").hide();        // モーダル閉じる
+                    $("#detailForm")[0].reset();     // フォームリセット
+                    editIndex = null;
+                }
+            }
         });
     });
 
@@ -61,8 +74,45 @@ $(document).ready(function() {
     // 削除ボタン Ajax
     $(document).on("click", ".deleteDetailBtn", function() {
         let index = $(this).data("index");
-        $.post("/detail/delete/ajax", { index: index }, function(response) {
+        $.post("/detail/delete", { index: index }, function(response) {
             $("#detailArea").html(response);
         });
     });
+
+    // CSV取込み
+    $("#csvImportBtn").click(function() {
+        $("#csvInput").click();
+    });
+
+    $("#csvInput").change(function() {
+
+        let file = this.files[0];
+        if (!file) return;
+
+        let formData = new FormData();
+        formData.append("file", file);
+
+        $.ajax({
+            url: "/csv/import",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $("#detailArea").html(response);   // << 既存コードと同じ
+                alert("CSV取込みが完了しました！");
+            },
+            error: function() {
+                alert("CSV取込みに失敗しました");
+            }
+        });
+    });
+
+    document.getElementById("registerBtn").addEventListener("click", () => {
+
+            fetch('/slip/temp/bulk-add', { method: 'POST' })
+                .then(() => window.location.href = '/slip/new')
+                .catch(err => alert("追加に失敗しました"));
+        });
+
 });

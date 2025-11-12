@@ -45,9 +45,6 @@ public class Detail {
     private String remark;
 
     @Column
-    private Integer userId;
-
-    @Column
     private Timestamp createdDate;
 
     @Column

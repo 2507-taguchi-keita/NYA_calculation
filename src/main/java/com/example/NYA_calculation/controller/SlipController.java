@@ -173,4 +173,17 @@ public class SlipController {
         return "redirect:/";
     }
 
+    @PostMapping("/temp/bulk-add")
+    @ResponseBody
+    public String bulkAddDetails(@ModelAttribute("slipForm") SlipForm slipForm,
+                                 @ModelAttribute("bulkDetails") List<DetailForm> bulkDetails) {
+
+        // ここでバリデーションは DetailForm のアノテーションで自動チェックされる
+        slipForm.getDetailForms().addAll(bulkDetails);
+
+        bulkDetails.clear(); // セッション一時データ消去
+
+        return "OK";
+    }
+
 }

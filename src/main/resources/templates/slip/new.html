@@ -65,11 +65,8 @@
     </div>
 
     <div class="slip-menu">
-        <!-- 明細追加ボタン -->
         <button id="openModalBtn" type="button">明細追加</button>
-        <a th:href="@{/detail/csv}">
-            <button type="button">CSV取込み</button>
-        </a>
+        <a th:href="@{/csv/upload}" class="csv-button">CSV取込み</a>
     </div>
 
     <div class="slip-main" id="detailArea" th:fragment="detailFragment">
@@ -135,61 +132,69 @@
                 <h2>明細追加</h2>
                 <span class="close">&times;</span>
             </div>
+            <th:block th:fragment="detailModalFragment">
+                <form id="detailForm" th:object="${detailForm}" enctype="multipart/form-data">
+                    <input type="hidden" id="hasErrors" th:value="${hasErrors}" />
+                    <div class="detail-errorMessage">
+                        <div th:if="${#fields.hasErrors('billingDate')}" th:errors="*{billingDate}"></div>
+                        <div th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}"></div>
+                        <div th:if="${#fields.hasErrors('reason')}" th:errors="*{reason}"></div>
+                        <div th:if="${#fields.hasErrors('transportation')}" th:errors="*{transportation}"></div>
+                        <div th:if="${#fields.hasErrors('remark')}" th:errors="*{remark}"></div>
+                    </div>
 
-            <!-- Thymeleafフォーム -->
-            <form id="detailForm" th:action="@{/detail/temp}" th:object="${detailForm}" method="post" enctype="multipart/form-data">
+                    <div class="form-row">
+                        <label>日付<span class="required">*</span></label>
+                        <input type="date" th:field="*{billingDate}">
 
-                <div class="form-row">
-                    <label>日付<span class="required">*</span></label>
-                    <input type="date" th:field="*{billingDate}">
+                        <label>申請理由<span class="required">*</span></label>
+                        <select th:field="*{reason}">
+                            <option value="">選択してください</option>
+                            <option th:each="reason : ${reasonList}"
+                                    th:value="${reason}"
+                                    th:text="${reason}"></option>
+                        </select>
 
-                    <label>申請理由<span class="required">*</span></label>
-                    <select th:field="*{reason}">
-                        <option value="">選択してください</option>
-                        <option th:each="reason : ${reasonList}"
-                                th:value="${reason}"
-                                th:text="${reason}"></option>
-                    </select>
+                        <label>交通機関</label>
+                        <select th:field="*{transportation}">
+                            <option value="">選択してください</option>
+                            <option th:each="transport : ${transportList}"
+                                    th:value="${transport}"
+                                    th:text="${transport}"></option>
+                        </select>
 
-                    <label>交通機関</label>
-                    <select th:field="*{transportation}">
-                        <option value="">選択してください</option>
-                        <option th:each="transport : ${transportList}"
-                                th:value="${transport}"
-                                th:text="${transport}"></option>
-                    </select>
+                    </div>
 
-                </div>
+                    <div class="form-row">
+                        <label>金額/Km</label>
+                        <input type="number" th:field="*{amount}" id="amount">
 
-                <div class="form-row">
-                    <label>金額/Km</label>
-                    <input type="number" th:field="*{amount}" id="amount">
+                        <label>往復</label>
+                        <select th:field="*{roundTrip}" id="roundTrip">
+                            <option value="--">--</option>
+                            <option value="片道">片道</option>
+                            <option value="往復">往復</option>
+                        </select>
 
-                    <label>往復</label>
-                    <select th:field="*{roundTrip}" id="roundTrip">
-                        <option value=""></option>
-                        <option value="片道">片道</option>
-                        <option value="往復">往復</option>
-                    </select>
+                        <label>小計</label>
+                        <input type="text" th:field="*{subtotal}" id="subtotal" readonly>
 
-                    <label>小計</label>
-                    <input type="text" th:field="*{subtotal}" id="subtotal" readonly>
+                    </div>
 
-                </div>
+                    <div class="form-row">
+                        <label>備考</label>
+                        <textarea type="text" th:field="*{remark}"></textarea>
 
-                <div class="form-row">
-                    <label>備考</label>
-                    <textarea type="text" th:field="*{remark}"></textarea>
+                        <label>領収書/請求書</label>
+                        <input type="file" th:field="*{file}" accept="image/*,application/pdf">
+                    </div>
 
-                    <label>領収書/請求書</label>
-                    <input type="file" th:field="*{file}" accept="image/*,application/pdf">
-                </div>
-
-                <div class="button-row">
-                    <button type="button" id="cancelBtn">キャンセル</button>
-                    <button type="submit" id="detailSubmit" class="primary-btn">確定</button>
-                </div>
-            </form>
+                    <div class="button-row">
+                        <button type="button" id="cancelBtn">キャンセル</button>
+                        <button type="button" id="detailSubmit" class="primary-btn">確定</button>
+                    </div>
+                </form>
+            </th:block>
         </div>
     </div>
 
