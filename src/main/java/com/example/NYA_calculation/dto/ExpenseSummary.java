@@ -8,4 +8,5 @@ import lombok.Setter;
 public class ExpenseSummary {
     private String month;
     private Integer totalAmount;
+    private String reason;
 }

@@ -8,6 +8,7 @@ import com.example.NYA_calculation.security.LoginUserDetails;
 import com.example.NYA_calculation.service.DetailService;
 import com.example.NYA_calculation.service.SlipService;
 import com.example.NYA_calculation.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,10 +31,18 @@ public class AdminController {
 
     //管理者画面表示
     @GetMapping("/admin")
-    public ModelAndView showAdmin(){
+    public ModelAndView showAdmin() throws Exception {
         ModelAndView mav = new ModelAndView("admin/index");
+        // 各サマリーを取得
         List<ExpenseSummary> summaryList = detailService.getMonthlyTotal();
-        mav.addObject("summaryList", summaryList);
+        List<ExpenseSummary> reasonList = detailService.getReasonSummary();
+        Integer totalExpense = detailService.getTotalExpense();
+
+        // JSON変換してビューへ渡す
+        ObjectMapper mapper = new ObjectMapper();
+        mav.addObject("summaryList", mapper.writeValueAsString(summaryList));
+        mav.addObject("reasonList", mapper.writeValueAsString(reasonList));
+        mav.addObject("totalExpense", totalExpense);
         return mav;
     }
 

@@ -23,10 +23,24 @@ public class HomeController {
         } else {
             departmentLabel = "未所属";
         }
+
+        String authorityLabel = switch (loginUser.getUser().getAuthority()) {
+            case 0 -> "一般社員";
+            case 1 -> "承認者";
+            default -> "未所属";
+        };
+
+        String departmentName = switch (loginUser.getUser().getDepartmentId()) {
+            case 1 -> "経理部";
+            case 2 -> "人事部";
+            case 3 -> "営業部";
+            default -> "未所属";
+        };
+
         model.addAttribute("loginUser", loginUser);
         model.addAttribute("userName", loginUser.getUser().getName());
-        model.addAttribute("department", departmentLabel);
-
+        model.addAttribute("department", departmentName);
+        model.addAttribute("authorityLabel", authorityLabel);
         return "index";
     }
 }
