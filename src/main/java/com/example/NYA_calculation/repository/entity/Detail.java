@@ -24,7 +24,7 @@ public class Detail {
     private String roundTrip;
 
     @Column
-    private Integer amount;
+    private String amount;
 
     @Column
     private Integer subtotal;

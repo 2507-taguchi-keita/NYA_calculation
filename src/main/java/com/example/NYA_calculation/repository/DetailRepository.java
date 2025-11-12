@@ -16,5 +16,6 @@ public interface DetailRepository {
     List<ExpenseSummary> getMonthlyTotal();
 
     List<Detail> findBySlipId(@Param("slipId") Integer slipId);
+    void update(Detail detail);
 
 }

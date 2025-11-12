@@ -6,7 +6,7 @@
 </head>
 <body>
 <header>
-    <h1>NYA清算 管理者画面</h1>
+    <h1>NYA精算 管理者画面</h1>
     <nav>
         <a href="/">ホーム</a> |
         <a href="/admin/users/new">ユーザー登録</a> |
@@ -47,7 +47,7 @@
                                 <span th:case=1 th:text="承認権限あり"></span>
                             </th:block>
                         </td>
-                        <td th:text="${user.departmentId}"></td>
+                        <td th:text="${user.departmentLabel}"></td>
                         <td>
                             <span th:text="${#dates.format(user.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
                         </td>

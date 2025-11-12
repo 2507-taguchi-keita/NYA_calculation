@@ -82,4 +82,16 @@ public class SlipService {
         slipRepository.deleteSlip(slipForm.getId());
         detailRepository.deleteBySlipId(slipForm.getId());
     }
+
+    public List<Slip> findByUserIdSlips(Integer id) {
+        return slipRepository.findByUserIdSlips(id);
+    }
+
+    public boolean reapplicationSlip(Integer slipId, Integer id) {
+        Slip slip = slipRepository.findById(slipId);
+        if (slip == null || !slip.getUserId().equals(id)) {
+            return false;
+        }
+        return slipRepository.updateStatus(slipId, 1) > 1;
+    }
 }

@@ -1,46 +1,48 @@
 package com.example.NYA_calculation.controller;
 
+import com.example.NYA_calculation.constant.SlipConstants;
+import com.example.NYA_calculation.controller.form.DetailForm;
 import com.example.NYA_calculation.repository.entity.Detail;
 import com.example.NYA_calculation.repository.entity.Slip;
 import com.example.NYA_calculation.security.LoginUserDetails;
 import com.example.NYA_calculation.service.DetailService;
 import com.example.NYA_calculation.service.SlipService;
 import io.micrometer.common.util.StringUtils;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.NYA_calculation.validation.ErrorMessages.E0013;
 
 @Controller
-public class ApplicationController {
+public class ReturnedController {
 
     @Autowired
     SlipService slipService;
     @Autowired
     DetailService detailService;
 
-    //ユーザーが自分の申請一覧を確認するための画面
-    @GetMapping("/application-list")
-    public ModelAndView applicationList(
+    //差し戻し一覧表示画面
+    @GetMapping("/returned")
+    public ModelAndView returnedDetail(
             @AuthenticationPrincipal LoginUserDetails loginUser,
             @RequestParam(defaultValue = "0") int page) {
 
-        ModelAndView mav = new ModelAndView("list");
-
+        ModelAndView mav = new ModelAndView("returned");
         // すべての申請を取得
-        List<Slip> allSlips = slipService.findByUserId(loginUser.getUser().getId());
-
+        List<Slip> allSlips = slipService.findByUserIdSlips(loginUser.getUser().getId());
         // 1ページあたりの件数
         int pageSize = 10;
-
-        // 表示範囲を決める
         int fromIndex = page * pageSize;
         int toIndex = Math.min(fromIndex + pageSize, allSlips.size());
 
@@ -80,16 +82,15 @@ public class ApplicationController {
         return mav;
     }
 
-    //申請済み伝票画面表示(明細一覧を表示)
-    @GetMapping("/application-detail/{id}")
-    public ModelAndView submittedInvoice(@AuthenticationPrincipal LoginUserDetails loginUser,
+    //差し戻し伝票画面(差し戻された明細を一覧表示)
+    @GetMapping("/remand/{id}")
+    public ModelAndView returnSlip(@AuthenticationPrincipal LoginUserDetails loginUser,
                                    @PathVariable String id,
                                    RedirectAttributes redirectAttributes) {
-
         //ID形式チェック
         if (id == null || id.isBlank() || !id.matches("^[0-9]+$")) {
             redirectAttributes.addFlashAttribute("errorMessages", List.of(E0013));
-            return new ModelAndView("redirect:/application-list");
+            return new ModelAndView("redirect:/returned");
         }
 
         Integer slipId = Integer.valueOf(id);
@@ -98,7 +99,7 @@ public class ApplicationController {
         //DBに存在するかのチェック(存在しなければ一覧画面へ）
         if (slip == null) {
             redirectAttributes.addFlashAttribute("errorMessages", List.of(E0013));
-            return new ModelAndView("redirect:/application-list");
+            return new ModelAndView("redirect:/returned");
         }
 
         //明細が空の場合はそのまま表示
@@ -107,19 +108,42 @@ public class ApplicationController {
             details = new ArrayList<>();
         }
 
-        ModelAndView mav = new ModelAndView("application/detail");
+        ModelAndView mav = new ModelAndView("returned/detail");
+        mav.addObject("transportList", SlipConstants.TRANSPORTS);
         mav.addObject("slip", slip);
         mav.addObject("details", details);
         mav.addObject("loginUser", loginUser);
+        mav.addObject("detailForm", new DetailForm());
         return mav;
     }
 
-    //申請取り消し機能
-    @PostMapping("/application-list/cancel/{id}")
-    public ModelAndView cancelSlips(
-            @PathVariable("id") String id,
-            @AuthenticationPrincipal LoginUserDetails loginUser,
-            RedirectAttributes redirectAttributes){
+    //差し戻された明細編集処理
+    @PostMapping("/remand/edit/{id}")
+    public String editDetail(@PathVariable("id") Integer id,
+                             @Valid @ModelAttribute DetailForm form,
+                             BindingResult result,
+                             RedirectAttributes redirectAttributes) throws IOException {
+
+        // バリデーションエラー時の処理
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessages",
+                    result.getAllErrors().stream()
+                            .map(e -> e.getDefaultMessage())
+                            .toList());
+            redirectAttributes.addFlashAttribute("openModal", id);
+            return "redirect:/remand/" + form.getSlipId();
+        }
+
+        form.setId(id);
+        detailService.updateDetail(form);
+        return "redirect:/remand/" + form.getSlipId();
+    }
+
+    //差し戻し伝票再申請処理
+    @PostMapping("/remand/reapplication/{id}")
+    public ModelAndView reapplicationSlip(@PathVariable("id") String id,
+                                          @AuthenticationPrincipal LoginUserDetails loginUser,
+                                          RedirectAttributes redirectAttributes){
 
         List<String> errorMessages = new ArrayList<>();
 
@@ -131,8 +155,31 @@ public class ApplicationController {
         }
 
         Integer slipId = Integer.valueOf(id);
+        slipService.reapplicationSlip(slipId, loginUser.getUser().getId());
+        slipService.cancelSlip(slipId, loginUser.getUser().getId());
+        redirectAttributes.addFlashAttribute("successMessage", "再申請を受け付けました。");
+        return new ModelAndView("redirect:/returned");
+    }
+
+    //申請取り消し機能
+    @PostMapping("/remand/cancel/{id}")
+    public ModelAndView cancelSlip(
+            @PathVariable("id") String id,
+            @AuthenticationPrincipal LoginUserDetails loginUser,
+            RedirectAttributes redirectAttributes){
+
+        List<String> errorMessages = new ArrayList<>();
+
+        // ID形式チェック
+        if (StringUtils.isBlank(id) || !id.matches("^[0-9]+$")) {
+            errorMessages.add(E0013);
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
+            return new ModelAndView("redirect:/returned");
+        }
+
+        Integer slipId = Integer.valueOf(id);
         slipService.cancelSlip(slipId, loginUser.getUser().getId());
         redirectAttributes.addFlashAttribute("successMessage", "申請を取り消しました。");
-        return new ModelAndView("redirect:/application-list");
+        return new ModelAndView("redirect:/returned");
     }
 }

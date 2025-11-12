@@ -26,4 +26,5 @@ public interface SlipRepository {
 
     int updateStatus(@Param("id") Integer id, @Param("status") Integer status);
 
+    List<Slip> findByUserIdSlips(Integer id);
 }

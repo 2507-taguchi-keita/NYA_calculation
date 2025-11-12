@@ -2,7 +2,7 @@
 <html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>申請一覧画面</title>
+    <title>差し戻し一覧画面</title>
 </head>
 <body>
 <header>
@@ -13,9 +13,9 @@
         <li th:each="err : ${errorMessages}" th:text="${err}"></li>
     </ul>
 </div>
-<main class="user-application-list">
-    <h2>申請一覧</h2>
-    <table class="user-application-table">
+<main class="returned-slips">
+    <h2>差し戻し一覧</h2>
+    <table class="returned-slips-table">
         <thead>
         <tr>
             <th>ID</th>
@@ -29,7 +29,7 @@
         <tbody>
         <tr th:each="s : ${slipList}">
             <td>
-                <a th:href="@{'/application-detail/' + ${s.id}}" th:text="${s.id}"></a>
+                <a th:href="@{'/remand/' + ${s.id}}" th:text="${s.id}"></a>
             </td>
             <td th:text="${#dates.format(s.updatedDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
             <td th:text="${userName}"></td>
@@ -42,17 +42,17 @@
     <!-- ページネーション -->
     <div th:if="${totalPages > 1}" class="pagination">
         <a th:if="${currentPage > 0}"
-           th:href="@{/application-list(page=${currentPage - 1})}">« 前へ</a>
+           th:href="@{/returned(page=${currentPage - 1})}">« 前へ</a>
 
         <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
         <a th:if="${i != currentPage}"
-           th:href="@{/application-list(page=${i})}"
+           th:href="@{/returned(page=${i})}"
            th:text="${i + 1}"></a>
         <strong th:if="${i == currentPage}" th:text="${i + 1}"></strong>
         </span>
 
         <a th:if="${currentPage + 1 < totalPages}"
-           th:href="@{/application-list(page=${currentPage + 1})}">次へ »</a>
+           th:href="@{/returned(page=${currentPage + 1})}">次へ »</a>
     </div>
     <a href="/" class="back-link">戻る</a>
 </main>

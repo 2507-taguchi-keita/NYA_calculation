@@ -3,6 +3,7 @@ package com.example.NYA_calculation.controller;
 import com.example.NYA_calculation.controller.form.UserForm;
 import com.example.NYA_calculation.dto.ExpenseSummary;
 import com.example.NYA_calculation.repository.entity.Slip;
+import com.example.NYA_calculation.repository.entity.User;
 import com.example.NYA_calculation.security.LoginUserDetails;
 import com.example.NYA_calculation.service.DetailService;
 import com.example.NYA_calculation.service.SlipService;
@@ -47,6 +48,17 @@ public class AdminController {
         int startPage = Math.max(0, currentPage - displayRange);
         int endPage = Math.min(totalPages - 1, currentPage + displayRange);
 
+        for (UserForm u : resultPage.getContent()) {
+            String departmentLabel = switch (u.getDepartmentId()) {
+                case 1 -> "経理部";
+                case 2 -> "人事部";
+                case 3 -> "営業部";
+                case 4 -> "開発部";
+                default -> "未所属";
+            };
+            u.setDepartmentLabel(departmentLabel);
+        }
+
         mav.setViewName("admin/users");
         // ページネーション
         mav.addObject("users", resultPage.getContent());
@@ -65,7 +77,7 @@ public class AdminController {
         return new ModelAndView("redirect:/admin/users");
     }
 
-    //管理者用申請一覧画面
+    //申請管理画面
     @GetMapping("/admin/requests")
     public ModelAndView adminApplication(@RequestParam(defaultValue = "0") int page){
         ModelAndView mav = new ModelAndView("admin/application");
@@ -107,6 +119,21 @@ public class AdminController {
                 default -> "不明";
             };
             s.setStepLabel(stepLabel);
+
+            String departmentName = switch (s.getUserId()) {
+                case 1 -> "経理部";
+                case 2 -> "人事部";
+                case 3 -> "営業部";
+                default -> "未所属";
+            };
+            s.setDepartmentName(departmentName);
+
+            User user = userService.findById(s.getUserId());
+            if (user != null) {
+                s.setStatusLabel(label);
+                s.setUserAccount(user.getAccount());
+                s.setUserName(user.getName());
+            }
         }
         mav.addObject("slipList", slipList);
         mav.addObject("currentPage", page);
