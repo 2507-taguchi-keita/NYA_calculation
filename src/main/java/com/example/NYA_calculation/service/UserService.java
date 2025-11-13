@@ -39,13 +39,13 @@ public class UserService {
     }
 
     public boolean updateUser(UserForm userForm) {
-        if (userForm.getPassword() == null || userForm.getPassword().isBlank()) {
-            userForm.setPassword(null);
-        } else {
+        if (userForm.getPassword() != null && !userForm.getPassword().isBlank()) {
             userForm.setPassword(passwordEncoder.encode(userForm.getPassword()));
+        } else {
+            userForm.setPassword(null);
         }
         int updatedRows = userRepository.updateUser(userForm);
-        return updatedRows > 0;
+        return updatedRows >= 0;
     }
 
     public List<User> getApprovers() {

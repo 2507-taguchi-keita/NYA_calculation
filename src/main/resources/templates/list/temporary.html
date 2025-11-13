@@ -3,17 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>一時保存一覧画面</title>
+    <link rel="stylesheet" th:href="@{/css/list.css}">
 </head>
 <body>
 <header>
-
+    <h1>NYA精算</h1>
+    <nav>
+        <a href="/">ホーム</a>
+        <a href="/logout">ログアウト</a>
+    </nav>
 </header>
 
-<main>
-    <h1>一時保存一覧画面</h1>
+<main class="list-container">
+    <h2>一時保存一覧画面</h2>
 
     <div>
-        <table>
+        <table class="list-table">
             <thead>
             <th>伝票No.</th>
             <th>申請日</th>
@@ -27,7 +32,7 @@
                    th:text="${slipForm.id}">
                 </a>
             </td>
-            <td></td>
+            <td th:text="${#dates.format(slipForm.updatedDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
             <td th:text="${slipForm.userName}"></td>
             <td th:text="${slipForm.totalAmount}"></td>
             <td th:text="${slipForm.status}"></td>

@@ -39,8 +39,15 @@ public class DetailService {
         Detail detail = detailConverter.toEntity(form);
         detail.setId(form.getId());
         detail.setUpdatedDate(Timestamp.valueOf(LocalDateTime.now()));
-
-        // 差し戻し編集専用ロジック（必要に応じて拡張可能）
         detailRepository.update(detail);
+    }
+
+    public List<ExpenseSummary> getReasonSummary(){
+        return detailRepository.getReasonSummary();
+    }
+
+    public Integer getTotalExpense(){
+        Integer total = detailRepository.getTotalExpense();
+        return total != null ? total : 0;
     }
 }

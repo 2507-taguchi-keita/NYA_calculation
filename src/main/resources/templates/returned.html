@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>差し戻し一覧画面</title>
+    <link rel="stylesheet" th:href="@{/css/list.css}">
 </head>
 <body>
 <header>
@@ -13,9 +14,9 @@
         <li th:each="err : ${errorMessages}" th:text="${err}"></li>
     </ul>
 </div>
-<main class="returned-slips">
+<main class="list-container">
     <h2>差し戻し一覧</h2>
-    <table class="returned-slips-table">
+    <table class="list-table">
         <thead>
         <tr>
             <th>ID</th>

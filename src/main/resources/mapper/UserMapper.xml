@@ -67,11 +67,13 @@
     <update id="updateUser" parameterType="com.example.NYA_calculation.controller.form.UserForm">
         UPDATE users
         <set>
+            <trim suffixOverrides=",">
             <if test="password != null and password != ''">
                 password = #{password},
             </if>
             approver_id = #{approverId},
             updated_date = CURRENT_TIMESTAMP
+            </trim>
         </set>
         WHERE id = #{id}
     </update>

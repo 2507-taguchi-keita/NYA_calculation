@@ -2,26 +2,34 @@
 <html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>承認一覧画面</title>
+    <title>未承認一覧画面</title>
+    <link rel="stylesheet" th:href="@{/css/list.css}">
 </head>
 <body>
 <header>
-
+    <h1>NYA精算</h1>
+    <nav>
+        <a href="/">ホーム</a>
+        <a href="/logout">ログアウト</a>
+    </nav>
 </header>
 
-<main>
-    <h1>承認一覧画面</h1>
+<main class="list-container">
+    <h2>未承認一覧画面</h2>
 
     <div>
-        <table>
+        <table class="list-table">
             <thead>
-            <th>伝票No.</th>
-            <th>申請日</th>
-            <th>入力者</th>
-            <th>合計</th>
-            <th>状態</th>
+            <tr>
+                <th>伝票No.</th>
+                <th>申請日</th>
+                <th>入力者</th>
+                <th>合計</th>
+                <th>状態</th>
+            </tr>
             </thead>
-            <tbody th:each="slipForm : ${slipForms}">
+            <tbody>
+            <tr th:each="slipForm : ${slipForms}">
             <td>
                 <a th:href="@{/slip/approval/{id}(id=${slipForm.id})}"
                    th:text="${slipForm.id}">
@@ -31,6 +39,7 @@
             <td th:text="${slipForm.userName}"></td>
             <td th:text="${slipForm.totalAmount}"></td>
             <td th:text="${slipForm.status}"></td>
+            </tr>
             </tbody>
         </table>
     </div>
