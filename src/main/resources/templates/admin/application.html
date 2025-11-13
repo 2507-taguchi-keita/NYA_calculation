@@ -10,7 +10,7 @@
     <h1>NYA精算 管理者画面</h1>
     <nav>
         <a href="/admin">管理者トップ</a>
-        <a href="/logout">ログアウト</a>
+        / <a href="/logout">ログアウト</a>
     </nav>
 </header>
 
@@ -48,19 +48,21 @@
     <div th:if="${totalPages > 1}" class="pagination">
         <ul>
             <li th:if="${currentPage > 0}">
-                <a th:href="@{/admin/requests(page=${currentPage - 1})}">« 前へ</a>
+                <a th:href="@{/admin/requests(page=${currentPage - 1})}" class="page-link">« 前へ</a>
             </li>
 
-            <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
-                th:classappend="${i == currentPage} ? 'active'">
+            <li th:each="i : ${#numbers.sequence(startPage, endPage)}">
                 <a th:if="${i != currentPage}"
                    th:href="@{/admin/requests(page=${i})}"
-                   th:text="${i + 1}"></a>
-                <strong th:if="${i == currentPage}" th:text="${i + 1}"></strong>
+                   th:text="${i + 1}"
+                   class="page-link"></a>
+                <span th:if="${i == currentPage}"
+                      th:text="${i + 1}"
+                      class="current-page"></span>
             </li>
-
             <li th:if="${currentPage < totalPages - 1}">
-                <a th:href="@{/admin/requests(page=${currentPage + 1})}">次へ »</a>
+                <a th:href="@{/admin/requests(page=${currentPage + 1})}"
+                   class="page-link">次へ »</a>
             </li>
         </ul>
     </div>
