@@ -15,50 +15,55 @@ import org.springframework.web.bind.annotation.*;
 public class DetailController {
 
     @PostMapping("/submit")
-    public String addOrUpdateDetailAjax(@ModelAttribute("slipForm") SlipForm slipForm,
-                                        @Validated @ModelAttribute("detailForm") DetailForm detailForm,
-                                        BindingResult bindingResult,
-                                        @RequestParam(required = false) Integer index,
-                                        Model model) {
+    public String addOrUpdateDetail(@ModelAttribute("slipForm") SlipForm slipForm,
+                                    @Validated @ModelAttribute("detailForm") DetailForm detailForm,
+                                    BindingResult bindingResult,
+                                    @RequestParam(required = false) String tempId,
+                                    Model model) {
 
-        // バリデーションエラー判定用フラグ
         if (bindingResult.hasErrors()) {
-            model.addAttribute("hasErrors", true);          // ←追加
-            model.addAttribute("errors", bindingResult);    // 元のエラーもセット
-            model.addAttribute("detailForm", detailForm);// 元の値も保持
+            model.addAttribute("hasErrors", true);
+            model.addAttribute("errors", bindingResult);
+            model.addAttribute("detailForm", detailForm);
             model.addAttribute("reasonList", SlipConstants.REASONS);
             model.addAttribute("transportList", SlipConstants.TRANSPORTS);
-            return "slip/new :: detailModalFragment";       // モーダル部分のみ返す
+            return "fragments/detailModalFragment :: detailModalFragment";
         }
 
-        // 成功時フラグ
         model.addAttribute("hasErrors", false);
 
-        // 編集 or 追加
-        if (index != null) {
-            slipForm.getDetailForms().set(index, detailForm);
+        if (tempId != null) {
+            // 既存のUUIDを持つ明細を探して置き換え
+            slipForm.getDetailForms().replaceAll(d ->
+                    d.getTempId().equals(tempId) ? detailForm : d
+            );
         } else {
+            // 新規登録時は新しいUUIDを発行（DetailFormのデフォルトで生成済み）
             slipForm.getDetailForms().add(detailForm);
         }
 
-        // 合計計算
+        slipForm.getDetailForms().forEach(d -> {
+            int amount = d.getAmount() != null ? Integer.parseInt(d.getAmount()) : 0;
+            d.setSubtotal("往復".equals(d.getRoundTrip()) ? amount * 2 : amount);
+        });
+
         int total = slipForm.getDetailForms().stream()
                 .mapToInt(d -> d.getSubtotal() != null ? d.getSubtotal() : 0)
                 .sum();
         slipForm.setTotalAmount(total);
 
         model.addAttribute("slipForm", slipForm);
+        model.addAttribute("editable", true);
 
-        return "slip/new :: detailFragment";   // 明細一覧フラグメントを返す
+        return "fragments/detailFragment :: detailFragment";
     }
 
-
     @PostMapping("/delete")
-    public String deleteDetailAjax(@ModelAttribute("slipForm") SlipForm slipForm,
-                                   @RequestParam Integer index,
-                                   Model model) {
+    public String deleteDetail(@ModelAttribute("slipForm") SlipForm slipForm,
+                               @RequestParam String tempId,
+                               Model model) {
 
-        slipForm.getDetailForms().remove((int) index);
+        slipForm.getDetailForms().removeIf(d -> d.getTempId().equals(tempId));
 
         // 合計計算
         int total = slipForm.getDetailForms().stream()
@@ -67,8 +72,8 @@ public class DetailController {
         slipForm.setTotalAmount(total);
 
         model.addAttribute("slipForm", slipForm);
-
-        return "slip/new :: detailFragment";
+        model.addAttribute("editable", true);
+        return "fragments/detailFragment :: detailFragment";
     }
 
 }

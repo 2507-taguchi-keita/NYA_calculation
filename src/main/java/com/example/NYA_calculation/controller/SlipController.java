@@ -6,7 +6,10 @@ import com.example.NYA_calculation.controller.form.SlipForm;
 import com.example.NYA_calculation.dto.ApprovalHistoryWithUserDto;
 import com.example.NYA_calculation.repository.entity.User;
 import com.example.NYA_calculation.security.LoginUserDetails;
-import com.example.NYA_calculation.service.*;
+import com.example.NYA_calculation.service.ApprovalHistoryService;
+import com.example.NYA_calculation.service.DetailService;
+import com.example.NYA_calculation.service.SlipService;
+import com.example.NYA_calculation.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/slip")
@@ -174,16 +178,33 @@ public class SlipController {
     }
 
     @PostMapping("/temp/bulk-add")
-    @ResponseBody
-    public String bulkAddDetails(@ModelAttribute("slipForm") SlipForm slipForm,
-                                 @ModelAttribute("bulkDetails") List<DetailForm> bulkDetails) {
+    public String bulkAddDetailsFragment(@ModelAttribute("slipForm") SlipForm slipForm,
+                                         Model model) {
 
-        // ここでバリデーションは DetailForm のアノテーションで自動チェックされる
-        slipForm.getDetailForms().addAll(bulkDetails);
+        slipForm.getDetailForms().forEach(d -> {
+            if (d.getTempId() == null || d.getTempId().isEmpty()) {
+                d.setTempId(UUID.randomUUID().toString());
+            }
+        });
 
-        bulkDetails.clear(); // セッション一時データ消去
+        slipForm.getDetailForms().forEach(d -> {
+            int amount = d.getAmount() != null ? Integer.parseInt(d.getAmount()) : 0;
+            d.setSubtotal("往復".equals(d.getRoundTrip()) ? amount*2 : amount);
+        });
 
-        return "OK";
+        int total = slipForm.getDetailForms().stream()
+                .mapToInt(d -> d.getSubtotal() != null ? d.getSubtotal() : 0)
+                .sum();
+        slipForm.setTotalAmount(total);
+
+        // modelにセット
+        model.addAttribute("slipForm", slipForm);
+        model.addAttribute("editable", true);
+        model.addAttribute("detailForm", new DetailForm());
+        model.addAttribute("reasonList", SlipConstants.REASONS);
+        model.addAttribute("transportList", SlipConstants.TRANSPORTS);
+
+        return "fragments/detailFragment :: detailFragment";
     }
 
 }

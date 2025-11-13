@@ -11,11 +11,20 @@ $(document).ready(function() {
 
     const modal = $("#detailModal");
     const form = $("#detailForm");
-    let editIndex = null;
+    let editingTempId = null;
 
     // モーダル開閉
-    $("#openModalBtn").click(() => { modal.show(); });
-    $(".close, #cancelBtn").click(() => { modal.hide(); form[0].reset(); editIndex = null; });
+    $("#openModalBtn").click(() => {
+        modal.show();
+        form[0].reset();
+        editingTempId = null;
+    });
+
+    $(".close, #cancelBtn").click(() => {
+        modal.hide();
+        form[0].reset();
+        editingTempId = null;
+    });
 
     // 小計自動計算
     $("#amount, #roundTrip").on("change keyup", () => {
@@ -28,11 +37,10 @@ $(document).ready(function() {
     $("#detailSubmit").click(function (e) {
         e.preventDefault();
 
-        let form = $("#detailForm");
-        let formData = new FormData(form[0]);
+        let formData = new FormData($("#detailForm")[0]);
 
-        if (editIndex !== null) {
-            formData.append("index", editIndex);
+        if (editingTempId) {
+            formData.append("tempId", editingTempId);
         }
 
         $.ajax({
@@ -42,16 +50,14 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(html) {
-                console.log(html);
-                // サーバーで「hasErrors=true」を model に追加しておく
-                const hasErrors = $(html).find('#hasErrors').val() === 'true';  // hidden input で返却
+                const hasErrors = $(html).find('#hasErrors').val() === 'true';
                 if (hasErrors) {
-                    $("#modalContent").html(html);   // モーダル内容だけ更新
+                    $("#modalContent").html(html);
                 } else {
-                    $("#detailArea").html(html);     // 明細一覧更新
-                    $("#detailModal").hide();        // モーダル閉じる
-                    $("#detailForm")[0].reset();     // フォームリセット
-                    editIndex = null;
+                    $("#detailArea").html(html);
+                    modal.hide();
+                    form[0].reset();
+                    editingTempId = null;
                 }
             }
         });
@@ -59,48 +65,45 @@ $(document).ready(function() {
 
     // 編集ボタン
     $(document).on("click", ".editDetailBtn", function() {
-        editIndex = $(this).data("index");
-        let row = $("#detailTableBody tr").eq(editIndex * 2); // 1明細2行
+        editingTempId = $(this).data("temp-id");
+
+        // 対応する行データを抽出
+        let row = $(this).closest("tr");
         $("#billingDate").val(row.find("td").eq(0).text());
         $("#reason").val(row.find("td").eq(1).text());
         $("#transportation").val(row.find("td").eq(2).text());
         $("#roundTrip").val(row.find("td").eq(3).text());
         $("#amount").val(row.find("td").eq(4).text());
         $("#subtotal").val(row.find("td").eq(5).text());
-        $("#remark").val($("#detailTableBody tr").eq(editIndex*2+1).find("td").eq(0).text());
+        $("#remark").val(row.find("td").eq(6).text());
+
         modal.show();
     });
 
-    // 削除ボタン Ajax
+    // 削除ボタン
     $(document).on("click", ".deleteDetailBtn", function() {
-        let index = $(this).data("index");
-        $.post("/detail/delete", { index: index }, function(response) {
+        $.post("/detail/delete", { tempId: $(this).data("temp-id") }, function(response) {
             $("#detailArea").html(response);
         });
     });
 
-    // CSV取込み
-    $("#csvImportBtn").click(function() {
-        $("#csvInput").click();
-    });
+    $("#csvImportBtn").click(() => $("#csvInput").click());
 
     $("#csvInput").change(function() {
-
         let file = this.files[0];
-        if (!file) return;
-
+        if(!file) return;
         let formData = new FormData();
         formData.append("file", file);
 
         $.ajax({
-            url: "/csv/import",
+            url: "/csv/upload",
             type: "POST",
             data: formData,
             processData: false,
             contentType: false,
-            success: function(response) {
-                $("#detailArea").html(response);   // << 既存コードと同じ
-                alert("CSV取込みが完了しました！");
+            success: function(html) {
+                $("#detailArea").html(html);
+                alert("CSV取込み完了！");
             },
             error: function() {
                 alert("CSV取込みに失敗しました");
@@ -108,11 +111,18 @@ $(document).ready(function() {
         });
     });
 
-    document.getElementById("registerBtn").addEventListener("click", () => {
-
-            fetch('/slip/temp/bulk-add', { method: 'POST' })
-                .then(() => window.location.href = '/slip/new')
-                .catch(err => alert("追加に失敗しました"));
+    // CSV一括追加
+    $("#registerBtn").click(function() {
+        $.ajax({
+            url: "/slip/temp/bulk-add",
+            type: "POST",
+            headers: { [csrfHeader]: csrfToken },
+            success: function(html) {
+                $("#detailArea").html(html);
+                alert("明細を伝票に追加しました！");
+            },
+            error: function() { alert("一括追加に失敗しました"); }
         });
+    });
 
 });
