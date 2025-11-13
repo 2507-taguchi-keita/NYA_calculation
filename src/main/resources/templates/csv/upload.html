@@ -15,11 +15,11 @@
 <main>
 
     <form th:action="@{/csv/upload}" method="post" enctype="multipart/form-data">
-        <input type="file" name="csvFile" accept=".csv" required>
+        <input type="file" name="csvFile" accept=".csv">
         <button type="submit">アップロード</button>
     </form>
 
-    <a th:href="@{/slip}">戻る</a>
+    <a th:href="@{/slip/new}">戻る</a>
 
 </main>
 

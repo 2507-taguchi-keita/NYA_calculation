@@ -14,25 +14,18 @@
 
 <main>
 
-    <table>
-        <thead>
-        <tr>
-            <th>日付</th><th>往復</th><th>金額</th><th>交通手段</th><th>申請理由</th><th>備考</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="d : ${details}">
-            <td th:text="${d.billingDate}"></td>
-            <td th:text="${d.roundTrip}"></td>
-            <td th:text="${d.amount}"></td>
-            <td th:text="${d.transportation}"></td>
-            <td th:text="${d.reason}"></td>
-            <td th:text="${d.remark}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <th:block th:replace="fragments/detailFragment :: detailFragment(${slipForm}, true)"></th:block>
 
+    <th:block th:replace="fragments/detailModalFragment :: detailModalFragment(${detailForm})"></th:block>
+
+    <!-- 一括追加ボタン -->
     <button id="registerBtn" type="button">伝票に一括追加</button>
+
+    <div class="slip-button">
+        <a th:href="@{/}">
+            <button type="button">戻る</button>
+        </a>
+    </div>
 
 </main>
 

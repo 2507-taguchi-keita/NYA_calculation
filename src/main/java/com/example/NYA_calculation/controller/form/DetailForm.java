@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import static com.example.NYA_calculation.validation.ErrorMessages.*;
 
@@ -16,6 +17,7 @@ import static com.example.NYA_calculation.validation.ErrorMessages.*;
 public class DetailForm {
 
     private Integer id;
+    private String tempId = UUID.randomUUID().toString();
 
     @NotNull(message = E0007)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
