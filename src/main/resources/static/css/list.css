@@ -1,0 +1,152 @@
+body {
+    font-family: "Segoe UI", "Meiryo", sans-serif;
+    background-color: #f6f8fb;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #005bac;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 30px;
+}
+
+header h1 {
+    font-size: 22px;
+    margin: 0;
+}
+
+nav {
+    display: flex;
+    gap: 25px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+.list-container {
+    width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.list-container h2 {
+    font-size: 22px;
+    color: #005bac;
+    margin-bottom: 20px;
+}
+
+.list-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.list-table th {
+    background-color: #e0efff;
+    color: #005bac;
+    padding: 12px;
+    font-weight: bold;
+    border-bottom: 1px solid #d0dbe8;
+}
+
+.list-table td {
+    text-align: center;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.list-table tr:hover {
+    background-color: #f4faff;
+}
+
+.list-table a {
+    color: #005bac;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.list-table a:hover {
+    text-decoration: underline;
+}
+
+.list-table th,
+.list-table td {
+    border-right: 1px solid #d0dbe8;
+}
+
+.list-table th:last-child,
+.list-table td:last-child {
+    border-right: none;
+}
+
+.pagination {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.page-link {
+    color: #005bac;
+    margin: 0 5px;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 5px;
+    border: 1px solid #005bac;
+    background-color: #fff;
+}
+
+.page-link:hover {
+    background-color: #005bac;
+    color: #fff;
+}
+
+.current-page {
+    margin: 0 5px;
+    background-color: #005bac;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 5px;
+}
+
+.error-messages {
+    width: 900px;
+    margin: 20px auto;
+    background-color: #ffeaea;
+    color: #d33;
+    border: 1px solid #e0a0a0;
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #005bac;
+    font-weight: bold;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+footer {
+    text-align: center;
+    color: #666;
+    font-size: 13px;
+    margin-top: 80px;
+    padding-bottom: 10px;
+}

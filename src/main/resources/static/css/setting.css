@@ -1,0 +1,128 @@
+body {
+  font-family: "Segoe UI", "Meiryo", sans-serif;
+  background-color: #f6f8fb;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #005bac;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 30px;
+}
+
+header h1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+nav {
+  display: flex;
+  gap: 25px;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  width: 500px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 30px;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+input[type="password"],
+input[type="text"],
+select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.pw-visible-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: #d33;
+  font-size: 14px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  min-height: 18px;
+}
+
+.error-messages {
+  background-color: #ffeaea;
+  color: #d33;
+  border: 1px solid #e0a0a0;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.btn-area {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.btn {
+  background-color: #005bac;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 25px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.btn:hover {
+  background-color: #0070e0;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: #005bac;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+footer {
+  text-align: center;
+  color: #666;
+  font-size: 13px;
+  margin-top: 80px;
+  padding-bottom: 10px;
+}

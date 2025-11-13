@@ -3,85 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>個人設定画面</title>
-    <style>
-        body {
-          font-family: "Segoe UI", sans-serif;
-          background-color: #f5f7fa;
-          margin: 0;
-          padding: 0;
-        }
-        header {
-          background-color: #005bac;
-          color: #fff;
-          padding: 10px 30px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        header h1 { font-size: 20px; margin: 0; }
-        .container {
-          width: 500px;
-          margin: 40px auto;
-          background: #fff;
-          border-radius: 8px;
-          box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-          padding: 30px;
-        }
-        h2 { margin-bottom: 20px; color: #333; }
-        label {
-          display: block;
-          margin-top: 15px;
-          font-weight: bold;
-        }
-        input[type="password"], select {
-          width: 100%;
-          padding: 8px;
-          margin-top: 5px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-        }
-        .btn-area {
-          margin-top: 25px;
-          text-align: center;
-        }
-        .btn {
-          background-color: #005bac;
-          color: #fff;
-          border: none;
-          border-radius: 5px;
-          padding: 8px 25px;
-          cursor: pointer;
-          font-size: 15px;
-        }
-        .btn:hover { background-color: #0070e0; }
-        .error-messages {
-          background-color: #ffeaea;
-          color: #d33;
-          border: 1px solid #e0a0a0;
-          border-radius: 5px;
-          padding: 10px;
-          margin-bottom: 15px;
-        }
-        .back-link {
-          display: inline-block;
-          margin-top: 10px;
-          color: #005bac;
-          text-decoration: none;
-        }
-        .back-link:hover { text-decoration: underline; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/setting.css}">
 </head>
+
 <body>
 
 <header>
     <h1>NYA精算</h1>
     <nav>
-        <a href="/" style="color:#fff; text-decoration:none;">ホーム</a>
+        <a href="/admin" th:if="${loginUser.user.departmentId == 1}">管理者画面</a>
+        <a href="/logout">ログアウト</a>
     </nav>
 </header>
 
 <div class="container">
-
     <h2>個人設定変更</h2>
 
     <!-- エラーメッセージ表示 -->
@@ -92,16 +27,16 @@
         <input type="hidden" th:field="*{id}">
 
         <label for="password">パスワード</label>
-        <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error-message"></div>
         <input type="password" id="password" th:field="*{password}" placeholder="新しいパスワードを入力">
 
         <label for="confirmPassword">パスワード（確認用）</label>
         <input type="password" id="confirmPassword" th:field="*{confirmPassword}" placeholder="もう一度入力">
 
-        <p>
-            <input id="pwVisible" class="pwVisible" type="checkbox" onclick="passwordVisibility()" >
-            <label>パスワードを表示する</label>
-        </p>
+        <div class="pw-visible-box">
+            <input id="pwVisible" type="checkbox" onclick="passwordVisibility()">
+            <label for="pwVisible">パスワードを表示する</label>
+        </div>
 
         <label for="approverId">承認者</label>
         <div th:if="${#fields.hasErrors('approverId')}" th:errors="*{approverId}"></div>
@@ -113,8 +48,6 @@
                     th:selected="${a.id == formModel.approverId}">
             </option>
         </select>
-
-
 
         <div class="btn-area">
             <button type="submit" class="btn">変更</button>
