@@ -47,6 +47,7 @@ public class UserController {
         if (StringUtils.isBlank(id) || !id.matches("^[0-9]+$")) {
             errorMessages.add(E0013);
             attributes.addFlashAttribute("errorMessages", errorMessages);
+
             return new ModelAndView("redirect:/");
         }
 
@@ -68,13 +69,15 @@ public class UserController {
 
     //個人設定処理
     @PostMapping("/setting/update/{id}")
-    public String updateUser(@ModelAttribute("formModel") @Validated({Default.class, SettingGroup.class}) UserForm userForm,
+    public String updateUser(@AuthenticationPrincipal LoginUserDetails loginUser,
+            @ModelAttribute("formModel") @Validated({Default.class, SettingGroup.class}) UserForm userForm,
                              BindingResult result,
                              Model model) {
 
         if (result.hasErrors()) {
             model.addAttribute("formModel", userForm);
             model.addAttribute("approvers", userService.getApprovers());
+            model.addAttribute("loginUser", loginUser);
             return "setting";
         }
 
@@ -85,6 +88,7 @@ public class UserController {
             model.addAttribute("formModel", userForm);
             List<User> approvers = userService.getApprovers();
             model.addAttribute("approvers", approvers);
+            model.addAttribute("loginUser", loginUser);
             return "setting";
         }
 
