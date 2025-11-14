@@ -179,15 +179,14 @@ public class SlipController {
 
     @PostMapping("/temp/bulk-add")
     public String bulkAddDetailsFragment(@ModelAttribute("slipForm") SlipForm slipForm,
+                                         @RequestParam(required = false) String type,
                                          Model model) {
 
         slipForm.getDetailForms().forEach(d -> {
             if (d.getTempId() == null || d.getTempId().isEmpty()) {
                 d.setTempId(UUID.randomUUID().toString());
             }
-        });
-
-        slipForm.getDetailForms().forEach(d -> {
+            d.setNewFromCsv(false);
             int amount = d.getAmount() != null ? Integer.parseInt(d.getAmount()) : 0;
             d.setSubtotal("往復".equals(d.getRoundTrip()) ? amount*2 : amount);
         });
@@ -197,14 +196,30 @@ public class SlipController {
                 .sum();
         slipForm.setTotalAmount(total);
 
+        boolean hasCsvDetails = slipForm.getDetailForms().stream()
+                .anyMatch(DetailForm::isNewFromCsv);
+
         // modelにセット
         model.addAttribute("slipForm", slipForm);
         model.addAttribute("editable", true);
+        model.addAttribute("showCsvOnly", hasCsvDetails);
+        model.addAttribute("type", resolveType(type));
         model.addAttribute("detailForm", new DetailForm());
         model.addAttribute("reasonList", SlipConstants.REASONS);
         model.addAttribute("transportList", SlipConstants.TRANSPORTS);
 
-        return "fragments/detailFragment :: detailFragment";
+        return "fragments/slipFragment :: detailFragment";
+    }
+
+    private String resolveType(String type) {
+        if (type == null || type.isBlank()) {
+            return "temporary"; // デフォルト
+        }
+
+        return switch (type) {
+            case "new", "temporary", "approval", "remand", "confirm" -> type;
+            default -> "temporary";
+        };
     }
 
 }

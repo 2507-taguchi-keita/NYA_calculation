@@ -13,105 +13,14 @@
 </header>
 
 <main>
-    <div class="slip-errorMessage">
-        <div th:if="${errorMessage}">
-            <p th:text="${errorMessage}"></p>
-        </div>
-        <div th:if="${errorMessages}">
-            <p th:each="msg : ${errorMessages}" th:text="${msg}"></p>
-        </div>
-    </div>
 
     <h1>一時保存伝票画面</h1>
 
-    <div class="slip-info">
-        <table class="user-info">
-            <tbody>
-            <tr>
-                <th>伝票No.</th>
-                <td th:text="${slipForm.id}"></td>
-            </tr>
-            <tr>
-                <th>申請日</th>
-                <td></td>
-            </tr>
-            <tr>
-                <th>申請者</th>
-                <td th:text="${loginUser.name}"></td>
-            </tr>
-            <tr>
-                <th>所属部署</th>
-                <td th:text="${loginUser.departmentId}"></td>
-            </tr>
-            </tbody>
-        </table>
+    <th:block th:replace="fragments/slipFragment :: slipInfoFragment(temporary)"></th:block>
 
-        <table class="approval-info">
-            <thead>
-            <tr>
-                <th>承認履歴</th>
-                <th>
-                    <p>経理部</p>
-                </th>
-                <th>
-                    <p>経理部長</p>
-                </th>
-                <th>
-                    <p>所属部長</p>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="history : ${approvalHistoryList}">
-                <td>
-                </td>
-                <td th:if="${history.role = 1}">
-                    <p th:text="${#temporals.format(history.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
-                    <p th:text="${history.userName}"></p>
-                    <p>承認</p>
-                </td>
-                <td th:if="${history.role = 2}">
-                    <p th:text="${#temporals.format(history.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
-                    <p th:text="${history.userName}"></p>
-                    <p>承認</p>
-                </td>
-                <td th:if="${history.role = 3}">
-                    <p th:text="${#temporals.format(history.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
-                    <p th:text="${history.userName}"></p>
-                    <p>承認</p>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    <th:block th:replace="fragments/slipFragment :: slipMainFragment(${slipForm}, true, false, temporary)"></th:block>
 
-    <div class="slip-menu">
-        <!-- 明細追加ボタン -->
-        <button id="openModalBtn" type="button">明細追加</button>
-        <a th:href="@{/csv/upload}">
-            <button type="button">CSV取込み</button>
-        </a>
-    </div>
-
-    <th:block th:replace="fragments/detailFragment :: detailFragment(${slipForm}, true)"></th:block>
-
-    <form th:action="@{/slip/temporary}" th:object="${slipForm}" method="post">
-        <input type="hidden" th:field="*{id}">
-        <div th:if="${!#lists.isEmpty(slipForm.detailForms)}">
-            <label>合計</label>
-            <input type="text" th:field="*{totalAmount}" readonly>
-        </div>
-        <div class="slip-button">
-            <a th:href="@{/}">
-                <button type="button">戻る</button>
-            </a>
-            <button type="submit" formaction="/slip/temporary">一時保存</button>
-            <button type="submit" formaction="/slip/delete">削除</button>
-            <button type="submit" formaction="/slip/application">申請</button>
-        </div>
-    </form>
-
-    <th:block th:replace="fragments/detailModalFragment :: detailModalFragment(${detailForm})"></th:block>
+    <th:block th:replace="fragments/slipFragment :: detailModalFragment(${detailForm})"></th:block>
 
 </main>
 

@@ -9,23 +9,18 @@
 </head>
 <body>
 <header>
-    <h2>明細一括追加画面</h2>
+
 </header>
 
 <main>
 
-    <th:block th:replace="fragments/detailFragment :: detailFragment(${slipForm}, true)"></th:block>
+    <h2>明細一括追加画面</h2>
 
-    <th:block th:replace="fragments/detailModalFragment :: detailModalFragment(${detailForm})"></th:block>
+    <th:block th:replace="fragments/slipFragment :: slipInfoFragment(confirm)"></th:block>
 
-    <!-- 一括追加ボタン -->
-    <button id="registerBtn" type="button">伝票に一括追加</button>
+    <th:block th:replace="fragments/slipFragment :: slipMainFragment(${slipForm}, true, true, confirm)"></th:block>
 
-    <div class="slip-button">
-        <a th:href="@{/}">
-            <button type="button">戻る</button>
-        </a>
-    </div>
+    <th:block th:replace="fragments/slipFragment :: detailModalFragment(${detailForm})"></th:block>
 
 </main>
 

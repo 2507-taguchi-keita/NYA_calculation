@@ -3,6 +3,7 @@ package com.example.NYA_calculation.service;
 import com.example.NYA_calculation.controller.form.SlipForm;
 import com.example.NYA_calculation.converter.SlipConverter;
 import com.example.NYA_calculation.dto.SlipWithUserDto;
+import com.example.NYA_calculation.error.RecordNotFoundException;
 import com.example.NYA_calculation.repository.DetailRepository;
 import com.example.NYA_calculation.repository.SlipRepository;
 import com.example.NYA_calculation.repository.entity.Detail;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.example.NYA_calculation.validation.ErrorMessages.E0013;
 
 @Service
 public class SlipService {
@@ -28,7 +31,8 @@ public class SlipService {
     }
 
     public SlipForm getSlip(Integer id) {
-        return slipConverter.toForm(slipRepository.findById(id));
+        return slipConverter.toForm(slipRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException(E0013)));
     }
 
     public List<SlipWithUserDto> getSTemporarySlips(Integer userId) {
@@ -44,7 +48,8 @@ public class SlipService {
     }
 
     public boolean cancelSlip(Integer slipId, Integer userId) {
-        Slip slip = slipRepository.findById(slipId);
+        Slip slip = slipRepository.findById(slipId)
+                .orElseThrow(() -> new RecordNotFoundException(E0013));
         if (slip == null || !slip.getUserId().equals(userId)) {
             return false;
         }
@@ -53,7 +58,8 @@ public class SlipService {
 
     // IDで伝票を1件取得
     public Slip findById(Integer slipId) {
-        return slipRepository.findById(slipId);
+        return slipRepository.findById(slipId)
+                .orElseThrow(() -> new RecordNotFoundException(E0013));
     }
 
     @Transactional
@@ -88,7 +94,8 @@ public class SlipService {
     }
 
     public boolean reapplicationSlip(Integer slipId, Integer id) {
-        Slip slip = slipRepository.findById(slipId);
+        Slip slip = slipRepository.findById(slipId)
+                .orElseThrow(() -> new RecordNotFoundException(E0013));
         if (slip == null || !slip.getUserId().equals(id)) {
             return false;
         }

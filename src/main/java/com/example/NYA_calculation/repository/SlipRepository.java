@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface SlipRepository {
@@ -18,7 +19,7 @@ public interface SlipRepository {
 
     List<Slip> findByUserId(Integer id);
 
-    Slip findById(Integer id);
+    Optional<Slip> findById(Integer id);
 
     List<SlipWithUserDto> findTemporaryByUserId(Integer userId);
 

@@ -44,17 +44,15 @@ public class CsvController {
 
         try {
             List<DetailForm> importedDetails = csvService.parseCsv(csvFile);
+            importedDetails.forEach(d -> d.setNewFromCsv(true));
 
-            // ✅ 既存明細と統合（UUIDで区別される）
             slipForm.getDetailForms().addAll(importedDetails);
 
-            // ✅ 合計再計算
             int total = slipForm.getDetailForms().stream()
                     .mapToInt(d -> d.getSubtotal() != null ? d.getSubtotal() : 0)
                     .sum();
             slipForm.setTotalAmount(total);
 
-            // 画面再描画用データ
             model.addAttribute("slipForm", slipForm);
             model.addAttribute("detailForm", new DetailForm());
             model.addAttribute("reasonList", SlipConstants.REASONS);

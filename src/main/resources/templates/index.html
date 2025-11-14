@@ -25,6 +25,10 @@
 
 <!-- ===== メインエリア ===== -->
 <main class="container">
+    <div th:if="${errorMessage != null}">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
     <a href="/slip/new" class="main-btn">🚊 交通費精算</a>
 
     <div class="menu-grid">

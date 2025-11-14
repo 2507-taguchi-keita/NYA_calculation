@@ -47,4 +47,6 @@ public class DetailForm {
     private Timestamp updatedDate;
     // 画像添付用
     private MultipartFile file;
+
+    private boolean isNewFromCsv = false;
 }
