@@ -25,7 +25,7 @@
 
 <!-- ===== メインエリア ===== -->
 <main class="container">
-    <div th:if="${errorMessage != null}">
+    <div th:if="${errorMessage != null}" class="error-message">
         <p th:text="${errorMessage}"></p>
     </div>
 
