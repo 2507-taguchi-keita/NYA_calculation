@@ -185,3 +185,8 @@ footer {
 .btn-add:hover {
     background-color: #0062cc;
 }
+
+.pagination ul li {
+    display: inline-flex;
+    align-items: center;
+}

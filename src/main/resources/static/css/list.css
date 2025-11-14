@@ -150,3 +150,9 @@ footer {
     margin-top: 80px;
     padding-bottom: 10px;
 }
+
+.pagination ul li {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 4px;
+}

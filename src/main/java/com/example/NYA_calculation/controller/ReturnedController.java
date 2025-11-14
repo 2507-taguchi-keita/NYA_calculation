@@ -118,11 +118,7 @@ public class ReturnedController {
         mav.addObject("slip", slip);
         mav.addObject("details", details);
         mav.addObject("loginUser", loginUser);
-        if (form == null || form.getId() == null) {
-            mav.addObject("detailForm", new DetailForm());
-        } else {
-            mav.addObject("detailForm", form);
-        }
+        mav.addObject("detailForm", form);
         return mav;
     }
 
