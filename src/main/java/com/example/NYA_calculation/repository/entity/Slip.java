@@ -32,6 +32,9 @@ public class Slip {
     private Integer approverId;
 
     @Column
+    private Timestamp applicationDate;
+
+    @Column
     private Timestamp createdDate;
 
     @Column

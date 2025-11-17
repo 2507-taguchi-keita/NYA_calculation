@@ -1,0 +1,64 @@
+<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+
+<div id="detailModelContainer" th:fragment="detailFragment(detailForm)">
+
+    <div class="modal-content">
+        <form id="detailForm" th:object="${detailForm}" enctype="multipart/form-data">
+            <input type="hidden" id="hasErrors" th:value="${hasErrors}">
+            <input type="hidden" id="newFromCsv" th:field="*{newFromCsv}">
+
+            <div class="modal-header">
+                <h2>明細追加</h2>
+            </div>
+
+            <div id="errorArea" th:if="${#fields.hasErrors('*')}">
+                <ul>
+                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
+            </div>
+
+            <div class="form-row">
+                <label>日付<span class="required">*</span></label>
+                <input type="date" th:field="*{billingDate}">
+                <label>申請理由<span class="required">*</span></label>
+                <select th:field="*{reason}">
+                    <option value="">選択してください</option>
+                    <option th:each="reason : ${reasonList}"
+                            th:value="${reason}"
+                            th:text="${reason}"></option>
+                </select>
+                <label>交通機関</label>
+                <select th:field="*{transportation}">
+                    <option value="">選択してください</option>
+                    <option th:each="transport : ${transportList}"
+                            th:value="${transport}"
+                            th:text="${transport}"></option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>金額/Km</label>
+                <input type="number" th:field="*{amount}" id="amount">
+                <label>往復</label>
+                <select th:field="*{roundTrip}" id="roundTrip">
+                    <option value="--">--</option>
+                    <option value="片道">片道</option>
+                    <option value="往復">往復</option>
+                </select>
+                <label>小計</label>
+                <input type="text" th:field="*{subtotal}" id="subtotal" readonly>
+            </div>
+            <div class="form-row">
+                <label>備考</label>
+                <textarea type="text" th:field="*{remark}"></textarea>
+                <label>領収書/請求書</label>
+                <input type="file" th:field="*{file}" accept="image/*,application/pdf">
+            </div>
+            <div class="button-row">
+                <button type="button" id="detailCancelBtn">キャンセル</button>
+                <button type="button" id="detailSaveBtn" class="primary-btn">確定</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</html>

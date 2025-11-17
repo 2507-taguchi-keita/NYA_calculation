@@ -25,9 +25,7 @@
     </select>
 
     <!-- ユーザー情報を id で検索 -->
-    <select id="findById"
-            resultType="com.example.NYA_calculation.repository.entity.User"
-            parameterType="Integer">
+    <select id="findById" resultType="com.example.NYA_calculation.repository.entity.User" parameterType="Integer">
         SELECT
             id,
             account,

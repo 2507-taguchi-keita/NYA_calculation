@@ -1,5 +1,6 @@
 package com.example.NYA_calculation.controller;
 
+import com.example.NYA_calculation.repository.entity.User;
 import com.example.NYA_calculation.security.LoginUserDetails;
 import com.example.NYA_calculation.service.SlipService;
 import com.example.NYA_calculation.service.UserService;
@@ -22,7 +23,7 @@ public class ListController {
     @GetMapping("/temporary")
     public String showTempList(Model model, @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
-        model.addAttribute("slipForms", slipService.getSTemporarySlips(loginUserDetails.getUser().getId()));
+        model.addAttribute("slipForms", slipService.getTemporarySlips(loginUserDetails.getUser().getId()));
 
         return "list/temporary";
     }
@@ -30,8 +31,12 @@ public class ListController {
     @GetMapping("/approval")
     public String showApprovalList(Model model, @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
-        model.addAttribute("slipForms", slipService.getApprovalSlips(loginUserDetails.getUser().getId()));
+        User loginUser = loginUserDetails.getUser();
+
+        model.addAttribute("slipForms", slipService.getApprovalSlips(loginUser));
 
         return "list/approval";
     }
+
 }
+

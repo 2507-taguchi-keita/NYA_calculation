@@ -9,6 +9,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @Controller
 @RequestMapping("/detail")
 @SessionAttributes("slipForm")
@@ -19,16 +21,14 @@ public class DetailController {
                                     @Validated @ModelAttribute("detailForm") DetailForm detailForm,
                                     BindingResult bindingResult,
                                     @RequestParam(required = false) String tempId,
-                                    @RequestParam(required = false) String type,
-                                    Model model) {
+                                    Model model) throws IOException {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("hasErrors", true);
             model.addAttribute("detailForm", detailForm);
             model.addAttribute("reasonList", SlipConstants.REASONS);
             model.addAttribute("transportList", SlipConstants.TRANSPORTS);
-            // ✅ エラーフラグメントだけ返す
-            return "fragments/slipFragment :: detailModalFragment";
+            return "fragments/detailFragment :: detailFragment";
         }
 
         model.addAttribute("hasErrors", false);
@@ -59,12 +59,11 @@ public class DetailController {
                 .anyMatch(DetailForm::isNewFromCsv);
 
         model.addAttribute("slipForm", slipForm);
+        model.addAttribute("status", slipForm.getStatus());
         model.addAttribute("editable", true);
         model.addAttribute("showCsvOnly", hasCsvDetails);
-        model.addAttribute("type", resolveType(type));
 
-        // ✅ 明細テーブル部のみ返す
-        return "fragments/slipFragment :: slipMainFragment";
+        return "fragments/slipFragment :: slip-detailListFragment";
     }
 
 
@@ -86,22 +85,10 @@ public class DetailController {
                 .anyMatch(DetailForm::isNewFromCsv);
 
         model.addAttribute("slipForm", slipForm);
-        model.addAttribute("editable", true);
+        model.addAttribute("status", slipForm.getStatus());
         model.addAttribute("showCsvOnly", hasCsvDetails);
-        model.addAttribute("type", resolveType(type));
 
-        return "fragments/slipFragment :: slipMainFragment";
-    }
-
-    private String resolveType(String type) {
-        if (type == null || type.isBlank()) {
-            return "temporary"; // デフォルト
-        }
-
-        return switch (type) {
-            case "new", "temporary", "approval", "remand", "confirm" -> type;
-            default -> "temporary";
-        };
+        return "fragments/slipFragment :: slip-detailListFragment";
     }
 
 }

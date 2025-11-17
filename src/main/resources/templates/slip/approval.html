@@ -4,29 +4,12 @@
     <meta charset="UTF-8">
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
-    <title>承認伝票画面</title>
+    <title>伝票画面</title>
     <link rel="stylesheet" th:href="@{/css/slip.css}">
 </head>
 <body>
-<header>
 
-</header>
-
-<main>
-
-    <h1>承認伝票画面</h1>
-
-    <th:block th:replace="fragments/slipFragment :: slipInfoFragment(approval)"></th:block>
-
-    <th:block th:replace="fragments/slipFragment :: slipMainFragment(${slipForm}, false, false, approval)"></th:block>
-
-    <th:block th:replace="fragments/slipFragment :: slipFormFragment(approval)"></th:block>
-
-</main>
-
-<footer>
-    <p>&copy;NYA</p>
-</footer>
+<div th:replace="fragments/slipFragment :: slipFragment(${slipForm}, ${userDto}, ${approvalHistoryDtoList}, ${slipForm.status} )"></div>
 
 <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 <script th:src="@{/js/slip.js}"></script>

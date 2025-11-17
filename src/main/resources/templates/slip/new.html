@@ -8,26 +8,8 @@
     <link rel="stylesheet" th:href="@{/css/slip.css}">
 </head>
 <body>
-<header>
 
-</header>
-
-<main>
-    <input type="hidden" id="typeHidden" th:value="${type}">
-
-    <h1>伝票画面</h1>
-
-    <th:block th:replace="fragments/slipFragment :: slipInfoFragment(new)"></th:block>
-
-    <th:block th:replace="fragments/slipFragment :: slipMainFragment(${slipForm}, true, false, new)"></th:block>
-
-    <th:block th:replace="fragments/slipFragment :: detailModalFragment(${detailForm})"></th:block>
-
-</main>
-
-<footer>
-    <p>&copy;NYA</p>
-</footer>
+<div th:replace="fragments/slipFragment :: slipFragment(${slipForm}, ${userDto}, ${approvalHistoryDtoList}, ${slipForm.status} )"></div>
 
 <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 <script th:src="@{/js/slip.js}"></script>

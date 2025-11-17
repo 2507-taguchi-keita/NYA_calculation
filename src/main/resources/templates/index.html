@@ -37,7 +37,7 @@
             <div class="menu-title">申請一覧</div>
         </a>
 
-        <a th:if="${loginUser.user.authority == 1}" th:href="@{/list/approval}" class="menu-card">
+        <a th:if="${loginUser.user.authority == 1 || loginUser.user.departmentId == 1}" th:href="@{/list/approval}" class="menu-card">
             <div class="menu-icon">✅</div>
             <div class="menu-title">未承認一覧</div>
         </a>

@@ -6,8 +6,8 @@
 <mapper namespace="com.example.NYA_calculation.repository.SlipRepository">
 
     <insert id="insertSlip" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO slips (user_id, approver_id, status, step, total_amount, created_date, updated_date)
-        VALUES (#{userId}, #{approverId}, #{status}, #{step}, #{totalAmount}, NOW(), NOW())
+        INSERT INTO slips (user_id, approver_id, status, step, total_amount, application_date)
+        VALUES (#{userId}, #{approverId}, #{status}, #{step}, #{totalAmount}, #{applicationDate)
     </insert>
 
     <update id="updateSlip">
@@ -17,6 +17,7 @@
         status = #{status},
         step = #{step},
         total_amount = #{totalAmount},
+        application_date = #{applicationDate}
         updated_date = NOW()
         WHERE id = #{id}
     </update>
@@ -42,16 +43,17 @@
         s.user_id,
         u.name AS user_name,
         s.approver_id,
+        s.application_date,
         s.created_date,
         s.updated_date
         FROM slips s
         JOIN users u
         ON s.user_id = u.id
         WHERE s.user_id = #{userId}
-        AND s.status = 0;
+        AND s.status = 1;
     </select>
 
-    <select id="findApprovalByApproverId" resultType="com.example.NYA_calculation.dto.SlipWithUserDto">
+    <select id="findApprovalByStatus" resultType="com.example.NYA_calculation.dto.SlipWithUserDto">
         SELECT
         s.id,
         s.status,
@@ -60,13 +62,13 @@
         s.user_id,
         u.name AS user_name,
         s.approver_id,
+        s.application_date,
         s.created_date,
         s.updated_date
         FROM slips s
         JOIN users u
         ON s.user_id = u.id
-        WHERE s.approver_id = #{approverId}
-        AND s.status = 1;
+        WHERE s.status = 2;
     </select>
 
     <select id="findAll" resultType="com.example.NYA_calculation.repository.entity.Slip">

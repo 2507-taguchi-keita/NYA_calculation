@@ -49,4 +49,8 @@ public class Detail {
 
     @Column
     private Timestamp updatedDate;
+
+    private String tempFileName; // 元ファイル名
+    private String tempFileUrl; // 一時ファイルパス
+    private String savedFileUrl;
 }

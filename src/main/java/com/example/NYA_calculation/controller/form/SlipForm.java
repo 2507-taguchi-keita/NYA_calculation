@@ -16,6 +16,7 @@ public class SlipForm {
     private Integer totalAmount;
     private Integer userId;
     private Integer approverId;
+    private Timestamp applicationDate;
     private Timestamp createdDate;
     private Timestamp updatedDate;
     private List<DetailForm> detailForms;
@@ -23,4 +24,5 @@ public class SlipForm {
     public SlipForm() {
         this.detailForms = new ArrayList<>();
     }
+
 }

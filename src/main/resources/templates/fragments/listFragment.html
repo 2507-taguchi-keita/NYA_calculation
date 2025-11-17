@@ -1,24 +1,13 @@
-<!DOCTYPE html>
 <html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
-<head>
-    <meta charset="UTF-8">
-    <title>一時保存一覧画面</title>
-    <link rel="stylesheet" th:href="@{/css/list.css}">
-</head>
-<body>
-<header>
-    <h1>NYA精算</h1>
-    <nav>
-        <a href="/">ホーム</a>
-        <a href="/logout">ログアウト</a>
-    </nav>
-</header>
 
-<main class="list-container">
-    <h2>一時保存一覧画面</h2>
+<div th:fragment="list-headerFragment">
+    <h1>タイトル</h1>
+</div>
 
+
+<div th:fragment="list-slipListFragment">
     <div>
-        <table class="list-table">
+        <table>
             <thead>
             <th>伝票No.</th>
             <th>申請日</th>
@@ -32,25 +21,20 @@
                    th:text="${slipForm.id}">
                 </a>
             </td>
-            <td th:if="${slipForm.applicationDate != null}"
-                th:text="${#dates.format(slipForm.applicationDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
-            <td th:unless="${slipForm.applicationDate != null}"></td>
+            <td th:text="${#dates.format(slipForm.updatedDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
             <td th:text="${slipForm.userName}"></td>
             <td th:text="${slipForm.totalAmount}"></td>
             <td th:text="${slipForm.status}"></td>
             </tbody>
         </table>
     </div>
+</div>
 
+
+<div th:fragment="slip-actionButtonFragment">
     <a th:href="@{/}" class="back-link">
         <button type="button">戻る</button>
     </a>
+</div>
 
-</main>
-
-<footer>
-    <p>&copy;NYA</p>
-</footer>
-
-</body>
 </html>

@@ -4,6 +4,7 @@ import com.example.NYA_calculation.controller.form.DetailForm;
 import com.example.NYA_calculation.controller.form.SlipForm;
 import com.example.NYA_calculation.repository.entity.Detail;
 import com.example.NYA_calculation.repository.entity.Slip;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -14,6 +15,11 @@ import java.util.List;
 @Component
 public class SlipConverter {
 
+    @Autowired
+    UserConverter userConverter;
+    @Autowired
+    ApprovalHistoryConverter approvalHistoryConverter;
+
     public SlipForm toForm(Slip result) {
         SlipForm slipForm = new SlipForm();
 
@@ -23,6 +29,7 @@ public class SlipConverter {
         slipForm.setTotalAmount(result.getTotalAmount());
         slipForm.setUserId(result.getUserId());
         slipForm.setApproverId(result.getApproverId());
+        slipForm.setApplicationDate(result.getApplicationDate());
         slipForm.setCreatedDate(result.getCreatedDate());
         slipForm.setUpdatedDate(result.getUpdatedDate());
         return slipForm;
@@ -54,6 +61,7 @@ public class SlipConverter {
         slip.setTotalAmount(form.getTotalAmount());
         slip.setUserId(form.getUserId());
         slip.setApproverId(form.getApproverId());
+        slip.setApplicationDate(form.getApplicationDate());
 
         if (form.getId() != null) {
             slip.setId(form.getId());

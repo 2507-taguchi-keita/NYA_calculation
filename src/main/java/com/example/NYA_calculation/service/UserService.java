@@ -2,8 +2,11 @@ package com.example.NYA_calculation.service;
 
 import com.example.NYA_calculation.controller.form.UserForm;
 import com.example.NYA_calculation.converter.UserConverter;
+import com.example.NYA_calculation.dto.UserDto;
 import com.example.NYA_calculation.error.RecordNotFoundException;
+import com.example.NYA_calculation.repository.DepartmentRepository;
 import com.example.NYA_calculation.repository.UserRepository;
+import com.example.NYA_calculation.repository.entity.Department;
 import com.example.NYA_calculation.repository.entity.User;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,8 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    DepartmentRepository departmentRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
@@ -106,4 +111,13 @@ public class UserService {
             return false;
         }
     }
+
+    public UserDto getUserDto(Integer userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException(E0013));
+        Department department = departmentRepository.findById(user.getDepartmentId());
+        User approver = userRepository.findById(user.getApproverId()).orElseThrow(() -> new RecordNotFoundException(E0013));
+
+        return userConverter.toDto(user, department, approver);
+    }
+
 }

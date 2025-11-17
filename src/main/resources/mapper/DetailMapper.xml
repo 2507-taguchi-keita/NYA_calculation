@@ -36,8 +36,7 @@
     </select>
 
     <!-- 明細取得（slip_id指定） -->
-    <select id="findBySlipId" parameterType="int"
-            resultType="com.example.NYA_calculation.repository.entity.Detail">
+    <select id="findBySlipId" resultType="com.example.NYA_calculation.repository.entity.Detail" parameterType="Integer">
         SELECT
         d.id,
         d.billing_date,

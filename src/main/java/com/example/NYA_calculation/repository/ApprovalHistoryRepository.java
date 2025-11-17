@@ -1,6 +1,6 @@
 package com.example.NYA_calculation.repository;
 
-import com.example.NYA_calculation.dto.ApprovalHistoryWithUserDto;
+import com.example.NYA_calculation.repository.entity.ApprovalHistory;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface ApprovalHistoryRepository {
 
-    void insert(Integer slipId, Integer userId, Integer role);
+    void insert(Integer slipId, Integer userId);
 
-    List<ApprovalHistoryWithUserDto> findBySlipId(Integer slipId);
+    List<ApprovalHistory> findBySlipId(Integer slipId);
 }

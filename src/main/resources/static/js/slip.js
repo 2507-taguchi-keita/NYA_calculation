@@ -17,12 +17,14 @@ $(document).ready(function() {
     $(document).on("click", "#openModalBtn", function() {
         $("#detailModal").show();
         $("#detailForm")[0].reset();
+        $("#errorArea").empty();
         editingTempId = null;
     });
 
-    $(document).on("click", "#cancelBtn, .close", function() {
+    $(document).on("click", "#detailCancelBtn, .close", function() {
         $("#detailModal").hide();
         $("#detailForm")[0].reset();
+        $("#errorArea").empty();
         editingTempId = null;
     });
 
@@ -38,7 +40,7 @@ $(document).ready(function() {
     // ========================
     // 明細追加・編集 Ajax（委譲）
     // ========================
-    $(document).on("click", "#detailSubmit", function(e) {
+    $(document).on("click", "#detailSaveBtn", function(e) {
         e.preventDefault();
 
         const formData = new FormData($("#detailForm")[0]);
@@ -62,7 +64,7 @@ $(document).ready(function() {
                     $("#detailModal").show();
                 } else {
                     // 明細テーブル部分だけ置き換え
-                    $("#slipMainContainer").html(html);
+                    $("#detail-list-container").html(html);
                     $("#detailModal").hide();
                     $("#detailForm")[0].reset();
                     editingTempId = null;
@@ -100,7 +102,7 @@ $(document).ready(function() {
         const tempId = $(this).data("temp-id");
 
         $.post("/detail/delete", { tempId: tempId }, function(response) {
-            $("#slipMainContainer").html(response);
+            $("#detail-list-container").html(response);
         });
     });
 

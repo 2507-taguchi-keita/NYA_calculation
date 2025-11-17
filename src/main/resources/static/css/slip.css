@@ -1,4 +1,4 @@
-.modal {
+#detailModal {
   display: none;
   position: fixed;
   z-index: 1000;
@@ -66,3 +66,7 @@
   border-radius: 4px;
 }
 .primary-btn:hover { background-color: #005fa3; }
+
+#errorArea {
+  display: block;
+}

@@ -15,6 +15,7 @@ public class SlipWithUserDto {
     private Integer userId;
     private String userName;
     private Integer approverId;
+    private Timestamp applicationDate;
     private Timestamp createdDate;
     private Timestamp updatedDate;
 }

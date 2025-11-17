@@ -1,6 +1,8 @@
 package com.example.NYA_calculation.converter;
 
 import com.example.NYA_calculation.controller.form.UserForm;
+import com.example.NYA_calculation.dto.UserDto;
+import com.example.NYA_calculation.repository.entity.Department;
 import com.example.NYA_calculation.repository.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -64,6 +66,16 @@ public class UserConverter {
             user.setUpdatedDate(Timestamp.valueOf(LocalDateTime.now()));
         }
         return user;
+    }
+
+    public UserDto toDto(User user, Department department, User approver) {
+
+        UserDto userDto = new UserDto();
+        userDto.setUser(user);
+        userDto.setDepartment(department);
+        userDto.setApprover(approver);
+
+        return userDto;
     }
 
 }

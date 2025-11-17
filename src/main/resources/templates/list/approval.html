@@ -35,7 +35,7 @@
                    th:text="${slipForm.id}">
                 </a>
             </td>
-            <td></td>
+            <td th:text="${#dates.format(slipForm.applicationDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
             <td th:text="${slipForm.userName}"></td>
             <td th:text="${slipForm.totalAmount}"></td>
             <td th:text="${slipForm.status}"></td>

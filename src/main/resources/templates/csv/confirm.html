@@ -14,13 +14,17 @@
 
 <main>
 
-    <h2>明細一括追加画面</h2>
+    <h2>明細一括追加</h2>
 
-    <th:block th:replace="fragments/slipFragment :: slipInfoFragment(confirm)"></th:block>
+    <div th:if="${status == 0 || status == 1 || status == 3}">
+        <button id="openModalBtn" type="button">明細追加</button>
+    </div>
 
-    <th:block th:replace="fragments/slipFragment :: slipMainFragment(${slipForm}, true, true, confirm)"></th:block>
+    <div th:replace="fragments/slipFragment :: slip-detailListFragment(${slipForm}, 5)"></div>
 
-    <th:block th:replace="fragments/slipFragment :: detailModalFragment(${detailForm})"></th:block>
+    <div id="detailModal" class="modal">
+        <div th:replace="fragments/detailFragment :: detailFragment(${detailForm})"></div>
+    </div>
 
 </main>
 

@@ -23,7 +23,7 @@ public interface SlipRepository {
 
     List<SlipWithUserDto> findTemporaryByUserId(Integer userId);
 
-    List<SlipWithUserDto> findApprovalByApproverId(Integer approverId);
+    List<SlipWithUserDto> findApprovalByStatus();
 
     int updateStatus(@Param("id") Integer id, @Param("status") Integer status);
 
