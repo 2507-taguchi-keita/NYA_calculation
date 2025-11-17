@@ -114,3 +114,15 @@ footer {
     margin-top: 80px;
     padding-bottom: 10px;
 }
+
+.error-message {
+    color: #d9534f;
+    background-color: #ffeaea;
+    border: 1px solid #f5c2c7;
+    padding: 10px 15px;
+    margin: 10px auto;
+    width: 80%;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+}

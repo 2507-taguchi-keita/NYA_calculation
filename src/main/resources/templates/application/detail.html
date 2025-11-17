@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>申請済み伝票画面</title>
+    <link rel="stylesheet" th:href="@{/css/application-detail.css}">
 </head>
 <body>
 <header>
     <h1>NYA精算</h1>
 </header>
-<div th:if="${successMessage}" th:text="${successMessage}"></div>
-<main class="application-detail">
+<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+<main class="application-detail-container">
     <h2>申請済み伝票</h2>
-    <table class="application-detail">
+    <table class="application-detail-table">
         <thead>
         <tr>
             <th>No.</th>
@@ -41,7 +42,7 @@
     <form th:if="${slip != null and slip.status == 1}"
           th:action="@{'/application-list/cancel/' + ${slip.id}}"
           method="post"
-          onsubmit="return confirm('申請を取り消しますか？');">
+          onsubmit="return confirm('申請を取り消しますか？');" class="action-form">
         <button type="submit">取り下げ</button>
     </form>
     <a href="/application-list" class="back-link">戻る</a>

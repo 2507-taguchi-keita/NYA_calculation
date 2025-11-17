@@ -2,6 +2,7 @@ package com.example.NYA_calculation.controller;
 
 import com.example.NYA_calculation.constant.DepartmentConstants;
 import com.example.NYA_calculation.security.LoginUserDetails;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +13,16 @@ public class HomeController {
 
     // ホーム画面表示
     @GetMapping("/")
-    public String home(Model model, @AuthenticationPrincipal LoginUserDetails loginUser) {
+    public String home(Model model, @AuthenticationPrincipal LoginUserDetails loginUser,
+                       HttpSession session) {
+
+        //CustomCustomAccessDeniedHandlerで出たエラーを拾う
+        String errorMessage = (String) session.getAttribute("errorMessage");
+        if (errorMessage != null) {
+            model.addAttribute("errorMessage", errorMessage);
+            session.removeAttribute("errorMessage");
+        }
+
         Integer depId = loginUser.getUser().getDepartmentId();
         String departmentLabel;
 
