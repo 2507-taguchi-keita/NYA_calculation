@@ -1,20 +1,22 @@
-<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
-
 <div id="detailModelContainer" th:fragment="detailFragment(detailForm)">
 
     <div class="modal-content">
         <form id="detailForm" th:object="${detailForm}" enctype="multipart/form-data">
             <input type="hidden" id="hasErrors" th:value="${hasErrors}">
-            <input type="hidden" id="newFromCsv" th:field="*{newFromCsv}">
 
             <div class="modal-header">
                 <h2>明細追加</h2>
             </div>
 
-            <div id="errorArea" th:if="${#fields.hasErrors('*')}">
-                <ul>
-                    <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
-                </ul>
+            <div id="errorArea">
+                <div th:if="${errorMessage}">
+                    <p th:text="${errorMessage}"></p>
+                </div>
+                <div th:if="${#fields.hasErrors('*')}">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                    </ul>
+                </div>
             </div>
 
             <div class="form-row">
@@ -51,7 +53,8 @@
                 <label>備考</label>
                 <textarea type="text" th:field="*{remark}"></textarea>
                 <label>領収書/請求書</label>
-                <input type="file" th:field="*{file}" accept="image/*,application/pdf">
+                <input type="file" th:field="*{uploadFile}" accept=".pdf,.jpg,.jpeg,.png">
+                <a th:if="${detailForm.fileUrl != null}" th:href="${detailForm.fileUrl}" target="_blank" th:text="${detailForm.originalFileName}"></a>
             </div>
             <div class="button-row">
                 <button type="button" id="detailCancelBtn">キャンセル</button>
@@ -60,5 +63,3 @@
         </form>
     </div>
 </div>
-
-</html>

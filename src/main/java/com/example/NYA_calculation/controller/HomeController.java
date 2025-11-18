@@ -53,4 +53,5 @@ public class HomeController {
         model.addAttribute("authorityLabel", authorityLabel);
         return "index";
     }
+
 }

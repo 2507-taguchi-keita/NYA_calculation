@@ -36,9 +36,6 @@ public class Detail {
     private String transportation;
 
     @Column
-    private String fileName;
-
-    @Column
     private Integer slipId;
 
     @Column
@@ -50,7 +47,13 @@ public class Detail {
     @Column
     private Timestamp updatedDate;
 
-    private String tempFileName; // 元ファイル名
-    private String tempFileUrl; // 一時ファイルパス
-    private String savedFileUrl;
+    @Column
+    private String originalFileName;
+
+    @Column
+    private String storedFileName; // 実際に保存したファイル名
+
+    @Transient
+    private String fileUrl; // 実際に保存したファイル名
+
 }

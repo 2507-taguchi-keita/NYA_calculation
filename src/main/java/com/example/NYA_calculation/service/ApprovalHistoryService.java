@@ -26,4 +26,7 @@ public class ApprovalHistoryService {
         return approvalHistoryConverter.toDto(approvalHistories);
     }
 
+    public void deleteBySlipId(Integer slipId) {
+        approvalHistoryRepository.deleteBySlipId(slipId);
+    }
 }

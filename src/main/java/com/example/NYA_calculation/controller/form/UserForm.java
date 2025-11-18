@@ -17,6 +17,7 @@ import static com.example.NYA_calculation.validation.ErrorMessages.*;
 @Getter
 @Setter
 public class UserForm {
+
     private Integer id;
 
     @NotEmpty(message = E0001, groups = {CreateGroup.class, UpdateGroup.class})
@@ -26,6 +27,7 @@ public class UserForm {
     @NotEmpty(message = E0002, groups = {CreateGroup.class})
     @Pattern(regexp = "^(?:$|[\\x21-\\x7E]{6,20})$", message = E0005, groups = {CreateGroup.class, SettingGroup.class, UpdateGroup.class})
     private String password;
+
     private String confirmPassword;
 
     @NotEmpty(message = E0015, groups = {CreateGroup.class, UpdateGroup.class})
@@ -34,14 +36,19 @@ public class UserForm {
 
     @NotNull(message = E0016, groups = {CreateGroup.class, UpdateGroup.class})
     private Integer departmentId;
+
     @NotNull(message = E0017, groups = {CreateGroup.class, UpdateGroup.class})
     private Integer authority;
+
     private boolean isStopped;
 
     @NotNull(message = E0004, groups = {CreateGroup.class, SettingGroup.class})
     private Integer approverId;
+
     private Timestamp createdDate;
+
     private Timestamp updatedDate;
 
     private String departmentLabel;
+
 }

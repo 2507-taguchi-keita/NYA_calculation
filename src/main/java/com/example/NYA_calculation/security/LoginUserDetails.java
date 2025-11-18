@@ -28,7 +28,7 @@ public class LoginUserDetails implements UserDetails {
                     new SimpleGrantedAuthority("ROLE_APPROVER"),
                     new SimpleGrantedAuthority("ROLE_ADMIN")
             );
-        } else if (user.getAuthority() == 1) {
+        } else if (user.getAuthority() == 3) {
             this.authorities = List.of(
                     new SimpleGrantedAuthority("ROLE_USER"),
                     new SimpleGrantedAuthority("ROLE_APPROVER")

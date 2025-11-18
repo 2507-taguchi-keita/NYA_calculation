@@ -37,16 +37,23 @@ public class DetailForm {
     @NotEmpty(message = E0010)
     private String transportation;
 
-    private String fileName;
-
     private Integer slipId;
 
     @Size(max = 50, message = E0012)
     private String remark;
+
     private Timestamp createdDate;
+
     private Timestamp updatedDate;
-    // 画像添付用
-    private MultipartFile file;
 
     private boolean isNewFromCsv = false;
+
+    private MultipartFile uploadFile;
+
+    private String storedFileName; // 実際に保存したファイル名
+
+    private String originalFileName; // 元のファイル名
+
+    private String fileUrl; // ブラウザで開けるURL
+
 }

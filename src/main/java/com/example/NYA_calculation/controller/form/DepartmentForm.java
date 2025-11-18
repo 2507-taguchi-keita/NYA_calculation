@@ -8,8 +8,13 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class DepartmentForm {
+
     private Integer id;
+
     private String name;
+
     private Timestamp createdDate;
+
     private Timestamp updatedDate;
+
 }

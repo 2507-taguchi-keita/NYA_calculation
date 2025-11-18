@@ -16,15 +16,7 @@
 
     <h2>明細一括追加</h2>
 
-    <div th:if="${status == 0 || status == 1 || status == 3}">
-        <button id="openModalBtn" type="button">明細追加</button>
-    </div>
-
-    <div th:replace="fragments/slipFragment :: slip-detailListFragment(${slipForm}, 5)"></div>
-
-    <div id="detailModal" class="modal">
-        <div th:replace="fragments/detailFragment :: detailFragment(${detailForm})"></div>
-    </div>
+    <div th:replace="fragments/slipFragment :: slip-detailListFragment(${slipForm}, 7)"></div>
 
 </main>
 

@@ -57,7 +57,7 @@ public class UserController {
             attributes.addFlashAttribute("errorMessages", errorMessages);
             return new ModelAndView("redirect:/");
         }
-        List<User> approvers = userService.getApprovers();
+        List<User> approvers = userService.getApprovers(loginUser.getUser().getDepartmentId());
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/setting");
@@ -76,7 +76,7 @@ public class UserController {
 
         if (result.hasErrors()) {
             model.addAttribute("formModel", userForm);
-            model.addAttribute("approvers", userService.getApprovers());
+            model.addAttribute("approvers", userService.getApprovers(loginUser.getUser().getDepartmentId()));
             model.addAttribute("loginUser", loginUser);
             return "setting";
         }
@@ -86,7 +86,7 @@ public class UserController {
         if (!success) {
             model.addAttribute("accountError", E0020);
             model.addAttribute("formModel", userForm);
-            List<User> approvers = userService.getApprovers();
+            List<User> approvers = userService.getApprovers(loginUser.getUser().getDepartmentId());
             model.addAttribute("approvers", approvers);
             model.addAttribute("loginUser", loginUser);
             return "setting";
@@ -97,8 +97,9 @@ public class UserController {
 
     //ユーザー登録画面表示（管理者用）
     @GetMapping("/admin/users/new")
-    public String adminNewUser(Model model){
-        List<User> approvers = userService.getApprovers();
+    public String adminNewUser(Model model,
+                               @AuthenticationPrincipal LoginUserDetails loginUserDetails){
+        List<User> approvers = userService.getApprovers(loginUserDetails.getUser().getDepartmentId());
         model.addAttribute("approvers", approvers);
         model.addAttribute("userForm", new UserForm());
         model.addAttribute("departments", DepartmentConstants.DEPARTMENTS);
@@ -109,7 +110,8 @@ public class UserController {
     @PostMapping("/admin/users/add")
     public String adminAddUser(@ModelAttribute("userForm") @Validated({Default.class, CreateGroup.class}) UserForm userForm,
                                BindingResult result,
-                               Model model) {
+                               Model model,
+                               @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
         if (result.hasErrors()) {
 //            System.out.println("---- バリデーションエラー発生 ----");
@@ -123,7 +125,7 @@ public class UserController {
 //            System.out.println("----------------------------");
             model.addAttribute("validationErrors", result);
             model.addAttribute("userForm", userForm);
-            model.addAttribute("approvers", userService.getApprovers());
+            model.addAttribute("approvers", userService.getApprovers(loginUserDetails.getUser().getDepartmentId()));
             model.addAttribute("departments", DepartmentConstants.DEPARTMENTS);
             return "admin/users/new";
         }
@@ -133,7 +135,7 @@ public class UserController {
         if (!success) {
             model.addAttribute("accountError", E0020);
             model.addAttribute("userForm", userForm);
-            model.addAttribute("approvers", userService.getApprovers());
+            model.addAttribute("approvers", userService.getApprovers(loginUserDetails.getUser().getDepartmentId()));
             model.addAttribute("departments", DepartmentConstants.DEPARTMENTS);
             return "admin/users/new";
         }

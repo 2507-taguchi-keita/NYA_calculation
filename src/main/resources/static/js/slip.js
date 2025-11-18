@@ -1,15 +1,13 @@
 $(document).ready(function() {
 
-    // CSRF Token を取得
-    const csrfToken = $("meta[name='_csrf']").attr("content");
-    const csrfHeader = $("meta[name='_csrf_header']").attr("content");
-
-    // Ajax 全体に CSRF を付与
     $(document).ajaxSend(function(e, xhr, options) {
-        xhr.setRequestHeader(csrfHeader, csrfToken);
+        const token = $("meta[name='_csrf']").attr("content");
+        const header = $("meta[name='_csrf_header']").attr("content");
+        xhr.setRequestHeader(header, token);
     });
 
     let editingTempId = null;
+    let editingSource = null; // "normal" or "csv"
 
     // ========================
     // モーダル開閉（委譲）
@@ -19,6 +17,7 @@ $(document).ready(function() {
         $("#detailForm")[0].reset();
         $("#errorArea").empty();
         editingTempId = null;
+        editingSource = null;
     });
 
     $(document).on("click", "#detailCancelBtn, .close", function() {
@@ -26,6 +25,7 @@ $(document).ready(function() {
         $("#detailForm")[0].reset();
         $("#errorArea").empty();
         editingTempId = null;
+        editingSource = null;
     });
 
     // ========================
@@ -47,10 +47,13 @@ $(document).ready(function() {
         formData.append("type", $("#typeHidden").val());
         if (editingTempId) {
             formData.append("tempId", editingTempId);
+            formData.append("source", editingSource); // normal / csv
         }
 
+        let url = "/detail/submit";
+
         $.ajax({
-            url: "/detail/submit",
+            url: url,
             type: "POST",
             data: formData,
             processData: false,
@@ -59,15 +62,14 @@ $(document).ready(function() {
                 const hasErrors = $(html).find('#hasErrors').val() === 'true';
 
                 if (hasErrors) {
-                    // モーダル部分だけ置き換え
                     $("#detailModelContainer").html(html);
                     $("#detailModal").show();
                 } else {
-                    // 明細テーブル部分だけ置き換え
                     $("#detail-list-container").html(html);
                     $("#detailModal").hide();
                     $("#detailForm")[0].reset();
                     editingTempId = null;
+                    editingSource = null;
                 }
             }
         });
@@ -77,9 +79,8 @@ $(document).ready(function() {
     // 編集ボタン（委譲）
     // ========================
     $(document).on("click", ".editDetailBtn", function() {
-        editingTempId = $(this).data("temp-id");
-
         const row = $(this).closest("tr");
+        editingTempId = row.data("temp-id");
 
         $("#billingDate").val(row.find("td").eq(0).text());
         $("#reason").val(row.find("td").eq(1).text());
@@ -89,8 +90,15 @@ $(document).ready(function() {
         $("#subtotal").val(row.find("td").eq(5).text());
         $("#remark").val(row.find("td").eq(6).text());
 
-        const newFromCsv = row.data("newfromcsv"); // tr に data-newfromcsv="true/false" をセット
-        $("#newFromCsv").val(newFromCsv);
+        const fileName = row.data("filename");
+        const fileUrl = row.find("a").attr("href");
+        if (fileUrl) {
+            $("#currentFileName").text(fileName);
+            $("#currentFileLink").attr("href", fileUrl).show();
+        } else {
+            $("#currentFileName").text("");
+            $("#currentFileLink").hide();
+        }
 
         $("#detailModal").show();
     });
@@ -99,10 +107,14 @@ $(document).ready(function() {
     // 削除ボタン（委譲）
     // ========================
     $(document).on("click", ".deleteDetailBtn", function() {
-        const tempId = $(this).data("temp-id");
+        const row = $(this).closest("tr");
+        const tempId = row.data("temp-id");
 
-        $.post("/detail/delete", { tempId: tempId }, function(response) {
-            $("#detail-list-container").html(response);
+        let url = "/detail/delete";
+        let container = "#detail-list-container";
+
+        $.post(url, { tempId: tempId }, function(response) {
+            $(container).html(response);
         });
     });
 
@@ -140,9 +152,8 @@ $(document).ready(function() {
             url: "/slip/temp/bulk-add",
             type: "POST",
             headers: { [csrfHeader]: csrfToken },
-            success: function(html) {
-                $("#slipMainContainer").html(html);
-                window.location.href = '/slip/new';
+            success: function(nextUrl) {
+                window.location.href = nextUrl;
             },
             error: function() {
                 alert("一括追加に失敗しました");

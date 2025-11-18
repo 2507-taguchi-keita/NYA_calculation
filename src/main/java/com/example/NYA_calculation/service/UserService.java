@@ -21,7 +21,6 @@ import java.util.List;
 
 import static com.example.NYA_calculation.validation.ErrorMessages.E0013;
 
-
 @Service
 public class UserService {
 
@@ -53,8 +52,8 @@ public class UserService {
         return updatedRows >= 0;
     }
 
-    public List<User> getApprovers() {
-        return userRepository.findApprovers();
+    public List<User> getApprovers(Integer departmentId) {
+        return userRepository.findApprovers(departmentId);
     }
 
     public Page<UserForm> pageUser(int page, int size) {

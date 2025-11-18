@@ -49,8 +49,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/static/css/**", "/static/js/**", "/storage/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/approval").hasRole("APPROVER")
-                        .requestMatchers("/").hasAnyRole("USER", "APPROVER", "ADMIN")
+                        .requestMatchers("/list/approval", "/slip/approval").hasRole("APPROVER")
+                        .requestMatchers("/","/setting", "/list/application","/list/remand","/list/temporary",
+                                "/slip/application","/slip/new","/slip/remand","/slip/temporary",
+                                "/csv/confirm", "/csv/upload").hasAnyRole("USER", "APPROVER", "ADMIN")
                         .anyRequest().authenticated()
                 )
 

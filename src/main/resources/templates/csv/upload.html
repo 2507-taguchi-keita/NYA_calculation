@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="_csrf" th:content="${_csrf.token}">
     <meta name="_csrf_header" th:content="${_csrf.headerName}">
-    <title>CSV取り込み</title>
+    <title>CSV取込み</title>
     <link rel="stylesheet" th:href="@{/css/slip.css}">
 </head>
 <body>
@@ -14,12 +14,26 @@
 
 <main>
 
+    <div th:if="${csvError}">
+        <p th:text="${csvError}"></p>
+    </div>
+
     <form th:action="@{/csv/upload}" method="post" enctype="multipart/form-data">
         <input type="file" name="csvFile" accept=".csv">
         <button type="submit">読込</button>
     </form>
 
-    <a th:href="@{/slip/new}">戻る</a>
+    <div th:switch="${slipForm.status}">
+        <span th:case="0">
+            <a th:href="@{/slip/new}">戻る</a>
+        </span>
+        <span th:case="1">
+            <a th:href="@{/slip/temporary/{id}(id=${slipForm.id})}">戻る</a>
+        </span>
+        <span th:case="3">
+            <a th:href="@{@{/slip/remand/{id}(id=${slipForm.id})}}">戻る</a>
+        </span>
+    </div>
 
 </main>
 

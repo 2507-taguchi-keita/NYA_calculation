@@ -81,7 +81,8 @@
         id,
         name
         FROM users
-        WHERE authority = 1
+        WHERE department_id = #{departmentId}
+        AND authority = 3
         AND is_stopped = false
         ORDER BY account ASC
     </select>

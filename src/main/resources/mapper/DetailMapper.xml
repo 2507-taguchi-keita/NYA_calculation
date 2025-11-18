@@ -7,10 +7,10 @@
 
     <insert id="insertDetails">
         INSERT INTO details
-        (slip_id, billing_date, reason, transportation, round_trip, amount, subtotal, remark, file_name, created_date, updated_date)
+        (slip_id, billing_date, reason, transportation, round_trip, amount, subtotal, remark, original_file_name ,stored_file_name, created_date, updated_date)
         VALUES
         <foreach collection="list" item="d" separator=",">
-            (#{d.slipId}, #{d.billingDate}, #{d.reason}, #{d.transportation}, #{d.roundTrip}, #{d.amount}, #{d.subtotal}, #{d.remark}, #{d.fileName}, NOW(), NOW())
+            (#{d.slipId}, #{d.billingDate}, #{d.reason}, #{d.transportation}, #{d.roundTrip}, #{d.amount}, #{d.subtotal}, #{d.remark}, #{d.originalFileName}, #{d.storedFileName}, NOW(), NOW())
         </foreach>
     </insert>
 
@@ -45,7 +45,8 @@
         d.subtotal,
         d.reason,
         d.transportation,
-        d.file_name,
+        d.original_file_name,
+        d.stored_file_name,
         d.remark,
         d.created_date,
         d.updated_date
@@ -63,7 +64,8 @@
         subtotal = #{subtotal},
         reason = #{reason},
         transportation = #{transportation},
-        file_name = #{fileName},
+        original_file_name = #{originalFileName},
+        stored_file_name = #{storedFileName},
         remark = #{remark},
         updated_date = NOW()
         WHERE id = #{id}

@@ -8,8 +8,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Objects;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/detail")
@@ -28,10 +34,56 @@ public class DetailController {
             model.addAttribute("detailForm", detailForm);
             model.addAttribute("reasonList", SlipConstants.REASONS);
             model.addAttribute("transportList", SlipConstants.TRANSPORTS);
+        }
+
+        MultipartFile file = detailForm.getUploadFile();
+        String errorMessage = null;
+
+        if (!file.isEmpty()) {
+            String originalFilename = file.getOriginalFilename();
+
+            // 拡張子チェック
+            if (!Objects.requireNonNull(originalFilename).endsWith(".pdf") &&
+                    !originalFilename.endsWith(".jpg") &&
+                    !originalFilename.endsWith(".jpeg") &&
+                    !originalFilename.endsWith(".png")) {
+                errorMessage = "PDFまたは画像ファイルのみアップロード可能です";
+                model.addAttribute("errorMessage", errorMessage);
+            }
+
+            // MIMEタイプチェック
+            String contentType = file.getContentType();
+            if (!"application/pdf".equals(contentType) &&
+                    !"image/jpeg".equals(contentType) &&
+                    !"image/png".equals(contentType)) {
+                errorMessage = "不正なファイル形式です";
+                model.addAttribute("errorMessage", errorMessage);
+            }
+        }
+
+        if (bindingResult.hasErrors() || errorMessage != null) {
             return "fragments/detailFragment :: detailFragment";
         }
 
         model.addAttribute("hasErrors", false);
+
+        if (!file.isEmpty()) {
+
+            // 保存ディレクトリ（※後で変更可能）
+            Path uploadDir = Paths.get(System.getProperty("java.io.tmpdir"), "uploads");
+            Files.createDirectories(uploadDir);
+
+            String storedFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            Path filePath = uploadDir.resolve(storedFileName);
+
+            // ファイル保存
+            file.transferTo(filePath.toFile());
+
+            // DetailForm にセット
+            detailForm.setStoredFileName(storedFileName);
+            detailForm.setOriginalFileName(file.getOriginalFilename());
+            detailForm.setFileUrl("/files/" + storedFileName); // 表示用URL
+        }
 
         // 既存の明細更新 or 新規追加
         if (tempId != null) {
@@ -54,14 +106,8 @@ public class DetailController {
                 .sum();
         slipForm.setTotalAmount(total);
 
-        // CSVフラグがあるかどうか
-        boolean hasCsvDetails = slipForm.getDetailForms().stream()
-                .anyMatch(DetailForm::isNewFromCsv);
-
         model.addAttribute("slipForm", slipForm);
         model.addAttribute("status", slipForm.getStatus());
-        model.addAttribute("editable", true);
-        model.addAttribute("showCsvOnly", hasCsvDetails);
 
         return "fragments/slipFragment :: slip-detailListFragment";
     }
@@ -81,12 +127,8 @@ public class DetailController {
                 .sum();
         slipForm.setTotalAmount(total);
 
-        boolean hasCsvDetails = slipForm.getDetailForms().stream()
-                .anyMatch(DetailForm::isNewFromCsv);
-
         model.addAttribute("slipForm", slipForm);
         model.addAttribute("status", slipForm.getStatus());
-        model.addAttribute("showCsvOnly", hasCsvDetails);
 
         return "fragments/slipFragment :: slip-detailListFragment";
     }

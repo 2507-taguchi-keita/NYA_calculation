@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<div th:replace="fragments/slipFragment :: slipFragment(${slipForm}, ${userDto}, ${approvalHistoryDtoList}, ${slipForm.status} )"></div>
+<div th:replace="fragments/slipFragment :: slipFragment(${slipForm}, ${userDto}, ${approvalHistoryDtoList}, 6)"></div>
 
 <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 <script th:src="@{/js/slip.js}"></script>

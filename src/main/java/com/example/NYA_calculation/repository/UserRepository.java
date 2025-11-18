@@ -18,7 +18,7 @@ public interface UserRepository {
     int updateUser(UserForm userForm);
     UserForm findFormById(Integer id);
     // 承認者一覧を取得
-    List<User> findApprovers();
+    List<User> findApprovers(@Param("departmentId")Integer departmentId);
     List<UserForm> pageUser(@Param("limit") int limit, @Param("offset") int offset);
     int countUsers();
     void updateIsStopped(@Param("id") Integer id, @Param("isStopped") boolean isStopped);

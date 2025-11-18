@@ -4,9 +4,11 @@ import com.example.NYA_calculation.controller.form.DetailForm;
 import com.example.NYA_calculation.controller.form.SlipForm;
 import com.example.NYA_calculation.repository.entity.Detail;
 import com.example.NYA_calculation.repository.entity.Slip;
+import com.example.NYA_calculation.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,9 +18,7 @@ import java.util.List;
 public class SlipConverter {
 
     @Autowired
-    UserConverter userConverter;
-    @Autowired
-    ApprovalHistoryConverter approvalHistoryConverter;
+    FileStorageService fileStorageService;
 
     public SlipForm toForm(Slip result) {
         SlipForm slipForm = new SlipForm();
@@ -81,18 +81,31 @@ public class SlipConverter {
         entity.setAmount(form.getAmount());
         entity.setSubtotal(form.getSubtotal());
         entity.setRemark(form.getRemark());
-        entity.setFileName(form.getFileName());
+        entity.setOriginalFileName(form.getOriginalFileName());
+        entity.setStoredFileName(form.getStoredFileName());
+        entity.setFileUrl(form.getFileUrl());
         entity.setCreatedDate(form.getCreatedDate());
         entity.setUpdatedDate(form.getUpdatedDate());
         return entity;
     }
 
-    public List<Detail> toDetailEntities(List<DetailForm> forms, Integer slipId, Integer userId) {
-        return forms.stream().map(f -> {
-            Detail d = toDetailEntity(f);
-            d.setSlipId(slipId);
-            return d;
-        }).toList();
+    public List<Detail> toDetailEntities(List<DetailForm> forms, Integer slipId) throws IOException {
+
+        for (DetailForm d : forms) {
+            // ---★ファイルを本保存へ移動
+            if (d.getStoredFileName() != null) {
+                String newStoredName = fileStorageService.moveToPermanent(d.getStoredFileName());
+                d.setStoredFileName(newStoredName);
+                d.setFileUrl(fileStorageService.getPermanentFileUrl(newStoredName));
+            }
+        }
+
+        return forms.stream()
+                .map(f -> {Detail detail = toDetailEntity(f);
+                    detail.setSlipId(slipId);
+                    return detail;
+                })
+                .toList();
     }
 
 }

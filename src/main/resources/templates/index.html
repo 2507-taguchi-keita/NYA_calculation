@@ -32,12 +32,12 @@
     <a href="/slip/new" class="main-btn">🚊 交通費精算</a>
 
     <div class="menu-grid">
-        <a href="/application-list" class="menu-card">
+        <a th:href="@{/list/application}" class="menu-card">
             <div class="menu-icon">📋</div>
             <div class="menu-title">申請一覧</div>
         </a>
 
-        <a th:if="${loginUser.user.authority == 1 || loginUser.user.departmentId == 1}" th:href="@{/list/approval}" class="menu-card">
+        <a th:if="${loginUser.user.authority == 3 || loginUser.user.departmentId == 1}" th:href="@{/list/approval}" class="menu-card">
             <div class="menu-icon">✅</div>
             <div class="menu-title">未承認一覧</div>
         </a>
@@ -47,7 +47,7 @@
             <div class="menu-title">一時保存一覧</div>
         </a>
 
-        <a href="/returned" class="menu-card">
+        <a th:href="@{/list/remand}" class="menu-card">
             <div class="menu-icon">↩️</div>
             <div class="menu-title">差し戻し一覧</div>
         </a>

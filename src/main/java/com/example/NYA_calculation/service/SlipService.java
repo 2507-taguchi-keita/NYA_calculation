@@ -9,10 +9,10 @@ import com.example.NYA_calculation.repository.*;
 import com.example.NYA_calculation.repository.entity.Detail;
 import com.example.NYA_calculation.repository.entity.Slip;
 import com.example.NYA_calculation.repository.entity.User;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,6 +36,8 @@ public class SlipService {
     SlipConverter slipConverter;
     @Autowired
     DetailConverter detailConverter;
+    @Autowired
+    FileStorageService fileStorageService;
 
     public List<Slip> getAllSlips() {
         return slipRepository.findAll();
@@ -50,49 +52,50 @@ public class SlipService {
         return slipRepository.findTemporaryByUserId(userId);
     }
 
+    public List<SlipWithUserDto> getApplicationSlips(Integer userId) {
+        return slipRepository.findApplicationByUserId(userId);
+    }
+
+    public List<SlipWithUserDto> getRemandSlips(Integer userId) {
+        return slipRepository.findRemandByUserId(userId);
+    }
+
     public List<SlipWithUserDto> getApprovalSlips(User loginUser) {
         List<SlipWithUserDto> results = slipRepository.findApprovalByStatus();
 
 
         if (loginUser.getDepartmentId() == 1 && loginUser.getAuthority() == 1) {
-            return  results.stream()
+            return results.stream()
                     .filter(s -> s.getStep() == 1)
-                    .map(s -> new SlipWithUserDto())
                     .toList();
         } else if (loginUser.getDepartmentId() == 1 && loginUser.getAuthority() == 2) {
             return results.stream()
                     .filter(s -> s.getStep() == 2)
-                    .map(s -> new SlipWithUserDto())
                     .toList();
         } else {
             return results.stream()
-                    .filter(s -> s.getStep() == 3 && Objects.equals(s.getApproverId(), loginUser.getId()) )
-                    .map(s -> new SlipWithUserDto())
+                    .filter(s -> s.getStep() == 3 && Objects.equals(s.getApproverId(), loginUser.getId()))
                     .toList();
         }
     }
 
-    public List<Slip> findByUserId(Integer id) {
-        return slipRepository.findByUserId(id);
-    }
+    public SlipForm getSlipForm(Integer slipId) {
 
-    public boolean cancelSlip(Integer slipId, Integer userId) {
-        Slip slip = slipRepository.findById(slipId)
-                .orElseThrow(() -> new RecordNotFoundException(E0013));
-        if (slip == null || !slip.getUserId().equals(userId)) {
-            return false;
+        SlipForm slipForm = slipConverter.toForm(slipRepository.findById(slipId).orElseThrow(() -> new RecordNotFoundException(E0013)));
+        List<Detail> details = detailRepository.findBySlipId(slipId);
+
+        for (Detail d : details) {
+            if (d.getStoredFileName() != null) {
+                d.setFileUrl(fileStorageService.getPermanentFileUrl(d.getStoredFileName()));
+            }
         }
-        return slipRepository.updateStatus(slipId, 0) > 0; // 一時保存に戻す
+
+        slipForm.setDetailForms(detailConverter.toFormList(details));
+
+        return slipForm;
     }
 
-    // IDで伝票を1件取得
-    public Slip findById(Integer slipId) {
-        return slipRepository.findById(slipId)
-                .orElseThrow(() -> new RecordNotFoundException(E0013));
-    }
-
-    @Transactional
-    public void saveSlip(SlipForm slipForm) {
+    public void saveSlip(SlipForm slipForm) throws IOException {
 
         Slip slip = slipConverter.toEntity(slipForm);
 
@@ -104,39 +107,16 @@ public class SlipService {
             detailRepository.deleteBySlipId(slip.getId());
         }
 
-        // 明細を SlipDetail に変換
-        List<Detail> details = slipConverter.toDetailEntities(slipForm.getDetailForms(), slip.getId(), slip.getUserId());
+        List<Detail> details = slipConverter.toDetailEntities(slipForm.getDetailForms(), slip.getId());
 
         if (!details.isEmpty()) {
             detailRepository.insertDetails(details);
         }
     }
 
-    @Transactional
     public void deleteSlip(SlipForm slipForm) {
         slipRepository.deleteSlip(slipForm.getId());
         detailRepository.deleteBySlipId(slipForm.getId());
-    }
-
-    public List<Slip> findByUserIdSlips(Integer id) {
-        return slipRepository.findByUserIdSlips(id);
-    }
-
-    public boolean reapplicationSlip(Integer slipId, Integer id) {
-        Slip slip = slipRepository.findById(slipId)
-                .orElseThrow(() -> new RecordNotFoundException(E0013));
-        if (slip == null || !slip.getUserId().equals(id)) {
-            return false;
-        }
-        return slipRepository.updateStatus(slipId, 1) > 0;
-    }
-
-    public SlipForm getSlipForm(Integer slipId) {
-
-        SlipForm slipForm = slipConverter.toForm(slipRepository.findById(slipId).orElseThrow(() -> new RecordNotFoundException(E0013)));
-        slipForm.setDetailForms(detailConverter.toFormList(detailRepository.findBySlipId(slipId)));
-
-        return slipForm;
     }
 
 }

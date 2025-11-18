@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "slips")
@@ -32,7 +33,7 @@ public class Slip {
     private Integer approverId;
 
     @Column
-    private Timestamp applicationDate;
+    private LocalDateTime applicationDate;
 
     @Column
     private Timestamp createdDate;

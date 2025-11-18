@@ -11,10 +11,15 @@ import java.util.List;
 public interface DetailRepository {
 
     void insertDetails(@Param("list") List<Detail> details);
+
     void deleteBySlipId(Integer slipId);
+
     List<Detail> findBySlipId(@Param("slipId") Integer slipId);
-    void update(Detail detail);
+
     List<ExpenseSummary> getMonthlyTotal();
+
     List<ExpenseSummary> getReasonSummary();
+
     Integer getTotalExpense();
+
 }

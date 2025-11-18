@@ -16,4 +16,10 @@
         WHERE slip_id = #{slipId}
     </select>
 
+    <delete id="deleteBySlipId">
+        DELETE
+        FROM approval_history
+        WHERE slip_id = #{slipId};
+    </delete>
+
 </mapper>

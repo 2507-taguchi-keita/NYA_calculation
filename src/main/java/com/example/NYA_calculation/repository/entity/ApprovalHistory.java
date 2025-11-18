@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "departments")
@@ -24,7 +25,7 @@ public class ApprovalHistory {
     private Integer userId;
 
     @Column
-    private Timestamp approvedAt;
+    private LocalDateTime approvedAt;
 
     @Column
     private Timestamp createdDate;

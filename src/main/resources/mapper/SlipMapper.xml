@@ -7,7 +7,7 @@
 
     <insert id="insertSlip" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO slips (user_id, approver_id, status, step, total_amount, application_date)
-        VALUES (#{userId}, #{approverId}, #{status}, #{step}, #{totalAmount}, #{applicationDate)
+        VALUES (#{userId}, #{approverId}, #{status}, #{step}, #{totalAmount}, #{applicationDate})
     </insert>
 
     <update id="updateSlip">
@@ -17,7 +17,7 @@
         status = #{status},
         step = #{step},
         total_amount = #{totalAmount},
-        application_date = #{applicationDate}
+        application_date = #{applicationDate},
         updated_date = NOW()
         WHERE id = #{id}
     </update>
@@ -42,6 +42,7 @@
         s.total_amount,
         s.user_id,
         u.name AS user_name,
+        u.department_id AS department_id,
         s.approver_id,
         s.application_date,
         s.created_date,
@@ -53,6 +54,46 @@
         AND s.status = 1;
     </select>
 
+    <select id="findApplicationByUserId" resultType="com.example.NYA_calculation.dto.SlipWithUserDto">
+        SELECT
+        s.id,
+        s.status,
+        s.step,
+        s.total_amount,
+        s.user_id,
+        u.name AS user_name,
+        u.department_id AS department_id,
+        s.approver_id,
+        s.application_date,
+        s.created_date,
+        s.updated_date
+        FROM slips s
+        JOIN users u
+        ON s.user_id = u.id
+        WHERE s.user_id = #{userId}
+        AND s.status IN (2, 4);
+    </select>
+
+    <select id="findRemandByUserId" resultType="com.example.NYA_calculation.dto.SlipWithUserDto">
+        SELECT
+        s.id,
+        s.status,
+        s.step,
+        s.total_amount,
+        s.user_id,
+        u.name AS user_name,
+        u.department_id AS department_id,
+        s.approver_id,
+        s.application_date,
+        s.created_date,
+        s.updated_date
+        FROM slips s
+        JOIN users u
+        ON s.user_id = u.id
+        WHERE s.user_id = #{userId}
+        AND s.status = 3;
+    </select>
+
     <select id="findApprovalByStatus" resultType="com.example.NYA_calculation.dto.SlipWithUserDto">
         SELECT
         s.id,
@@ -61,6 +102,7 @@
         s.total_amount,
         s.user_id,
         u.name AS user_name,
+        u.department_id AS department_id,
         s.approver_id,
         s.application_date,
         s.created_date,

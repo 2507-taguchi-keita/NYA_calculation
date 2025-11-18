@@ -6,7 +6,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ExpenseSummary {
+
     private String month;
+
     private Integer totalAmount;
+
     private String reason;
+
 }

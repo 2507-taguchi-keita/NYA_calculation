@@ -11,4 +11,6 @@ public interface ApprovalHistoryRepository {
     void insert(Integer slipId, Integer userId);
 
     List<ApprovalHistory> findBySlipId(Integer slipId);
+
+    void deleteBySlipId(Integer slipId);
 }
