@@ -92,6 +92,8 @@
         <div th:fragment="slip-detailListFragment(slipForm, status)">
             <form th:object="${slipForm}" method="post">
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                <input type="hidden" id="redirectUrl" th:value="${redirectUrl}">
+
 
                 <!-- 通常明細 -->
                 <div th:if="${status == 0 || status == 1 || status == 3 || status == 4 || status == 5 || status == 6}">
@@ -126,6 +128,7 @@
                             th:data-subtotal="${detail.subtotal}"
                             th:data-remark="${detail.remark}"
                             th:data-filename="${detail.originalFileName}"
+                            th:data-fileurl="${detail.fileUrl}"
                             th:data-temp-id="${detail.tempId}">
 
                             <td th:text="${detail.billingDate}"></td>

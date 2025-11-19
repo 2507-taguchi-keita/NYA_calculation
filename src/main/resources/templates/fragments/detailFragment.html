@@ -52,10 +52,13 @@
             <div class="form-row">
                 <label>備考</label>
                 <textarea type="text" th:field="*{remark}"></textarea>
-                <label>領収書/請求書</label>
-                <input type="file" th:field="*{uploadFile}" accept=".pdf,.jpg,.jpeg,.png">
-                <a th:if="${detailForm.fileUrl != null}" th:href="${detailForm.fileUrl}" target="_blank" th:text="${detailForm.originalFileName}"></a>
             </div>
+            <div>
+                <label>領収書/請求書</label>
+                    <a th:if="${detailForm.fileUrl != null}" th:href="${detailForm.fileUrl}" target="_blank" th:text="${detailForm.originalFileName}"></a>
+                    <input type="file" th:field="*{uploadFile}" accept=".pdf,.jpg,.jpeg,.png">
+            </div>
+
             <div class="button-row">
                 <button type="button" id="detailCancelBtn">キャンセル</button>
                 <button type="button" id="detailSaveBtn" class="primary-btn">確定</button>

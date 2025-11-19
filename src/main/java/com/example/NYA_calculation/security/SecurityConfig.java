@@ -47,7 +47,7 @@ public class SecurityConfig {
                         .clearAuthentication(true)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/static/css/**", "/static/js/**", "/storage/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/storage/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/list/approval", "/slip/approval").hasRole("APPROVER")
                         .requestMatchers("/","/setting", "/list/application","/list/remand","/list/temporary",

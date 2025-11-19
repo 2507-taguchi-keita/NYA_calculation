@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -28,9 +29,13 @@ public class ListController {
     @GetMapping("/temporary")
     public String showTemporaryList(Model model,
                                     @AuthenticationPrincipal LoginUserDetails loginUserDetails,
+                                    @RequestParam(required = false) String success,
                                     @RequestParam(defaultValue = "0") int page) {
 
         List<SlipWithUserDto> slips = slipService.getTemporarySlips(loginUserDetails.getUser().getId());
+        List<SlipWithUserDto> sorted = new ArrayList<>(slips);
+        sorted.sort(Comparator.comparing(SlipWithUserDto::getId).reversed());
+        slips = sorted;
 
         int pageSize = 10;
         int fromIndex = page * pageSize;
@@ -73,6 +78,20 @@ public class ListController {
             s.setDepartmentName(departmentName);
         }
 
+        if ("temporary".equals(success)) {
+            model.addAttribute("successMessage", "一時保存しました。");
+        } else if ("delete".equals(success)) {
+            model.addAttribute("successMessage", "削除しました。");
+        } else if ("application".equals(success)) {
+            model.addAttribute("successMessage", "申請しました。");
+        } else if ("cancel".equals(success)) {
+            model.addAttribute("successMessage", "取り下げました。");
+        } else if ("approval".equals(success)) {
+            model.addAttribute("successMessage", "承認しました。");
+        } else if ("remand".equals(success)) {
+            model.addAttribute("successMessage", "差戻しました。");
+        }
+
         model.addAttribute("slipList", slipList);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
@@ -87,6 +106,9 @@ public class ListController {
                                       @RequestParam(defaultValue = "0") int page) {
 
         List<SlipWithUserDto> slips = slipService.getApplicationSlips(loginUserDetails.getUser().getId());
+        List<SlipWithUserDto> sorted = new ArrayList<>(slips);
+        sorted.sort(Comparator.comparing(SlipWithUserDto::getId).reversed());
+        slips = sorted;
 
         int pageSize = 10;
         int fromIndex = page * pageSize;
@@ -143,6 +165,9 @@ public class ListController {
                                  @RequestParam(defaultValue = "0") int page) {
 
         List<SlipWithUserDto> slips = slipService.getRemandSlips(loginUserDetails.getUser().getId());
+        List<SlipWithUserDto> sorted = new ArrayList<>(slips);
+        sorted.sort(Comparator.comparing(SlipWithUserDto::getId).reversed());
+        slips = sorted;
 
         int pageSize = 10;
         int fromIndex = page * pageSize;
@@ -195,10 +220,14 @@ public class ListController {
     @GetMapping("/approval")
     public String showApprovalList(Model model,
                                    @AuthenticationPrincipal LoginUserDetails loginUserDetails,
+                                   @RequestParam(required = false) String success,
                                    @RequestParam(defaultValue = "0") int page) {
 
         User loginUser = loginUserDetails.getUser();
         List<SlipWithUserDto> slips = slipService.getApprovalSlips(loginUser);
+        List<SlipWithUserDto> sorted = new ArrayList<>(slips);
+        sorted.sort(Comparator.comparing(SlipWithUserDto::getId).reversed());
+        slips = sorted;
 
         int pageSize = 10;
         int fromIndex = page * pageSize;
@@ -239,6 +268,20 @@ public class ListController {
                 default -> "未所属";
             };
             s.setDepartmentName(departmentName);
+        }
+
+        if ("temporary".equals(success)) {
+            model.addAttribute("successMessage", "一時保存しました。");
+        } else if ("delete".equals(success)) {
+            model.addAttribute("successMessage", "削除しました。");
+        } else if ("application".equals(success)) {
+            model.addAttribute("successMessage", "申請しました。");
+        } else if ("cancel".equals(success)) {
+            model.addAttribute("successMessage", "取り下げました。");
+        } else if ("approval".equals(success)) {
+            model.addAttribute("successMessage", "承認しました。");
+        } else if ("remand".equals(success)) {
+            model.addAttribute("successMessage", "差戻しました。");
         }
 
         model.addAttribute("slipList", slipList);

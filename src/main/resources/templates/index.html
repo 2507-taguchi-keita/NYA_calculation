@@ -23,6 +23,12 @@
     </p>
 </section>
 
+<div id="flash-message"
+     th:if="${successMessage}"
+     th:text="${successMessage}"
+     class="flash-success"
+     style="display:none;"></div>
+
 <!-- ===== メインエリア ===== -->
 <main class="container">
     <div th:if="${errorMessage != null}" class="error-message">
@@ -57,6 +63,23 @@
 <footer>
     <p>&copy; NYA</p>
 </footer>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+            const flash = $("#flash-message");
+
+            if (flash.length) {
+                flash.fadeIn(200);
+
+                setTimeout(() => {
+                    flash.fadeOut(500);
+                }, 2000);
+            }
+
+    });
+</script>
 
 </body>
 </html>

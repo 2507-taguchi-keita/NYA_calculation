@@ -15,10 +15,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,6 +60,10 @@ public class SlipController {
     public String showTemporarySlip(Model model, @PathVariable Integer id) {
 
         SlipForm slipForm = slipService.getSlipForm(id);
+        slipForm.getDetailForms().sort(
+                Comparator.comparing(DetailForm::getBillingDate)
+                        .thenComparing(DetailForm::getId)
+        );
         UserDto userDto = userService.getUserDto(slipForm.getUserId());
         List<ApprovalHistoryDto> approvalHistoryDtoList = approvalHistoryService.getApprovalHistoryDtoList(id);
 
@@ -75,6 +81,10 @@ public class SlipController {
     public String showApplicationSlip(Model model, @PathVariable Integer id) {
 
         SlipForm slipForm = slipService.getSlipForm(id);
+        slipForm.getDetailForms().sort(
+                Comparator.comparing(DetailForm::getBillingDate)
+                        .thenComparing(DetailForm::getId)
+        );
         UserDto userDto = userService.getUserDto(slipForm.getUserId());
         List<ApprovalHistoryDto> approvalHistoryDtoList = approvalHistoryService.getApprovalHistoryDtoList(id);
 
@@ -92,6 +102,10 @@ public class SlipController {
     public String showRemandSlip(Model model, @PathVariable Integer id) {
 
         SlipForm slipForm = slipService.getSlipForm(id);
+        slipForm.getDetailForms().sort(
+                Comparator.comparing(DetailForm::getBillingDate)
+                        .thenComparing(DetailForm::getId)
+        );
         UserDto userDto = userService.getUserDto(slipForm.getUserId());
         List<ApprovalHistoryDto> approvalHistoryDtoList = approvalHistoryService.getApprovalHistoryDtoList(id);
 
@@ -109,6 +123,10 @@ public class SlipController {
     public String showApprovalSlip(Model model, @PathVariable Integer id) {
 
         SlipForm slipForm = slipService.getSlipForm(id);
+        slipForm.getDetailForms().sort(
+                Comparator.comparing(DetailForm::getBillingDate)
+                        .thenComparing(DetailForm::getId)
+        );
         UserDto userDto = userService.getUserDto(slipForm.getUserId());
         List<ApprovalHistoryDto> approvalHistoryDtoList = approvalHistoryService.getApprovalHistoryDtoList(id);
 
@@ -124,12 +142,14 @@ public class SlipController {
 
     @PostMapping("/temporary")
     public String saveSlip(@ModelAttribute("slipForm") SlipForm slipForm,
-                           @AuthenticationPrincipal LoginUserDetails loginUserDetails) throws IOException {
+                           @AuthenticationPrincipal LoginUserDetails loginUserDetails,
+                           RedirectAttributes redirectAttributes) throws IOException {
 
         slipForm.setUserId(loginUserDetails.getUser().getId());
         slipForm.setApproverId(loginUserDetails.getUser().getApproverId());
         slipForm.setStatus(1);
         slipForm.setStep(0);
+        slipForm.setApplicationDate(null);
 
         try {
             slipService.saveSlip(slipForm);
@@ -137,19 +157,23 @@ public class SlipController {
             return "/";
         }
 
+        redirectAttributes.addAttribute("success", "temporary");
         return "redirect:/";
     }
 
     @PostMapping("/delete")
-    public String deleteSlip(@ModelAttribute("slipForm") SlipForm slipForm) {
+    public String deleteSlip(@ModelAttribute("slipForm") SlipForm slipForm,
+                             RedirectAttributes redirectAttributes) {
 
         slipService.deleteSlip(slipForm);
-        return "redirect:/";
+        redirectAttributes.addAttribute("success", "delete");
+        return "redirect:/list/temporary";
     }
 
     @PostMapping("/application")
     public String applySlip(@ModelAttribute("slipForm") SlipForm slipForm,
-                            @AuthenticationPrincipal LoginUserDetails loginUserDetails) throws IOException {
+                            @AuthenticationPrincipal LoginUserDetails loginUserDetails,
+                            RedirectAttributes redirectAttributes) throws IOException {
 
         if (slipForm.getId() == null) {
             slipForm.setUserId(loginUserDetails.getUser().getId());
@@ -165,22 +189,26 @@ public class SlipController {
             return "/";
         }
 
+        redirectAttributes.addAttribute("success", "application");
         return "redirect:/";
     }
 
     @PostMapping("/cancel")
-    public String cancelSlip(@ModelAttribute("slipForm") SlipForm slipForm) throws IOException {
+    public String cancelSlip(@ModelAttribute("slipForm") SlipForm slipForm,
+                             RedirectAttributes redirectAttributes) throws IOException {
 
         approvalHistoryService.deleteBySlipId(slipForm.getId());
         slipForm.setStatus(1);
         slipService.saveSlip(slipForm);
 
-        return "redirect:/";
+        redirectAttributes.addAttribute("success", "cancel");
+        return "redirect:/list/temporary";
     }
 
     @PostMapping("/approval")
     public String approveSlip(@ModelAttribute("slipForm") SlipForm slipForm,
-                              @AuthenticationPrincipal LoginUserDetails loginUserDetails) throws IOException {
+                              @AuthenticationPrincipal LoginUserDetails loginUserDetails,
+                              RedirectAttributes redirectAttributes) throws IOException {
 
         User approver = userService.findById(loginUserDetails.getUser().getId());
         SlipForm targetSlip = slipService.getSlip(slipForm.getId());
@@ -210,16 +238,18 @@ public class SlipController {
         slipService.saveSlip(slipForm);
         approvalHistoryService.saveApprovalHistory(targetSlip.getId(), loginUserDetails.getUser().getId());
 
+        redirectAttributes.addAttribute("success", "approval");
         return "redirect:/list/approval";
     }
 
     @PostMapping("/remand")
-    public String remandSlip(@ModelAttribute("slipForm") SlipForm slipForm) throws IOException {
+    public String remandSlip(@ModelAttribute("slipForm") SlipForm slipForm,
+                             RedirectAttributes redirectAttributes) throws IOException {
 
         slipForm.setStatus(3);
         slipService.saveSlip(slipForm);
 
-        return "redirect:/";
+        return "redirect:/list/approval" + "&success=remand";
     }
 
     @PostMapping("/temp/bulk-add")
@@ -237,6 +267,11 @@ public class SlipController {
             int amount = d.getAmount() != null ? Integer.parseInt(d.getAmount()) : 0;
             d.setSubtotal("往復".equals(d.getRoundTrip()) ? amount * 2 : amount);
         });
+
+        slipForm.getDetailForms().sort(
+                Comparator.comparing(DetailForm::getBillingDate)
+                        .thenComparing(DetailForm::getId)
+        );
 
         int total = slipForm.getDetailForms().stream()
                 .mapToInt(d -> d.getSubtotal() != null ? d.getSubtotal() : 0)
