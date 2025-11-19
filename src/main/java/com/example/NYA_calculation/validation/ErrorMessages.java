@@ -2,7 +2,7 @@ package com.example.NYA_calculation.validation;
 
 public class ErrorMessages {
 
-    public static final String E0001 = "社員番号を入力してください";
+    public static final String E0001 = "アカウントを入力してください";
     public static final String E0002 = "パスワードを入力してください";
     public static final String E0003 = "ログインに失敗しました";
     public static final String E0004 = "承認者を選択してください";

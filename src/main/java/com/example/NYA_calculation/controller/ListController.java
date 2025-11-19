@@ -78,20 +78,6 @@ public class ListController {
             s.setDepartmentName(departmentName);
         }
 
-        if ("temporary".equals(success)) {
-            model.addAttribute("successMessage", "一時保存しました。");
-        } else if ("delete".equals(success)) {
-            model.addAttribute("successMessage", "削除しました。");
-        } else if ("application".equals(success)) {
-            model.addAttribute("successMessage", "申請しました。");
-        } else if ("cancel".equals(success)) {
-            model.addAttribute("successMessage", "取り下げました。");
-        } else if ("approval".equals(success)) {
-            model.addAttribute("successMessage", "承認しました。");
-        } else if ("remand".equals(success)) {
-            model.addAttribute("successMessage", "差戻しました。");
-        }
-
         model.addAttribute("slipList", slipList);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
@@ -268,20 +254,6 @@ public class ListController {
                 default -> "未所属";
             };
             s.setDepartmentName(departmentName);
-        }
-
-        if ("temporary".equals(success)) {
-            model.addAttribute("successMessage", "一時保存しました。");
-        } else if ("delete".equals(success)) {
-            model.addAttribute("successMessage", "削除しました。");
-        } else if ("application".equals(success)) {
-            model.addAttribute("successMessage", "申請しました。");
-        } else if ("cancel".equals(success)) {
-            model.addAttribute("successMessage", "取り下げました。");
-        } else if ("approval".equals(success)) {
-            model.addAttribute("successMessage", "承認しました。");
-        } else if ("remand".equals(success)) {
-            model.addAttribute("successMessage", "差戻しました。");
         }
 
         model.addAttribute("slipList", slipList);

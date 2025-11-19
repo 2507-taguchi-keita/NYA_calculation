@@ -15,9 +15,11 @@
         <a href="/logout">ログアウト</a>
     </nav>
 </header>
-<div th:if="${successMessage}" class="success-message">
+
+<div id="flash-message" th:if="${successMessage}" class="success-message flash-success">
     <p th:text="${successMessage}"></p>
 </div>
+
 <div th:if="${errorMessages != null}" class="error-messages">
     <ul>
         <li th:each="err : ${errorMessages}" th:text="${err}"></li>
@@ -76,9 +78,22 @@
 
 </main>
 
-<footer>
-    <p>&copy; NYA</p>
-</footer>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        const flash = $("#flash-message");
+
+        if (flash.length) {
+            flash.fadeIn(200);
+
+            setTimeout(() => {
+                flash.fadeOut(500);
+            }, 2000);
+        }
+
+    });
+</script>
 
 </body>
 </html>

@@ -169,4 +169,12 @@ $(document).ready(function() {
         });
     });
 
+    $(document).on("click", "button[formaction='/slip/delete']", function (e) {
+
+        if (!confirm("この伝票を削除しますか？")) {
+            e.preventDefault(); // ← フォーム送信を止める
+        }
+
+    });
+
 });

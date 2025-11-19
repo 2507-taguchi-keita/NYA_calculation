@@ -23,11 +23,9 @@
     </p>
 </section>
 
-<div id="flash-message"
-     th:if="${successMessage}"
-     th:text="${successMessage}"
-     class="flash-success"
-     style="display:none;"></div>
+<div id="flash-message" th:if="${successMessage}" class="success-message flash-success">
+    <p th:text="${successMessage}"></p>
+</div>
 
 <!-- ===== メインエリア ===== -->
 <main class="container">
@@ -38,45 +36,41 @@
     <a href="/slip/new" class="main-btn">🚊 交通費精算</a>
 
     <div class="menu-grid">
+        <a th:href="@{/list/temporary}" class="menu-card">
+            <div class="menu-icon">💾</div>
+            <div class="menu-title">一時保存一覧</div>
+        </a>
+
         <a th:href="@{/list/application}" class="menu-card">
             <div class="menu-icon">📋</div>
             <div class="menu-title">申請一覧</div>
+        </a>
+
+        <a th:href="@{/list/remand}" class="menu-card">
+            <div class="menu-icon">↩️</div>
+            <div class="menu-title">差戻一覧</div>
         </a>
 
         <a th:if="${loginUser.user.authority == 3 || loginUser.user.departmentId == 1}" th:href="@{/list/approval}" class="menu-card">
             <div class="menu-icon">✅</div>
             <div class="menu-title">未承認一覧</div>
         </a>
-
-        <a th:href="@{/list/temporary}" class="menu-card">
-            <div class="menu-icon">💾</div>
-            <div class="menu-title">一時保存一覧</div>
-        </a>
-
-        <a th:href="@{/list/remand}" class="menu-card">
-            <div class="menu-icon">↩️</div>
-            <div class="menu-title">差し戻し一覧</div>
-        </a>
     </div>
 </main>
-
-<footer>
-    <p>&copy; NYA</p>
-</footer>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
 
-            const flash = $("#flash-message");
+        const flash = $("#flash-message");
 
-            if (flash.length) {
-                flash.fadeIn(200);
+        if (flash.length) {
+            flash.fadeIn(200);
 
-                setTimeout(() => {
-                    flash.fadeOut(500);
-                }, 2000);
-            }
+            setTimeout(() => {
+                flash.fadeOut(500);
+            }, 2000);
+        }
 
     });
 </script>

@@ -145,6 +145,8 @@ public class SlipController {
                            @AuthenticationPrincipal LoginUserDetails loginUserDetails,
                            RedirectAttributes redirectAttributes) throws IOException {
 
+        Integer isResubmission = (slipForm.getStatus());
+
         slipForm.setUserId(loginUserDetails.getUser().getId());
         slipForm.setApproverId(loginUserDetails.getUser().getApproverId());
         slipForm.setStatus(1);
@@ -157,8 +159,12 @@ public class SlipController {
             return "/";
         }
 
-        redirectAttributes.addAttribute("success", "temporary");
-        return "redirect:/";
+        redirectAttributes.addFlashAttribute("successMessage", "一時保存しました。");
+        if (isResubmission == 0) {
+            return "redirect:/";
+        } else {
+            return "redirect:/list/temporary";
+        }
     }
 
     @PostMapping("/delete")
@@ -166,7 +172,7 @@ public class SlipController {
                              RedirectAttributes redirectAttributes) {
 
         slipService.deleteSlip(slipForm);
-        redirectAttributes.addAttribute("success", "delete");
+        redirectAttributes.addFlashAttribute("successMessage", "伝票を削除しました。");
         return "redirect:/list/temporary";
     }
 
@@ -175,7 +181,8 @@ public class SlipController {
                             @AuthenticationPrincipal LoginUserDetails loginUserDetails,
                             RedirectAttributes redirectAttributes) throws IOException {
 
-        boolean isResubmission = (slipForm.getStatus() == 3);
+        Integer isResubmission = (slipForm.getStatus());
+
         if (slipForm.getId() == null) {
             slipForm.setUserId(loginUserDetails.getUser().getId());
             slipForm.setApproverId(loginUserDetails.getUser().getApproverId());
@@ -191,15 +198,16 @@ public class SlipController {
         }
 
         // メッセージ切り替え
-        if (isResubmission) {
+        if (isResubmission == 3) {
             redirectAttributes.addFlashAttribute("successMessage", "再申請が完了しました。");
             return "redirect:/list/remand";
-        } else {
+        } else if (isResubmission == 1) {
             redirectAttributes.addFlashAttribute("successMessage", "申請が完了しました。");
             return "redirect:/list/temporary";
+        } else {
+            redirectAttributes.addFlashAttribute("successMessage", "申請が完了しました。");
+            return "redirect:/";
         }
-        redirectAttributes.addAttribute("success", "application");
-        return "redirect:/";
     }
 
     @PostMapping("/cancel")
@@ -212,6 +220,7 @@ public class SlipController {
         slipForm.setStatus(1);
         slipService.saveSlip(slipForm);
         redirectAttributes.addFlashAttribute("successMessage", "伝票を取り下げました。");
+
         // 申請一覧からの取り下げ
         if ("application".equals(fromList)) {
             return "redirect:/list/application";
@@ -259,7 +268,7 @@ public class SlipController {
         slipService.saveSlip(slipForm);
         approvalHistoryService.saveApprovalHistory(targetSlip.getId(), loginUserDetails.getUser().getId());
 
-        redirectAttributes.addAttribute("success", "approval");
+        redirectAttributes.addFlashAttribute("successMessage", "承認が完了しました。");
         return "redirect:/list/approval";
     }
 
@@ -270,7 +279,8 @@ public class SlipController {
         slipForm.setStatus(3);
         slipService.saveSlip(slipForm);
 
-        return "redirect:/list/approval" + "&success=remand";
+        redirectAttributes.addFlashAttribute("successMessage", "差戻が完了しました。");
+        return "redirect:/list/approval";
     }
 
     @PostMapping("/temp/bulk-add")
@@ -288,11 +298,6 @@ public class SlipController {
             int amount = d.getAmount() != null ? Integer.parseInt(d.getAmount()) : 0;
             d.setSubtotal("往復".equals(d.getRoundTrip()) ? amount * 2 : amount);
         });
-
-        slipForm.getDetailForms().sort(
-                Comparator.comparing(DetailForm::getBillingDate)
-                        .thenComparing(DetailForm::getId)
-        );
 
         int total = slipForm.getDetailForms().stream()
                 .mapToInt(d -> d.getSubtotal() != null ? d.getSubtotal() : 0)
