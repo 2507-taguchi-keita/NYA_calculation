@@ -15,7 +15,9 @@
         <a href="/logout">ログアウト</a>
     </nav>
 </header>
-
+<div th:if="${successMessage}" class="success-message">
+    <p th:text="${successMessage}"></p>
+</div>
 <main class="list-container">
     <h2>一時保存一覧</h2>
 
