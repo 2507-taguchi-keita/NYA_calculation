@@ -175,6 +175,7 @@ public class SlipController {
                             @AuthenticationPrincipal LoginUserDetails loginUserDetails,
                             RedirectAttributes redirectAttributes) throws IOException {
 
+        boolean isResubmission = (slipForm.getStatus() == 3);
         if (slipForm.getId() == null) {
             slipForm.setUserId(loginUserDetails.getUser().getId());
             slipForm.setApproverId(loginUserDetails.getUser().getApproverId());
@@ -189,20 +190,40 @@ public class SlipController {
             return "/";
         }
 
+        // メッセージ切り替え
+        if (isResubmission) {
+            redirectAttributes.addFlashAttribute("successMessage", "再申請が完了しました。");
+            return "redirect:/list/remand";
+        } else {
+            redirectAttributes.addFlashAttribute("successMessage", "申請が完了しました。");
+            return "redirect:/list/temporary";
+        }
         redirectAttributes.addAttribute("success", "application");
         return "redirect:/";
     }
 
     @PostMapping("/cancel")
-    public String cancelSlip(@ModelAttribute("slipForm") SlipForm slipForm,
-                             RedirectAttributes redirectAttributes) throws IOException {
+    public String cancelSlip(
+            @ModelAttribute("slipForm") SlipForm slipForm,
+            @RequestParam(required = false) String fromList,
+            RedirectAttributes redirectAttributes) throws IOException {
 
         approvalHistoryService.deleteBySlipId(slipForm.getId());
         slipForm.setStatus(1);
         slipService.saveSlip(slipForm);
+        redirectAttributes.addFlashAttribute("successMessage", "伝票を取り下げました。");
+        // 申請一覧からの取り下げ
+        if ("application".equals(fromList)) {
+            return "redirect:/list/application";
+        }
 
-        redirectAttributes.addAttribute("success", "cancel");
-        return "redirect:/list/temporary";
+        // 差戻し一覧からの取り下げ
+        if ("remand".equals(fromList)) {
+            return "redirect:/list/remand";
+        }
+
+        // 万が一の fallback
+        return "redirect:/";
     }
 
     @PostMapping("/approval")

@@ -20,6 +20,9 @@
      class="flash-success"
      style="display:none;"></div>
 
+<div th:if="${successMessage}" class="success-message">
+    <p th:text="${successMessage}"></p>
+</div>
 <main class="list-container">
     <h2>未承認一覧画面</h2>
 

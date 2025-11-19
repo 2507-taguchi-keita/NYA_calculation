@@ -222,12 +222,15 @@
 
                     <div th:case="5">
                         <a th:href="@{/list/application}"><button type="button">戻る</button></a>
+                        <input type="hidden" name="fromList" value="application">
                         <button type="submit" formaction="/slip/cancel">取り下げ</button>
                     </div>
 
                     <div th:case="3">
                         <a th:href="@{/list/remand}"><button type="button">戻る</button></a>
+                        <input type="hidden" name="fromList" value="remand">
                         <button type="submit" formaction="/slip/cancel">取り下げ</button>
+                        <button type="submit" formaction="/slip/application">再申請</button>
                     </div>
 
                     <div th:case="6">

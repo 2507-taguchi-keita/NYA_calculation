@@ -87,6 +87,14 @@
         ORDER BY account ASC
     </select>
 
+    <select id="findAllApprovers" resultType="com.example.NYA_calculation.repository.entity.User">
+        SELECT id, name
+        FROM users
+        WHERE authority = 3
+        AND is_stopped = false
+        ORDER BY account ASC
+    </select>
+
     <select id="pageUser" resultType="com.example.NYA_calculation.controller.form.UserForm">
         SELECT
         id,

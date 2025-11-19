@@ -15,7 +15,9 @@
         <a href="/logout">ログアウト</a>
     </nav>
 </header>
-
+<div th:if="${successMessage}" class="success-message">
+    <p th:text="${successMessage}"></p>
+</div>
 <div th:if="${errorMessages != null}" class="error-messages">
     <ul>
         <li th:each="err : ${errorMessages}" th:text="${err}"></li>

@@ -58,7 +58,6 @@ public class UserController {
             return new ModelAndView("redirect:/");
         }
         List<User> approvers = userService.getApprovers(loginUser.getUser().getDepartmentId());
-
         ModelAndView mav = new ModelAndView();
         mav.setViewName("/setting");
         mav.addObject("formModel", user);
@@ -99,7 +98,7 @@ public class UserController {
     @GetMapping("/admin/users/new")
     public String adminNewUser(Model model,
                                @AuthenticationPrincipal LoginUserDetails loginUserDetails){
-        List<User> approvers = userService.getApprovers(loginUserDetails.getUser().getDepartmentId());
+        List<User> approvers = userService.getAllApprovers();
         model.addAttribute("approvers", approvers);
         model.addAttribute("userForm", new UserForm());
         model.addAttribute("departments", DepartmentConstants.DEPARTMENTS);
@@ -114,15 +113,6 @@ public class UserController {
                                @AuthenticationPrincipal LoginUserDetails loginUserDetails) {
 
         if (result.hasErrors()) {
-//            System.out.println("---- バリデーションエラー発生 ----");
-//            result.getFieldErrors().forEach(error -> {
-//                System.out.println("フィールド: " + error.getField());
-//                System.out.println("メッセージ: " + error.getDefaultMessage());
-//            });
-//            result.getGlobalErrors().forEach(error -> {
-//                System.out.println("グローバルエラー: " + error.getDefaultMessage());
-//            });
-//            System.out.println("----------------------------");
             model.addAttribute("validationErrors", result);
             model.addAttribute("userForm", userForm);
             model.addAttribute("approvers", userService.getApprovers(loginUserDetails.getUser().getDepartmentId()));

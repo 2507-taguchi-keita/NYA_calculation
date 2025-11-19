@@ -25,4 +25,5 @@ public interface UserRepository {
     int insertUser(User user);
     Integer countByAccount(@Param("account") String account, @Param("excludeUserId") Integer excludeUserId);
     int adminEditUser(UserForm userForm);
+    List<User> findAllApprovers();
 }

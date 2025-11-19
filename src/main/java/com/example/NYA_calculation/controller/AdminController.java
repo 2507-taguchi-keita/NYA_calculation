@@ -37,6 +37,11 @@ public class AdminController {
         List<ExpenseSummary> summaryList = detailService.getMonthlyTotal();
         List<ExpenseSummary> reasonList = detailService.getReasonSummary();
         Integer totalExpense = detailService.getTotalExpense();
+        System.out.println("===== /admin データ確認 =====");
+        System.out.println("summaryList = " + summaryList);
+        System.out.println("reasonList = " + reasonList);
+        System.out.println("totalExpense = " + totalExpense);
+        System.out.println("================================");
 
         // JSON変換してビューへ渡す
         ObjectMapper mapper = new ObjectMapper();

@@ -28,7 +28,7 @@
         slips s
         JOIN details d ON s.id = d.slip_id
         WHERE
-        s.status = 3
+        s.status = 4
         GROUP BY
         DATE_FORMAT(d.billing_date, '%Y-%m')
         ORDER BY
@@ -77,7 +77,7 @@
         SUM(d.subtotal) AS totalAmount
         FROM slips s
         JOIN details d ON s.id = d.slip_id
-        WHERE s.status = 3
+        WHERE s.status = 4
         GROUP BY d.reason
         ORDER BY totalAmount DESC;
     </select>
@@ -87,7 +87,7 @@
         SELECT SUM(d.subtotal)
         FROM slips s
         JOIN details d ON s.id = d.slip_id
-        WHERE s.status = 3;
+        WHERE s.status = 4;
     </select>
 
 </mapper>

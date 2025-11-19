@@ -156,3 +156,17 @@ footer {
     align-items: center;
     margin: 0 4px;
 }
+
+.success-message {
+    width: 900px;
+    margin: 20px auto;
+    padding: 12px 18px;
+    background-color: #e3ffe0;
+    border: 1px solid #9fde9d;
+    color: #0f6300;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    text-align: center;
+}

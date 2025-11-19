@@ -56,6 +56,10 @@ public class UserService {
         return userRepository.findApprovers(departmentId);
     }
 
+    public List<User> getAllApprovers() {
+        return userRepository.findAllApprovers(); // 新規登録専用
+    }
+
     public Page<UserForm> pageUser(int page, int size) {
         int offset = page * size;
         List<UserForm> users = userRepository.pageUser(size, offset);
