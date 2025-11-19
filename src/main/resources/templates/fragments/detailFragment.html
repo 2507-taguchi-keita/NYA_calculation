@@ -3,20 +3,18 @@
     <div class="modal-content">
         <form id="detailForm" th:object="${detailForm}" enctype="multipart/form-data">
             <input type="hidden" id="hasErrors" th:value="${hasErrors}">
+            <input type="hidden" th:field="*{originalFileName}">
+            <input type="hidden" th:field="*{fileUrl}">
 
             <div class="modal-header">
                 <h2>明細追加</h2>
             </div>
 
-            <div id="errorArea">
-                <div th:if="${errorMessage}">
-                    <p th:text="${errorMessage}"></p>
-                </div>
-                <div th:if="${#fields.hasErrors('*')}">
-                    <ul>
-                        <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
-                    </ul>
-                </div>
+            <div th:if="${hasErrors}" id="errorArea">
+                <ul>
+                    <li th:if="${errorMessage}" th:text="${errorMessage}"></li>
+                    <li th:if="${#fields.hasErrors('*')}" th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                </ul>
             </div>
 
             <div class="form-row">
@@ -53,10 +51,10 @@
                 <label>備考</label>
                 <textarea type="text" th:field="*{remark}"></textarea>
             </div>
-            <div>
+
+            <div class="form-row">
                 <label>領収書/請求書</label>
-                    <a th:if="${detailForm.fileUrl != null}" th:href="${detailForm.fileUrl}" target="_blank" th:text="${detailForm.originalFileName}"></a>
-                    <input type="file" th:field="*{uploadFile}" accept=".pdf,.jpg,.jpeg,.png">
+                <input type="file" th:field="*{uploadFile}" accept=".pdf,.jpg,.jpeg,.png">
             </div>
 
             <div class="button-row">

@@ -17,6 +17,7 @@ $(document).ready(function() {
         $("#detailModal").show();
         $("#detailForm")[0].reset();
         $("#errorArea").empty();
+        $("#errorArea").hide();
         editingTempId = null;
         editingSource = null;
     });
@@ -25,6 +26,7 @@ $(document).ready(function() {
         $("#detailModal").hide();
         $("#detailForm")[0].reset();
         $("#errorArea").empty();
+        $("#errorArea").hide();
         editingTempId = null;
         editingSource = null;
     });
@@ -65,10 +67,12 @@ $(document).ready(function() {
                 if (hasErrors) {
                     $("#detailModelContainer").html(html);
                     $("#detailModal").show();
+                    $("#errorArea").show();
                 } else {
                     $("#detail-list-container").html(html);
                     $("#detailModal").hide();
                     $("#detailForm")[0].reset();
+                    $("#errorArea").hide();
                     editingTempId = null;
                     editingSource = null;
                 }
@@ -102,6 +106,10 @@ $(document).ready(function() {
             $("#currentFileName").text("なし").show();
             $("#currentFileLink").hide();
         }
+
+        $("#storedFileName").val(row.data("storedfilename"));
+        $("#originalFileName").val(row.data("originalfilename"));
+        $("#fileUrl").val(row.data("fileurl"));
 
         // ★ファイル削除フラグを初期化
         $("#removeFileFlag").val("false");

@@ -11,72 +11,75 @@
         <span th:case="7">明細一括登録</span>
     </div>
 
-    <!-- 基本情報 -->
-    <div class="basic-info-block">
-        <table class="table-basic-info">
-            <tbody>
-            <tr>
-                <th>伝票No.</th>
-                <td th:text="${slipForm.id}"></td>
-            </tr>
-            <tr>
-                <th>申請日</th>
-                <td th:text="${slipForm.applicationDate}"></td>
-            </tr>
-            <tr>
-                <th>申請者</th>
-                <td th:text="${userDto.user.name}"></td>
-            </tr>
-            <tr>
-                <th>所属部署</th>
-                <td th:text="${userDto.department.name}"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    <div class="slip-info-flex">
 
-    <!-- 承認フロー -->
-    <div class="approval-flow-block">
-        <label>承認フロー</label>
-        <table class="table-approval">
-            <thead>
-            <tr>
-                <th>経理部</th>
-                <th>経理部長</th>
-                <th>所属部長</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <!-- 経理部（1） -->
-                <td th:each="h : ${approvalHistoryDtoList}"
-                    th:if="${h.user.authority == 1}">
-                    <p th:text="${#temporals.format(h.approvalHistory.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
-                    <p th:text="${h.user.account}"></p>
-                    <p th:text="${h.user.name}"></p>
-                    <p>承認</p>
-                </td>
+        <!-- 基本情報 -->
+        <div class="basic-info-block slip-info-left">
+            <table class="table-basic-info">
+                <tbody>
+                <tr>
+                    <th>伝票No.</th>
+                    <td th:text="${slipForm.id}"></td>
+                </tr>
+                <tr>
+                    <th>申請日</th>
+                    <td th:text="${#temporals.format(slipForm.applicationDate, 'yyyy/MM/dd HH:mm')}"></td>
+                </tr>
+                <tr>
+                    <th>申請者</th>
+                    <td th:text="${userDto.user.name}"></td>
+                </tr>
+                <tr>
+                    <th>所属部署</th>
+                    <td th:text="${userDto.department.name}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-                <!-- 経理部長（2） -->
-                <td th:each="h : ${approvalHistoryDtoList}"
-                    th:if="${h.user.authority == 2}">
-                    <p th:text="${#temporals.format(h.approvalHistory.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
-                    <p th:text="${h.user.account}"></p>
-                    <p th:text="${h.user.name}"></p>
-                    <p>承認</p>
-                </td>
+        <!-- 承認フロー -->
+        <div class="approval-flow-block slip-info-right">
 
-                <!-- 所属部長（3） -->
-                <td th:each="h : ${approvalHistoryDtoList}"
-                    th:if="${h.user.authority == 3}">
-                    <p th:text="${#temporals.format(h.approvalHistory.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
-                    <p th:text="${h.user.account}"></p>
-                    <p th:text="${h.user.name}"></p>
-                    <p>承認</p>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+            <table class="table-approval">
+                <thead>
+                <tr>
+                    <th>経理部</th>
+                    <th>経理部長</th>
+                    <th>所属部長</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <!-- 経理部（1） -->
+                    <td th:each="h : ${approvalHistoryDtoList}"
+                        th:if="${h.user.authority == 1}">
+                        <p th:text="${#temporals.format(h.approvalHistory.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
+                        <p th:text="${h.user.account}"></p>
+                        <p th:text="${h.user.name}"></p>
+                        <p>承認</p>
+                    </td>
+
+                    <!-- 経理部長（2） -->
+                    <td th:each="h : ${approvalHistoryDtoList}"
+                        th:if="${h.user.authority == 2}">
+                        <p th:text="${#temporals.format(h.approvalHistory.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
+                        <p th:text="${h.user.account}"></p>
+                        <p th:text="${h.user.name}"></p>
+                        <p>承認</p>
+                    </td>
+
+                    <!-- 所属部長（3） -->
+                    <td th:each="h : ${approvalHistoryDtoList}"
+                        th:if="${h.user.authority == 3}">
+                        <p th:text="${#temporals.format(h.approvalHistory.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
+                        <p th:text="${h.user.account}"></p>
+                        <p th:text="${h.user.name}"></p>
+                        <p>承認</p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- 明細追加ボタン -->
@@ -128,8 +131,10 @@
                             th:data-subtotal="${detail.subtotal}"
                             th:data-remark="${detail.remark}"
                             th:data-filename="${detail.originalFileName}"
+                            th:data-temp-id="${detail.tempId}"
                             th:data-fileurl="${detail.fileUrl}"
-                            th:data-temp-id="${detail.tempId}">
+                            th:data-storedfilename="${detail.storedFileName}"
+                            th:data-originalfilename="${detail.originalFileName}">
 
                             <td th:text="${detail.billingDate}"></td>
                             <td th:text="${detail.reason}"></td>
@@ -209,15 +214,15 @@
                 <div class="action-buttons" th:switch="${status}">
                     <div th:case="0">
                         <a th:href="@{/}"><button type="button">戻る</button></a>
-                        <button type="submit" formaction="/slip/temporary">一時保存</button>
-                        <button type="submit" formaction="/slip/application">申請</button>
+                        <button type="submit" formaction="/slip/temporary" class="btn-save">一時保存</button>
+                        <button type="submit" formaction="/slip/application" class="btn-apply">申請</button>
                     </div>
 
                     <div th:case="1">
                         <a th:href="@{/list/temporary}"><button type="button">戻る</button></a>
-                        <button type="submit" formaction="/slip/temporary">一時保存</button>
-                        <button type="submit" formaction="/slip/delete">削除</button>
-                        <button type="submit" formaction="/slip/application">申請</button>
+                        <button type="submit" formaction="/slip/temporary" class="btn-save">一時保存</button>
+                        <button type="submit" formaction="/slip/delete" class="btn-delete">削除</button>
+                        <button type="submit" formaction="/slip/application" class="btn-apply">申請</button>
                     </div>
 
                     <div th:case="2">
@@ -230,7 +235,7 @@
                         <a th:href="@{/list/remand}"><button type="button">戻る</button></a>
                         <input type="hidden" name="fromList" value="remand">
                         <button type="submit" formaction="/slip/cancel">取り下げ</button>
-                        <button type="submit" formaction="/slip/application">再申請</button>
+                        <button type="submit" formaction="/slip/application" class="btn-apply">再申請</button>
                     </div>
 
                     <div th:case="4">
@@ -239,13 +244,13 @@
 
                     <div th:case="6">
                         <a th:href="@{/list/approval}"><button type="button">戻る</button></a>
-                        <button type="submit" formaction="/slip/remand">差戻</button>
-                        <button type="submit" formaction="/slip/approval">承認</button>
+                        <button type="submit" formaction="/slip/remand" class="btn-remand">差戻</button>
+                        <button type="submit" formaction="/slip/approval" class="btn-approve">承認</button>
                     </div>
 
                     <div th:case="7">
                         <a th:href="@{/csv/upload}"><button type="button">戻る</button></a>
-                        <button type="submit" formaction="/slip/temp/bulk-add">伝票へ一括追加</button>
+                        <button type="submit" class="btn-save" formaction="/slip/temp/bulk-add">伝票へ一括追加</button>
                     </div>
                 </div>
 

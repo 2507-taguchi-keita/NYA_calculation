@@ -37,7 +37,7 @@
             <tbody>
             <tr th:each="s : ${slipList}">
                 <td><a th:href="@{'/slip/approval/' + ${s.id}}" th:text="${s.id}"></a></td>
-                <td th:text="${#dates.format(s.applicationDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
+                <td th:text="${#dates.format(s.applicationDate, 'yyyy/MM/dd HH:mm')}"></td>
                 <td th:text="${s.userName}"></td>
                 <td th:text="${s.departmentName}"></td>
                 <td th:text="${s.totalAmount}"></td>

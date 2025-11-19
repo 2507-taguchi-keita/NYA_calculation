@@ -30,6 +30,15 @@ public class DetailController {
                                     @RequestParam(required = false) String tempId,
                                     Model model) throws IOException {
 
+        // ▼ 編集モードの場合は既存データを取得しておく
+        DetailForm oldDetail = null;
+        if (tempId != null) {
+            oldDetail = slipForm.getDetailForms().stream()
+                    .filter(d -> d.getTempId().equals(tempId))
+                    .findFirst()
+                    .orElse(null);
+        }
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("hasErrors", true);
             model.addAttribute("detailForm", detailForm);
@@ -68,22 +77,37 @@ public class DetailController {
 
         model.addAttribute("hasErrors", false);
 
-        if (!file.isEmpty()) {
+        if (file != null && !file.isEmpty()) {
 
-            // 保存ディレクトリ（※後で変更可能）
+            // ------------------------------
+            // 新しいファイルがアップされた場合だけ保存する
+            // ------------------------------
             Path uploadDir = Paths.get(System.getProperty("java.io.tmpdir"), "uploads");
             Files.createDirectories(uploadDir);
 
             String storedFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
             Path filePath = uploadDir.resolve(storedFileName);
 
-            // ファイル保存
             file.transferTo(filePath.toFile());
 
-            // DetailForm にセット
             detailForm.setStoredFileName(storedFileName);
             detailForm.setOriginalFileName(file.getOriginalFilename());
-            detailForm.setFileUrl("/files/" + storedFileName); // 表示用URL
+            detailForm.setFileUrl("/files/" + storedFileName);
+
+        } else if (oldDetail != null) {
+
+            // ------------------------------
+            // ファイル未選択 → 既存ファイルを維持
+            // ------------------------------
+            detailForm.setStoredFileName(oldDetail.getStoredFileName());
+            detailForm.setOriginalFileName(oldDetail.getOriginalFileName());
+            detailForm.setFileUrl(oldDetail.getFileUrl());
+
+        } else {
+
+            // ------------------------------
+            // 新規でファイルなし → 何もセットしない（nullのまま）
+            // ------------------------------
         }
 
         // 既存の明細更新 or 新規追加
