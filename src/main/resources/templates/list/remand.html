@@ -70,11 +70,11 @@
         </span>
 
         <a th:if="${currentPage + 1 < totalPages}"
-           th:href="@{/slip/remand(page=${currentPage + 1})}" class="page-link">次へ »</a>
+           th:href="@{/list/remand(page=${currentPage + 1})}" class="page-link">次へ »</a>
     </div>
 
     <a th:href="@{/}" class="back-link">
-        <button type="button">戻る</button>
+        <button type="button" class="btn-square">戻る</button>
     </a>
 
 </main>
