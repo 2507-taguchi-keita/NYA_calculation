@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -94,6 +95,12 @@ public class DetailController {
             slipForm.getDetailForms().add(detailForm);
         }
 
+        slipForm.getDetailForms().sort(
+                Comparator.comparing(DetailForm::getBillingDate)
+                        .thenComparing(DetailForm::getId)
+        );
+
+
         // 小計再計算
         slipForm.getDetailForms().forEach(d -> {
             int amount = d.getAmount() != null ? Integer.parseInt(d.getAmount()) : 0;
@@ -120,6 +127,11 @@ public class DetailController {
                                Model model) {
 
         slipForm.getDetailForms().removeIf(d -> d.getTempId().equals(tempId));
+
+        slipForm.getDetailForms().sort(
+                Comparator.comparing(DetailForm::getBillingDate)
+                        .thenComparing(DetailForm::getId)
+        );
 
         // 合計計算
         int total = slipForm.getDetailForms().stream()

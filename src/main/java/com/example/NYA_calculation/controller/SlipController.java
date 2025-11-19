@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,6 +60,10 @@ public class SlipController {
     public String showTemporarySlip(Model model, @PathVariable Integer id) {
 
         SlipForm slipForm = slipService.getSlipForm(id);
+        slipForm.getDetailForms().sort(
+                Comparator.comparing(DetailForm::getBillingDate)
+                        .thenComparing(DetailForm::getId)
+        );
         UserDto userDto = userService.getUserDto(slipForm.getUserId());
         List<ApprovalHistoryDto> approvalHistoryDtoList = approvalHistoryService.getApprovalHistoryDtoList(id);
 
@@ -76,6 +81,10 @@ public class SlipController {
     public String showApplicationSlip(Model model, @PathVariable Integer id) {
 
         SlipForm slipForm = slipService.getSlipForm(id);
+        slipForm.getDetailForms().sort(
+                Comparator.comparing(DetailForm::getBillingDate)
+                        .thenComparing(DetailForm::getId)
+        );
         UserDto userDto = userService.getUserDto(slipForm.getUserId());
         List<ApprovalHistoryDto> approvalHistoryDtoList = approvalHistoryService.getApprovalHistoryDtoList(id);
 
@@ -93,6 +102,10 @@ public class SlipController {
     public String showRemandSlip(Model model, @PathVariable Integer id) {
 
         SlipForm slipForm = slipService.getSlipForm(id);
+        slipForm.getDetailForms().sort(
+                Comparator.comparing(DetailForm::getBillingDate)
+                        .thenComparing(DetailForm::getId)
+        );
         UserDto userDto = userService.getUserDto(slipForm.getUserId());
         List<ApprovalHistoryDto> approvalHistoryDtoList = approvalHistoryService.getApprovalHistoryDtoList(id);
 
@@ -110,6 +123,10 @@ public class SlipController {
     public String showApprovalSlip(Model model, @PathVariable Integer id) {
 
         SlipForm slipForm = slipService.getSlipForm(id);
+        slipForm.getDetailForms().sort(
+                Comparator.comparing(DetailForm::getBillingDate)
+                        .thenComparing(DetailForm::getId)
+        );
         UserDto userDto = userService.getUserDto(slipForm.getUserId());
         List<ApprovalHistoryDto> approvalHistoryDtoList = approvalHistoryService.getApprovalHistoryDtoList(id);
 
@@ -125,12 +142,16 @@ public class SlipController {
 
     @PostMapping("/temporary")
     public String saveSlip(@ModelAttribute("slipForm") SlipForm slipForm,
-                           @AuthenticationPrincipal LoginUserDetails loginUserDetails) throws IOException {
+                           @AuthenticationPrincipal LoginUserDetails loginUserDetails,
+                           RedirectAttributes redirectAttributes) throws IOException {
+
+        Integer isResubmission = (slipForm.getStatus());
 
         slipForm.setUserId(loginUserDetails.getUser().getId());
         slipForm.setApproverId(loginUserDetails.getUser().getApproverId());
         slipForm.setStatus(1);
         slipForm.setStep(0);
+        slipForm.setApplicationDate(null);
 
         try {
             slipService.saveSlip(slipForm);
@@ -138,14 +159,21 @@ public class SlipController {
             return "/";
         }
 
-        return "redirect:/";
+        redirectAttributes.addFlashAttribute("successMessage", "一時保存しました。");
+        if (isResubmission == 0) {
+            return "redirect:/";
+        } else {
+            return "redirect:/list/temporary";
+        }
     }
 
     @PostMapping("/delete")
-    public String deleteSlip(@ModelAttribute("slipForm") SlipForm slipForm) {
+    public String deleteSlip(@ModelAttribute("slipForm") SlipForm slipForm,
+                             RedirectAttributes redirectAttributes) {
 
         slipService.deleteSlip(slipForm);
-        return "redirect:/";
+        redirectAttributes.addFlashAttribute("successMessage", "伝票を削除しました。");
+        return "redirect:/list/temporary";
     }
 
     @PostMapping("/application")
@@ -153,7 +181,8 @@ public class SlipController {
                             @AuthenticationPrincipal LoginUserDetails loginUserDetails,
                             RedirectAttributes redirectAttributes) throws IOException {
 
-        boolean isResubmission = (slipForm.getStatus() == 3);
+        Integer isResubmission = (slipForm.getStatus());
+
         if (slipForm.getId() == null) {
             slipForm.setUserId(loginUserDetails.getUser().getId());
             slipForm.setApproverId(loginUserDetails.getUser().getApproverId());
@@ -169,12 +198,15 @@ public class SlipController {
         }
 
         // メッセージ切り替え
-        if (isResubmission) {
+        if (isResubmission == 3) {
             redirectAttributes.addFlashAttribute("successMessage", "再申請が完了しました。");
             return "redirect:/list/remand";
-        } else {
+        } else if (isResubmission == 1) {
             redirectAttributes.addFlashAttribute("successMessage", "申請が完了しました。");
             return "redirect:/list/temporary";
+        } else {
+            redirectAttributes.addFlashAttribute("successMessage", "申請が完了しました。");
+            return "redirect:/";
         }
     }
 
@@ -188,6 +220,7 @@ public class SlipController {
         slipForm.setStatus(1);
         slipService.saveSlip(slipForm);
         redirectAttributes.addFlashAttribute("successMessage", "伝票を取り下げました。");
+
         // 申請一覧からの取り下げ
         if ("application".equals(fromList)) {
             return "redirect:/list/application";
@@ -204,7 +237,8 @@ public class SlipController {
 
     @PostMapping("/approval")
     public String approveSlip(@ModelAttribute("slipForm") SlipForm slipForm,
-                              @AuthenticationPrincipal LoginUserDetails loginUserDetails) throws IOException {
+                              @AuthenticationPrincipal LoginUserDetails loginUserDetails,
+                              RedirectAttributes redirectAttributes) throws IOException {
 
         User approver = userService.findById(loginUserDetails.getUser().getId());
         SlipForm targetSlip = slipService.getSlip(slipForm.getId());
@@ -234,16 +268,19 @@ public class SlipController {
         slipService.saveSlip(slipForm);
         approvalHistoryService.saveApprovalHistory(targetSlip.getId(), loginUserDetails.getUser().getId());
 
+        redirectAttributes.addFlashAttribute("successMessage", "承認が完了しました。");
         return "redirect:/list/approval";
     }
 
     @PostMapping("/remand")
-    public String remandSlip(@ModelAttribute("slipForm") SlipForm slipForm) throws IOException {
+    public String remandSlip(@ModelAttribute("slipForm") SlipForm slipForm,
+                             RedirectAttributes redirectAttributes) throws IOException {
 
         slipForm.setStatus(3);
         slipService.saveSlip(slipForm);
 
-        return "redirect:/";
+        redirectAttributes.addFlashAttribute("successMessage", "差戻が完了しました。");
+        return "redirect:/list/approval";
     }
 
     @PostMapping("/temp/bulk-add")

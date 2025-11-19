@@ -13,6 +13,7 @@ $(document).ready(function() {
     // モーダル開閉（委譲）
     // ========================
     $(document).on("click", "#openModalBtn", function() {
+        $("#detailModal h2").text("明細追加");
         $("#detailModal").show();
         $("#detailForm")[0].reset();
         $("#errorArea").empty();
@@ -81,6 +82,7 @@ $(document).ready(function() {
     $(document).on("click", ".editDetailBtn", function() {
         const row = $(this).closest("tr");
         editingTempId = row.data("temp-id");
+        $("#detailModal h2").text("明細編集");
 
         $("#billingDate").val(row.find("td").eq(0).text());
         $("#reason").val(row.find("td").eq(1).text());
@@ -90,15 +92,19 @@ $(document).ready(function() {
         $("#subtotal").val(row.find("td").eq(5).text());
         $("#remark").val(row.find("td").eq(6).text());
 
-        const fileName = row.data("filename");
-        const fileUrl = row.find("a").attr("href");
-        if (fileUrl) {
-            $("#currentFileName").text(fileName);
+        let fileName = row.data("filename");
+        let fileUrl = row.data("fileurl"); // このデータ属性を追加推奨
+
+        if (fileName) {
+            $("#currentFileName").text(fileName).show();
             $("#currentFileLink").attr("href", fileUrl).show();
         } else {
-            $("#currentFileName").text("");
+            $("#currentFileName").text("なし").show();
             $("#currentFileLink").hide();
         }
+
+        // ★ファイル削除フラグを初期化
+        $("#removeFileFlag").val("false");
 
         $("#detailModal").show();
     });
@@ -107,14 +113,16 @@ $(document).ready(function() {
     // 削除ボタン（委譲）
     // ========================
     $(document).on("click", ".deleteDetailBtn", function() {
+
+        if (!confirm("この明細を削除しますか？")) {
+            return; // キャンセルした場合は中断
+        }
+
         const row = $(this).closest("tr");
         const tempId = row.data("temp-id");
 
-        let url = "/detail/delete";
-        let container = "#detail-list-container";
-
-        $.post(url, { tempId: tempId }, function(response) {
-            $(container).html(response);
+        $.post("/detail/delete", { tempId: tempId }, function(response) {
+            $("#detail-list-container").html(response);
         });
     });
 
@@ -159,6 +167,14 @@ $(document).ready(function() {
                 alert("一括追加に失敗しました");
             }
         });
+    });
+
+    $(document).on("click", "button[formaction='/slip/delete']", function (e) {
+
+        if (!confirm("この伝票を削除しますか？")) {
+            e.preventDefault(); // ← フォーム送信を止める
+        }
+
     });
 
 });

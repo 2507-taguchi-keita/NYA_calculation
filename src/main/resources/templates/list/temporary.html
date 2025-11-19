@@ -15,9 +15,11 @@
         <a href="/logout">ログアウト</a>
     </nav>
 </header>
-<div th:if="${successMessage}" class="success-message">
+
+<div id="flash-message" th:if="${successMessage}" class="success-message flash-success">
     <p th:text="${successMessage}"></p>
 </div>
+
 <main class="list-container">
     <h2>一時保存一覧</h2>
 
@@ -28,19 +30,19 @@
             <th>申請日</th>
             <th>入力者</th>
             <th>部署名</th>
-            <th>承認ステータス</th>
-            <th>承認ステップ</th>
             <th>合計金額</th>
+            <th>承認ステップ</th>
+            <th>承認ステータス</th>
             </thead>
             <tbody>
             <tr th:each="s : ${slipList}">
                 <td><a th:href="@{'/slip/temporary/' + ${s.id}}" th:text="${s.id}"></a></td>
-                <td th:text="${#dates.format(s.updatedDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
+                <td th:text="${#dates.format(s.applicationDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
                 <td th:text="${s.userName}"></td>
                 <td th:text="${s.departmentName}"></td>
-                <td th:text="${s.statusLabel}"></td>
-                <td th:text="${s.stepLabel}"></td>
                 <td th:text="${s.totalAmount}"></td>
+                <td th:text="${s.stepLabel}"></td>
+                <td th:text="${s.statusLabel}"></td>
             </tr>
             </tbody>
         </table>
@@ -69,9 +71,22 @@
 
 </main>
 
-<footer>
-    <p>&copy;NYA</p>
-</footer>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        const flash = $("#flash-message");
+
+        if (flash.length) {
+            flash.fadeIn(200);
+
+            setTimeout(() => {
+                flash.fadeOut(500);
+            }, 2000);
+        }
+
+    });
+</script>
 </body>
 </html>

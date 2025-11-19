@@ -4,10 +4,10 @@
     <div class="slip-status-title" th:switch="${status}">
         <span th:case="0">新規伝票</span>
         <span th:case="1">一時保存伝票</span>
-        <span th:case="5">申請中伝票</span>
+        <span th:case="2">申請中伝票</span>
         <span th:case="3">差戻伝票</span>
+        <span th:case="4">承認済伝票</span>
         <span th:case="6">承認伝票</span>
-        <span th:case="4">承認済み伝票</span>
         <span th:case="7">明細一括登録</span>
     </div>
 
@@ -92,9 +92,11 @@
         <div th:fragment="slip-detailListFragment(slipForm, status)">
             <form th:object="${slipForm}" method="post">
                 <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                <input type="hidden" id="redirectUrl" th:value="${redirectUrl}">
+
 
                 <!-- 通常明細 -->
-                <div th:if="${status == 0 || status == 1 || status == 3 || status == 4 || status == 5 || status == 6}">
+                <div th:if="${status == 0 || status == 1 || status == 2 || status == 3 || status == 4 || status == 6}">
                     <table class="detail-table">
                         <thead>
                         <tr>
@@ -126,6 +128,7 @@
                             th:data-subtotal="${detail.subtotal}"
                             th:data-remark="${detail.remark}"
                             th:data-filename="${detail.originalFileName}"
+                            th:data-fileurl="${detail.fileUrl}"
                             th:data-temp-id="${detail.tempId}">
 
                             <td th:text="${detail.billingDate}"></td>
@@ -217,7 +220,7 @@
                         <button type="submit" formaction="/slip/application">申請</button>
                     </div>
 
-                    <div th:case="5">
+                    <div th:case="2">
                         <a th:href="@{/list/application}"><button type="button">戻る</button></a>
                         <input type="hidden" name="fromList" value="application">
                         <button type="submit" formaction="/slip/cancel">取り下げ</button>
@@ -230,14 +233,14 @@
                         <button type="submit" formaction="/slip/application">再申請</button>
                     </div>
 
+                    <div th:case="4">
+                        <a th:href="@{/list/application}"><button type="button">戻る</button></a>
+                    </div>
+
                     <div th:case="6">
                         <a th:href="@{/list/approval}"><button type="button">戻る</button></a>
                         <button type="submit" formaction="/slip/remand">差戻</button>
                         <button type="submit" formaction="/slip/approval">承認</button>
-                    </div>
-
-                    <div th:case="4">
-                        <a th:href="@{/list/application}"><button type="button">戻る</button></a>
                     </div>
 
                     <div th:case="7">

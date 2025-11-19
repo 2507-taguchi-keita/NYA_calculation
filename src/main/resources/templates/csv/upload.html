@@ -7,12 +7,14 @@
     <title>CSV取込み</title>
     <link rel="stylesheet" th:href="@{/css/slip.css}">
 </head>
-<body>
-<header>
+
+<body class="csv-body">
+
+<header class="csv-header">
     <h2>CSV取込み</h2>
 </header>
 
-<main>
+<main class="csv-container">
 
     <div th:if="${csvError}">
         <p th:text="${csvError}"></p>
@@ -23,7 +25,7 @@
         <button type="submit">読込</button>
     </form>
 
-    <div th:switch="${slipForm.status}">
+    <div class="csv-back-links" th:switch="${slipForm.status}">
         <span th:case="0">
             <a th:href="@{/slip/new}">戻る</a>
         </span>
@@ -31,15 +33,11 @@
             <a th:href="@{/slip/temporary/{id}(id=${slipForm.id})}">戻る</a>
         </span>
         <span th:case="3">
-            <a th:href="@{@{/slip/remand/{id}(id=${slipForm.id})}}">戻る</a>
+            <a th:href="@{/slip/remand/{id}(id=${slipForm.id})}">戻る</a>
         </span>
     </div>
 
 </main>
-
-<footer>
-    <p>&copy;NYA</p>
-</footer>
 
 <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 <script th:src="@{/js/slip.js}"></script>
