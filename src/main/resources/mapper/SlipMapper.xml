@@ -121,9 +121,10 @@
         total_amount,
         user_id,
         approver_id,
-        created_date
+        created_date,
+        updated_date
         FROM slips
-        WHERE status = 1
+        WHERE status = 2
         ORDER BY user_id ASC
     </select>
 

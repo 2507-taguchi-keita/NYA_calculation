@@ -37,11 +37,6 @@ public class AdminController {
         List<ExpenseSummary> summaryList = detailService.getMonthlyTotal();
         List<ExpenseSummary> reasonList = detailService.getReasonSummary();
         Integer totalExpense = detailService.getTotalExpense();
-        System.out.println("===== /admin データ確認 =====");
-        System.out.println("summaryList = " + summaryList);
-        System.out.println("reasonList = " + reasonList);
-        System.out.println("totalExpense = " + totalExpense);
-        System.out.println("================================");
 
         // JSON変換してビューへ渡す
         ObjectMapper mapper = new ObjectMapper();
@@ -115,10 +110,10 @@ public class AdminController {
         // 数値 → 状態名変換
         for (Slip s : slipList) {
             String label = switch (s.getStatus()) {
-                case 0 -> "一時保存";
-                case 1 -> "申請中";
-                case 2 -> "差し戻し";
-                case 3 -> "承認済み";
+                case 1 -> "一時保存";
+                case 2 -> "申請中";
+                case 3 -> "差し戻し";
+                case 4 -> "承認済み";
                 default -> "不明";
             };
             s.setStatusLabel(label);
