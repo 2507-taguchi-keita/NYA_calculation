@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>ログイン画面</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+
+<body class="login-body">
+
+<main class="login-container">
+
+    <!-- ロゴ -->
+    <div class="login-logo">
+        <img th:src="@{/storage/logo.png}" alt="NYA精算ロゴ">
+    </div>
+
+    <!-- エラーメッセージ -->
+    <div class="error-box" th:if="${errorMessage != null}">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <div class="error-box" th:if="${errorMessages}">
+        <p th:each="msg : ${errorMessages}" th:text="${msg}"></p>
+    </div>
+
+    <!-- ログインフォーム -->
+    <form th:action="@{/login}" method="post" class="login-form">
+
+        <div class="form-group">
+            <label>アカウント</label>
+            <input type="text" name="account" th:value="${account}">
+        </div>
+
+        <div class="form-group">
+            <label>パスワード</label>
+            <input type="password" id="passwordField" name="password">
+        </div>
+
+        <div class="pw-toggle">
+            <input type="checkbox" id="pwVisible">
+            <label for="pwVisible">パスワードを表示する</label>
+        </div>
+
+        <button type="submit" class="login-btn">ログイン</button>
+
+    </form>
+
+    <footer class="login-footer">
+        <p>&copy;NYA</p>
+    </footer>
+</main>
+
+<script>
+    // パスワード表示切り替え
+    document.getElementById("pwVisible").addEventListener("change", function () {
+        const pw = document.getElementById("passwordField");
+        pw.type = this.checked ? "text" : "password";
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>管理者画面</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<header>
+    <h1>NYA精算 管理者画面</h1>
+    <nav>
+        <a href="/">ホーム</a> /
+        <a href="/logout">ログアウト</a>
+    </nav>
+</header>
+<main class="admin-container">
+    <aside class="admin-menu">
+        <a href="/admin/users" class="menu-item">👤 ユーザー一覧</a>
+        <a href="/admin/requests" class="menu-item">📂 申請管理</a>
+    </aside>
+
+    <section class="admin-content">
+        <div class="content-header">
+            <h2>経費サマリー</h2>
+            <div class="total-expense">
+                <span>会社全体の合計経費：</span>
+                <strong th:text="'¥' + ${totalExpense}"></strong>
+            </div>
+        </div>
+        <div class="chart-container">
+            <div class="chart-box">
+                <h3>月別経費の推移</h3>
+                <canvas id="summaryChart"></canvas>
+                <p id="noDataMsg" style="text-align:center;color:#888;display:none;">データがありません</p>
+            </div>
+
+            <div class="chart-box">
+                <h3>用途別経費構成</h3>
+                <canvas id="reasonChart"></canvas>
+            </div>
+        </div>
+    </section>
+</main>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let summaryList = /*[[${summaryList}]]*/ [];
+    let reasonList = /*[[${reasonList}]]*/ [];
+    /*]]>*/
+
+    // JSON文字列として渡された場合の対処
+    if (typeof summaryList === 'string') summaryList = JSON.parse(summaryList);
+    if (typeof reasonList === 'string') reasonList = JSON.parse(reasonList);
+
+    // ==== データが無いときのメッセージ ====
+    if (!summaryList || summaryList.length === 0) {
+        const msg = document.getElementById("noDataMsg");
+        if (msg) msg.style.display = "block";
+    }
+
+    // ==== 月別経費 ====
+    const labels = (summaryList || []).map(item => item.month);
+    const dataValues = (summaryList || []).map(item => item.totalAmount);
+
+    new Chart(document.getElementById('summaryChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '月別経費合計（円）',
+                data: dataValues,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // ==== 用途別経費 ====
+    const reasonLabels = (reasonList || []).map(r => r.reason);
+    const reasonValues = (reasonList || []).map(r => r.totalAmount);
+
+    new Chart(document.getElementById('reasonChart'), {
+        type: 'pie',
+        data: {
+            labels: reasonLabels,
+            datasets: [{
+                data: reasonValues,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(255, 205, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+</script>
+<footer>
+    <p>&copy;NYA</p>
+</footer>
+</body>
+</html>

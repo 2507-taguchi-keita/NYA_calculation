@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.NYA_calculation.repository.ApprovalHistoryRepository">
+
+    <insert id="insert">
+        INSERT INTO approval_history (slip_id, user_id, approved_at)
+        VALUES (#{slipId}, #{userId}, NOW());
+    </insert>
+
+    <select id="findBySlipId" resultType="com.example.NYA_calculation.repository.entity.ApprovalHistory" parameterType="Integer">
+        SELECT *
+        FROM approval_history
+        WHERE slip_id = #{slipId}
+    </select>
+
+    <delete id="deleteBySlipId">
+        DELETE
+        FROM approval_history
+        WHERE slip_id = #{slipId};
+    </delete>
+
+</mapper>

@@ -1,0 +1,363 @@
+/* ================================
+   全体レイアウト
+================================ */
+body {
+    background-color: #f5f5f5;
+    font-family: "Segoe UI", sans-serif;
+}
+
+.slip-container {
+    width: 95%;
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* ================================
+   見出し（ステータス）
+================================ */
+.slip-status-title {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* ================================
+   基本情報テーブル
+================================ */
+.table-basic-info {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.table-basic-info th {
+    background: #e6e6e6;
+    padding: 10px;
+    width: 150px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.table-basic-info td {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+/* ================================
+   承認フロー
+================================ */
+.table-approval {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.table-approval th {
+    background: #0b74de;
+    color: white;
+    padding: 10px;
+    border: 1px solid #065bb8;
+}
+
+.table-approval td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.table-approval td p {
+    margin: 4px 0;
+    font-size: 14px;
+}
+
+/* ================================
+   明細テーブル
+================================ */
+.detail-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.detail-table th {
+    background: #0b74de;
+    color: white;
+    padding: 8px;
+    border: 1px solid #065bb8;
+}
+
+.detail-table td {
+    background: white;
+    padding: 8px;
+    border: 1px solid #ccc;
+}
+
+.detail-table tbody tr:nth-child(even) td {
+    background: #f7faff;
+}
+
+/* 空行 */
+.empty-row {
+    text-align: center;
+    padding: 12px;
+    background: #fafafa;
+}
+
+/* 編集・削除ボタン */
+.editDetailBtn,
+.deleteDetailBtn {
+    padding: 4px 10px;
+    font-size: 13px;
+    border-radius: 4px;
+}
+
+.editDetailBtn {
+    background: #eee;
+    border: 1px solid #bbb;
+}
+
+.editDetailBtn:hover {
+    background: #ddd;
+}
+
+.deleteDetailBtn {
+    background: #ff6b6b;
+    border: 1px solid #d9534f;
+    color: white;
+}
+
+.deleteDetailBtn:hover {
+    background: #d9534f;
+}
+
+/* ================================
+   合計
+================================ */
+.total-area {
+    margin-top: 25px;
+    font-size: 16px;
+}
+
+#totalAmountInput {
+    width: 150px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #999;
+    background: #f2f2f2;
+}
+
+/* ================================
+   ボタン（汎用）
+================================ */
+button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    margin-right: 8px;
+    font-size: 14px;
+    color: white;
+    background: #0b74de;
+}
+
+button:hover {
+    background: #065bb8;
+}
+
+button[type="button"] {
+    background: #777;
+}
+
+button[type="button"]:hover {
+    background: #555;
+}
+
+/* 用途別ボタン色 */
+.btn-save { background: #6c757d; }
+.btn-save:hover { background: #5a6268; }
+
+.btn-apply { background: #007bff; }
+.btn-apply:hover { background: #0069d9; }
+
+.btn-approve { background: #28a745; }
+.btn-approve:hover { background: #218838; }
+
+.btn-remand { background: #ff9800; }
+.btn-remand:hover { background: #fb8c00; }
+
+.btn-delete { background: #dc3545; }
+.btn-delete:hover { background: #c82333; }
+
+/* ================================
+   ボタンコンテナ
+================================ */
+.action-buttons {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* ================================
+   モーダル
+================================ */
+#detailModal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background: #fff;
+  margin: 5% auto;
+  padding: 20px 30px;
+  width: 80%;
+  max-width: 900px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #007bce;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px 6px 0 0;
+}
+
+.close {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.form-row label {
+  width: 120px;
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.form-row input, .form-row select, .form-row textarea {
+  margin-right: 12px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-row textarea {
+  width: 100%;
+  height: 80px;
+  resize: vertical;
+}
+
+.required { color: red; }
+
+.button-row {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.primary-btn {
+  background-color: #007bce;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+}
+
+.sub-btn, #cancelBtn {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  padding: 8px 20px;
+  border-radius: 4px;
+}
+
+.primary-btn:hover { background-color: #005fa3; }
+
+.flash-success {
+    background: #e8f5e9;
+    border-left: 5px solid #4caf50;
+    padding: 12px 18px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    color: #2e7d32;
+}
+
+/* =========================
+   モーダル内エラー表示
+   ========================= */
+#errorArea {
+    margin: 10px 0 15px;
+    padding: 10px 12px;
+    background: #ffecec;
+    border-left: 4px solid #e74c3c;
+    border-radius: 4px;
+}
+
+#errorArea p {
+    margin: 0;
+    color: #c0392b;
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: bold;
+}
+
+#errorArea ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+#errorArea li {
+    color: #c0392b;
+    font-size: 14px;
+    margin-bottom: 3px;
+    line-height: 1.4;
+}
+
+/* ================================
+   伝票情報 + 承認フロー（横並び）
+================================ */
+.slip-info-flex {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    margin-bottom: 25px;
+}
+
+.basic-info-block {
+    flex: 0 0 42%;
+}
+
+.approval-flow-block {
+    flex: 1;
+    min-width: 420px;
+}
+
+/* テーブルの枠統一 */
+.table-basic-info,
+.table-approval,
+.detail-table {
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* 明細 備考欄を広く */
+.detail-table td:nth-child(7),
+.detail-table th:nth-child(7) {
+    width: 250px;
+}

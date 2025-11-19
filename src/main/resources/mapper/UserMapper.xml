@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.NYA_calculation.repository.UserRepository">
+
+    <!-- ユーザー情報を account で検索 -->
+    <select id="findByAccount"
+            resultType="com.example.NYA_calculation.repository.entity.User"
+            parameterType="string">
+        SELECT
+        id,
+        account,
+        password,
+        name,
+        department_id,
+        authority,
+        is_stopped,
+        approver_id,
+        created_date,
+        updated_date
+        FROM users
+        WHERE account = #{account}
+    </select>
+
+    <!-- ユーザー情報を id で検索 -->
+    <select id="findById" resultType="com.example.NYA_calculation.repository.entity.User" parameterType="Integer">
+        SELECT
+            id,
+            account,
+            password,
+            name,
+            department_id,
+            authority,
+            is_stopped,
+            approver_id,
+            created_date,
+            updated_date
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+    <!-- ユーザーをIDで取得 -->
+    <select id="findFormById"
+            parameterType="int"
+            resultType="com.example.NYA_calculation.controller.form.UserForm">
+        SELECT
+        id,
+        account,
+        password,
+        name,
+        department_id,
+        authority,
+        is_stopped,
+        approver_id,
+        created_date,
+        updated_date
+        FROM
+        users
+        WHERE
+        id = #{id}
+    </select>
+
+    <update id="updateUser" parameterType="com.example.NYA_calculation.controller.form.UserForm">
+        UPDATE users
+        <set>
+            <trim suffixOverrides=",">
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            approver_id = #{approverId},
+            updated_date = CURRENT_TIMESTAMP
+            </trim>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="findApprovers" resultType="com.example.NYA_calculation.repository.entity.User">
+        SELECT
+        id,
+        name
+        FROM users
+        WHERE department_id = #{departmentId}
+        AND authority = 3
+        AND is_stopped = false
+        ORDER BY account ASC
+    </select>
+
+    <select id="findAllApprovers" resultType="com.example.NYA_calculation.repository.entity.User">
+        SELECT id, name
+        FROM users
+        WHERE authority = 3
+        AND is_stopped = false
+        ORDER BY account ASC
+    </select>
+
+    <select id="pageUser" resultType="com.example.NYA_calculation.controller.form.UserForm">
+        SELECT
+        id,
+        account,
+        password,
+        name,
+        department_id,
+        authority,
+        is_stopped,
+        approver_id,
+        created_date,
+        updated_date
+        FROM users
+        ORDER BY account ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countUsers" resultType="int">
+        SELECT COUNT(*) FROM users
+    </select>
+
+    <update id="updateIsStopped">
+        UPDATE users
+        SET is_stopped = #{isStopped},
+        updated_date = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <select id="countByAccount" parameterType="map" resultType="int">
+        SELECT COUNT(*) FROM users
+        WHERE account = #{account}
+        <if test="excludeUserId != null">
+            AND id != #{excludeUserId}
+        </if>
+    </select>
+
+    <insert id="insertUser" parameterType="com.example.NYA_calculation.controller.form.UserForm">
+        INSERT INTO users (account, password, name, authority, department_id, is_stopped, approver_id, created_date, updated_date)
+        VALUES (#{account}, #{password}, #{name}, #{authority}, #{departmentId}, #{isStopped}, #{approverId}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    </insert>
+
+    <!-- 管理者用ユーザー編集 -->
+    <update id="adminEditUser" parameterType="com.example.NYA_calculation.controller.form.UserForm">
+        UPDATE users
+        SET
+        account = #{account},
+        name = #{name},
+        department_id = #{departmentId},
+        authority = #{authority},
+        updated_date = CURRENT_TIMESTAMP
+        <if test="password != null and password != ''">
+            , password = #{password}
+        </if>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

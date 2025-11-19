@@ -1,0 +1,266 @@
+<div th:fragment="slipFragment(slipForm, userDto, approvalHistoryDtoList, status)" class="slip-container">
+
+    <!-- ステータス表示 -->
+    <div class="slip-status-title" th:switch="${status}">
+        <span th:case="0">新規伝票</span>
+        <span th:case="1">一時保存伝票</span>
+        <span th:case="2">申請中伝票</span>
+        <span th:case="3">差戻伝票</span>
+        <span th:case="4">承認済伝票</span>
+        <span th:case="6">承認伝票</span>
+        <span th:case="7">明細一括登録</span>
+    </div>
+
+    <div class="slip-info-flex">
+
+        <!-- 基本情報 -->
+        <div class="basic-info-block slip-info-left">
+            <table class="table-basic-info">
+                <tbody>
+                <tr>
+                    <th>伝票No.</th>
+                    <td th:text="${slipForm.id}"></td>
+                </tr>
+                <tr>
+                    <th>申請日</th>
+                    <td th:text="${#temporals.format(slipForm.applicationDate, 'yyyy/MM/dd HH:mm')}"></td>
+                </tr>
+                <tr>
+                    <th>申請者</th>
+                    <td th:text="${userDto.user.name}"></td>
+                </tr>
+                <tr>
+                    <th>所属部署</th>
+                    <td th:text="${userDto.department.name}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 承認フロー -->
+        <div class="approval-flow-block slip-info-right">
+
+            <table class="table-approval">
+                <thead>
+                <tr>
+                    <th>経理部</th>
+                    <th>経理部長</th>
+                    <th>所属部長</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <!-- 経理部（1） -->
+                    <td th:each="h : ${approvalHistoryDtoList}"
+                        th:if="${h.user.authority == 1}">
+                        <p th:text="${#temporals.format(h.approvalHistory.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
+                        <p th:text="${h.user.account}"></p>
+                        <p th:text="${h.user.name}"></p>
+                        <p>承認</p>
+                    </td>
+
+                    <!-- 経理部長（2） -->
+                    <td th:each="h : ${approvalHistoryDtoList}"
+                        th:if="${h.user.authority == 2}">
+                        <p th:text="${#temporals.format(h.approvalHistory.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
+                        <p th:text="${h.user.account}"></p>
+                        <p th:text="${h.user.name}"></p>
+                        <p>承認</p>
+                    </td>
+
+                    <!-- 所属部長（3） -->
+                    <td th:each="h : ${approvalHistoryDtoList}"
+                        th:if="${h.user.authority == 3}">
+                        <p th:text="${#temporals.format(h.approvalHistory.approvedAt, 'yyyy/MM/dd HH:mm')}"></p>
+                        <p th:text="${h.user.account}"></p>
+                        <p th:text="${h.user.name}"></p>
+                        <p>承認</p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 明細追加ボタン -->
+    <div class="action-buttons" th:if="${status == 0 || status == 1 || status == 3}">
+        <button id="openModalBtn" type="button">明細追加</button>
+        <a th:href="@{/csv/upload}">
+            <button type="button">CSV取込み</button>
+        </a>
+    </div>
+
+    <!-- 明細リスト -->
+    <div id="detail-list-container">
+        <div th:fragment="slip-detailListFragment(slipForm, status)">
+            <form th:object="${slipForm}" method="post">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                <input type="hidden" id="redirectUrl" th:value="${redirectUrl}">
+
+
+                <!-- 通常明細 -->
+                <div th:if="${status == 0 || status == 1 || status == 2 || status == 3 || status == 4 || status == 6}">
+                    <table class="detail-table">
+                        <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>申請理由</th>
+                            <th>交通機関</th>
+                            <th>往復</th>
+                            <th>金額</th>
+                            <th>小計</th>
+                            <th>備考</th>
+                            <th>領収書/請求書</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(slipForm.detailForms)}">
+                            <td colspan="9" class="empty-row">明細がありません</td>
+                        </tr>
+
+                        <tr th:each="detail, iStat : ${slipForm.detailForms}" class="detail-row"
+                            th:id="'detail-row-' + ${iStat.index}"
+                            th:data-index="${iStat.index}"
+                            th:data-billing-date="${detail.billingDate}"
+                            th:data-reason="${detail.reason}"
+                            th:data-transportation="${detail.transportation}"
+                            th:data-round-trip="${detail.roundTrip}"
+                            th:data-amount="${detail.amount}"
+                            th:data-subtotal="${detail.subtotal}"
+                            th:data-remark="${detail.remark}"
+                            th:data-filename="${detail.originalFileName}"
+                            th:data-temp-id="${detail.tempId}"
+                            th:data-fileurl="${detail.fileUrl}"
+                            th:data-storedfilename="${detail.storedFileName}"
+                            th:data-originalfilename="${detail.originalFileName}">
+
+                            <td th:text="${detail.billingDate}"></td>
+                            <td th:text="${detail.reason}"></td>
+                            <td th:text="${detail.transportation}"></td>
+                            <td th:text="${detail.roundTrip}"></td>
+                            <td th:text="${detail.amount}"></td>
+                            <td th:text="${detail.subtotal}"></td>
+                            <td th:text="${detail.remark}"></td>
+
+                            <td>
+                                <a th:if="${detail.fileUrl != null}"
+                                   th:href="${detail.fileUrl}"
+                                   th:text="${detail.originalFileName}"
+                                   target="_blank"></a>
+                            </td>
+
+                            <td th:if="${status == 0 || status == 1 || status == 3}">
+                                <button type="button" class="editDetailBtn" th:data-temp-id="${detail.tempId}">編集</button>
+                                <button type="button" class="deleteDetailBtn" th:data-temp-id="${detail.tempId}">削除</button>
+                            </td>
+
+                            <td th:if="${status == 5 || status == 4 || status == 6}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- CSV明細 -->
+                <div th:if="${status == 7}">
+                    <table class="detail-table">
+                        <thead>
+                        <tr>
+                            <th>日付</th>
+                            <th>申請理由</th>
+                            <th>交通機関</th>
+                            <th>往復</th>
+                            <th>金額</th>
+                            <th>小計</th>
+                            <th>備考</th>
+                            <th>領収書/請求書</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(slipForm.csvDetailForms)}">
+                            <td colspan="9" class="empty-row">明細がありません</td>
+                        </tr>
+
+                        <tr th:each="detail, iStat : ${csvDetailForms}" class="detail-row"
+                            th:id="'detail-row-' + ${iStat.index}">
+                            <td th:text="${detail.billingDate}"></td>
+                            <td th:text="${detail.reason}"></td>
+                            <td th:text="${detail.transportation}"></td>
+                            <td th:text="${detail.roundTrip}"></td>
+                            <td th:text="${detail.amount}"></td>
+                            <td th:text="${detail.subtotal}"></td>
+                            <td th:text="${detail.remark}"></td>
+
+                            <td>
+                                <a th:if="${detail.fileUrl != null}"
+                                   th:href="${detail.fileUrl}"
+                                   th:text="${detail.originalFileName}"
+                                   target="_blank"></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 合計 -->
+                <div class="total-area" th:if="${!#lists.isEmpty(slipForm.detailForms) || status == 7}">
+                    <label>合計</label>
+                    <input type="text" id="totalAmountInput" th:field="*{totalAmount}" readonly>
+                </div>
+
+                <!-- ボタン群 -->
+                <div class="action-buttons" th:switch="${status}">
+                    <div th:case="0">
+                        <a th:href="@{/}"><button type="button">戻る</button></a>
+                        <button type="submit" formaction="/slip/temporary" class="btn-save">一時保存</button>
+                        <button type="submit" formaction="/slip/application" class="btn-apply">申請</button>
+                    </div>
+
+                    <div th:case="1">
+                        <a th:href="@{/list/temporary}"><button type="button">戻る</button></a>
+                        <button type="submit" formaction="/slip/temporary" class="btn-save">一時保存</button>
+                        <button type="submit" formaction="/slip/delete" class="btn-delete">削除</button>
+                        <button type="submit" formaction="/slip/application" class="btn-apply">申請</button>
+                    </div>
+
+                    <div th:case="2">
+                        <a th:href="@{/list/application}"><button type="button">戻る</button></a>
+                        <input type="hidden" name="fromList" value="application">
+                        <button type="submit" formaction="/slip/cancel">取り下げ</button>
+                    </div>
+
+                    <div th:case="3">
+                        <a th:href="@{/list/remand}"><button type="button">戻る</button></a>
+                        <input type="hidden" name="fromList" value="remand">
+                        <button type="submit" formaction="/slip/cancel">取り下げ</button>
+                        <button type="submit" formaction="/slip/application" class="btn-apply">再申請</button>
+                    </div>
+
+                    <div th:case="4">
+                        <a th:href="@{/list/application}"><button type="button">戻る</button></a>
+                    </div>
+
+                    <div th:case="6">
+                        <a th:href="@{/list/approval}"><button type="button">戻る</button></a>
+                        <button type="submit" formaction="/slip/remand" class="btn-remand">差戻</button>
+                        <button type="submit" formaction="/slip/approval" class="btn-approve">承認</button>
+                    </div>
+
+                    <div th:case="7">
+                        <a th:href="@{/csv/upload}"><button type="button">戻る</button></a>
+                        <button type="submit" class="btn-save" formaction="/slip/temp/bulk-add">伝票へ一括追加</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- モーダル -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content" th:replace="fragments/detailFragment :: detailFragment(${detailForm})"></div>
+    </div>
+
+</div>

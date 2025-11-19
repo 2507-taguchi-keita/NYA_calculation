@@ -1,0 +1,192 @@
+body {
+    font-family: "Segoe UI", "Meiryo", sans-serif;
+    background-color: #f6f8fb;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #005bac;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 30px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 15px;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+.user-page {
+    width: 1100px;
+    margin: 40px auto;
+}
+
+h2 {
+    color: #005bac;
+    margin-bottom: 20px;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.user-table th {
+    background-color: #e0efff;
+    color: #005bac;
+    padding: 12px;
+    font-weight: bold;
+    border-bottom: 1px solid #d0dbe8;
+    border-right: 1px solid #d0dbe8;
+}
+
+.user-table th:last-child {
+    border-right: none;
+}
+
+.user-table td {
+    text-align: center;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    border-right: 1px solid #eee;
+}
+
+.user-table td:last-child {
+    border-right: none;
+}
+
+.user-table tr:hover {
+    background-color: #f4faff;
+}
+
+.login-user-row {
+    background-color: #d3d3d3 !important;
+    color: #fff !important;
+}
+
+.login-user-row a {
+    color: #fff !important;
+}
+
+.btn-valid,
+.btn-stop,
+.btn-edit {
+    padding: 6px 12px;
+    border-radius: 5px;
+    font-size: 13px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-valid {
+    background-color: #28a745;
+    color: #fff;
+}
+.btn-valid:hover {
+    background-color: #218838;
+}
+
+.btn-stop {
+    background-color: #dc3545;
+    color: #fff;
+}
+.btn-stop:hover {
+    background-color: #c82333;
+}
+
+.btn-edit {
+    background-color: #005bac;
+    color: #fff;
+}
+.btn-edit:hover {
+    background-color: #0070e0;
+}
+
+.pagination ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding-left: 0;
+    margin-top: 25px;
+}
+
+.pagination a {
+    padding: 6px 12px;
+    margin: 0 5px;
+    border-radius: 5px;
+    border: 1px solid #005bac;
+    text-decoration: none;
+    color: #005bac;
+}
+
+.pagination a:hover {
+    background-color: #005bac;
+    color: #fff;
+}
+
+.pagination .active strong {
+    padding: 6px 12px;
+    background-color: #005bac;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #005bac;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+footer {
+    text-align: center;
+    color: #666;
+    font-size: 13px;
+    margin-top: 80px;
+    padding-bottom: 10px;
+}
+
+.btn-add {
+    background-color: #007bff;
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.btn-add:hover {
+    background-color: #0062cc;
+}
+
+.pagination ul li {
+    display: inline-flex;
+    align-items: center;
+}

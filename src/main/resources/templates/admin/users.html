@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>ユーザー一覧画面</title>
+    <link rel="stylesheet" th:href="@{/css/users.css}">
+</head>
+<body>
+<header>
+    <h1>NYA精算 管理者画面</h1>
+    <nav>
+        <a href="/admin">管理者トップ</a>
+        / <a href="/logout">ログアウト</a>
+    </nav>
+</header>
+<div th:if="${errorMessages != null}" class="error-messages">
+    <ul>
+        <li th:each="err : ${errorMessages}" th:text="${err}"></li>
+    </ul>
+</div>
+<main class="user-page">
+    <div class="container">
+        <div class="page-users">
+            <div class="admin-users">
+                <div class="users-header">
+                    <h2>ユーザー一覧</h2>
+                    <a href="/admin/users/new" class="btn-add">ユーザー登録</a>
+                </div>
+                <table class="user-table">
+                    <thead>
+                    <tr>
+                        <th scope="col">社員番号</th>
+                        <th scope="col">氏名</th>
+                        <th scope="col">権限</th>
+                        <th scope="col">部署名</th>
+                        <th scope="col">登録日時</th>
+                        <th scope="col">更新日時</th>
+                        <th scope="col">有効/停止</th>
+                        <th scope="col">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${users}"
+                        th:classappend="${loginUser.user.id == user.id} ? 'login-user-row' : ''">
+                        <td><span name="account" th:text="${user.account}"></span></td>
+                        <td class="td-name"><!-- 氏名表示 -->
+                            <span name="name" th:text="${user.name}"></span>
+                        </td>
+                        <td>
+                            <th:block th:switch="${user.authority}">
+                                <span th:case=0 th:text="一般ユーザー"></span>
+                                <span th:case=1 th:text="第1承認者"></span>
+                                <span th:case=2 th:text="第2承認者"></span>
+                                <span th:case=3 th:text="第3承認者"></span>
+                            </th:block>
+                        </td>
+                        <td th:text="${user.departmentLabel}"></td>
+                        <td>
+                            <span th:text="${#dates.format(user.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                        </td>
+                        <td>
+                            <span th:text="${#dates.format(user.updatedDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                        </td>
+                        <td class="td-status">
+                            <!-- 状態表示 -->
+                            <span th:if="${user.isStopped}" th:text="'停止中'"></span>
+                            <span th:unless="${user.isStopped}" th:text="'有効中'"></span>
+
+                            <!-- 自分自身の行は操作不可 -->
+                            <div th:if="${loginUser.user.id != user.id}">
+                                <form method="post" th:if="${user.isStopped}" th:action="@{/admin/users/change/{id}(id=${user.id})}" onsubmit="return CheckValid()">
+                                    <input type="hidden" name="isStopped" value="false"/>
+                                    <input type="submit" value="有効" class="btn-valid"/>
+                                </form>
+
+                                <form method="post" th:unless="${user.isStopped}" th:action="@{/admin/users/change/{id}(id=${user.id})}" onsubmit="return CheckStop()">
+                                    <input type="hidden" name="isStopped" value="true"/>
+                                    <input type="submit" value="停止" class="btn-stop"/>
+                                </form>
+                            </div>
+                        </td>
+                        <td class="td-edit">
+                            <a th:if="${loginUser.user.id != user.id}" th:href="@{/admin/users/edit/{id}(id=${user.id})}"
+                               class="btn-edit">編集</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- ページネーション -->
+    <div th:if="${page.totalPages > 1}" class="pagination">
+        <ul>
+            <li th:if="${!page.first}">
+                <a th:href="@{/admin/users(page=${page.number - 1})}">« 前へ</a>
+            </li>
+
+            <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
+                th:classappend="${i == page.number} ? 'active'">
+                <a th:if="${i != page.number}"
+                   th:href="@{/admin/users(page=${i})}"
+                   th:text="${i + 1}"></a>
+                <strong th:if="${i == page.number}" th:text="${i + 1}"></strong>
+            </li>
+
+            <li th:if="${!page.last}">
+                <a th:href="@{/admin/users(page=${page.number + 1})}">次へ »</a>
+            </li>
+        </ul>
+    </div>
+    <a href="/admin" class="back-link">戻る</a>
+</main>
+<footer>
+    <p>&copy; NYA</p>
+</footer>
+<script>
+    //ユーザー有効確認
+function CheckValid(){
+	if(confirm('ユーザーを有効にしますか？')){
+		return true;
+	} else{
+		return false;
+	}
+}
+
+//ユーザー有効確認
+function CheckStop(){
+	if(confirm('ユーザーを停止しますか？')){
+		return true;
+	} else{
+		return false;
+	}
+}
+</script>
+</body>
+</html>

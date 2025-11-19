@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.NYA_calculation.repository.DetailRepository">
+
+    <insert id="insertDetails">
+        INSERT INTO details
+        (slip_id, billing_date, reason, transportation, round_trip, amount, subtotal, remark, original_file_name ,stored_file_name, created_date, updated_date)
+        VALUES
+        <foreach collection="list" item="d" separator=",">
+            (#{d.slipId}, #{d.billingDate}, #{d.reason}, #{d.transportation}, #{d.roundTrip}, #{d.amount}, #{d.subtotal}, #{d.remark}, #{d.originalFileName}, #{d.storedFileName}, NOW(), NOW())
+        </foreach>
+    </insert>
+
+    <delete id="deleteBySlipId">
+        DELETE
+        FROM details
+        WHERE slip_id = #{slipId}
+    </delete>
+
+    <select id="getMonthlyTotal" resultType="com.example.NYA_calculation.dto.ExpenseSummary">
+        SELECT
+        DATE_FORMAT(d.billing_date, '%Y-%m') AS month,
+        SUM(d.subtotal) AS totalAmount
+        FROM
+        slips s
+        JOIN details d ON s.id = d.slip_id
+        WHERE
+        s.status = 4
+        GROUP BY
+        DATE_FORMAT(d.billing_date, '%Y-%m')
+        ORDER BY
+        month;
+    </select>
+
+    <!-- 明細取得（slip_id指定） -->
+    <select id="findBySlipId" resultType="com.example.NYA_calculation.repository.entity.Detail" parameterType="Integer">
+        SELECT
+        d.id,
+        d.billing_date,
+        d.round_trip,
+        d.amount,
+        d.subtotal,
+        d.reason,
+        d.transportation,
+        d.original_file_name,
+        d.stored_file_name,
+        d.remark,
+        d.created_date,
+        d.updated_date
+        FROM details d
+        WHERE d.slip_id = #{slipId}
+        ORDER BY d.billing_date DESC
+    </select>
+
+    <update id="update" parameterType="com.example.NYA_calculation.repository.entity.Detail">
+        UPDATE details
+        SET
+        billing_date = #{billingDate},
+        round_trip = #{roundTrip},
+        amount = #{amount},
+        subtotal = #{subtotal},
+        reason = #{reason},
+        transportation = #{transportation},
+        original_file_name = #{originalFileName},
+        stored_file_name = #{storedFileName},
+        remark = #{remark},
+        updated_date = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 用途別 -->
+    <select id="getReasonSummary" resultType="com.example.NYA_calculation.dto.ExpenseSummary">
+        SELECT d.reason AS reason,
+        SUM(d.subtotal) AS totalAmount
+        FROM slips s
+        JOIN details d ON s.id = d.slip_id
+        WHERE s.status = 4
+        GROUP BY d.reason
+        ORDER BY totalAmount DESC;
+    </select>
+
+    <!-- 合計 -->
+    <select id="getTotalExpense" resultType="int">
+        SELECT SUM(d.subtotal)
+        FROM slips s
+        JOIN details d ON s.id = d.slip_id
+        WHERE s.status = 4;
+    </select>
+
+</mapper>

@@ -1,0 +1,54 @@
+package com.example.NYA_calculation.controller.form;
+
+import com.example.NYA_calculation.validation.CreateGroup;
+import com.example.NYA_calculation.validation.SettingGroup;
+import com.example.NYA_calculation.validation.UpdateGroup;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.sql.Timestamp;
+
+import static com.example.NYA_calculation.validation.ErrorMessages.*;
+
+@Getter
+@Setter
+public class UserForm {
+
+    private Integer id;
+
+    @NotEmpty(message = E0001, groups = {CreateGroup.class, UpdateGroup.class})
+    @Pattern(regexp = "^$|^[0-9]{7}$", message = E0018, groups = {CreateGroup.class, UpdateGroup.class})
+    private String account;
+
+    @NotEmpty(message = E0002, groups = {CreateGroup.class})
+    @Pattern(regexp = "^(?:$|[\\x21-\\x7E]{6,20})$", message = E0005, groups = {CreateGroup.class, SettingGroup.class, UpdateGroup.class})
+    private String password;
+
+    private String confirmPassword;
+
+    @NotEmpty(message = E0015, groups = {CreateGroup.class, UpdateGroup.class})
+    @Size(max = 10, message = E0019, groups = {CreateGroup.class, UpdateGroup.class})
+    private String name;
+
+    @NotNull(message = E0016, groups = {CreateGroup.class, UpdateGroup.class})
+    private Integer departmentId;
+
+    @NotNull(message = E0017, groups = {CreateGroup.class, UpdateGroup.class})
+    private Integer authority;
+
+    private boolean isStopped;
+
+    @NotNull(message = E0004, groups = {CreateGroup.class, SettingGroup.class})
+    private Integer approverId;
+
+    private Timestamp createdDate;
+
+    private Timestamp updatedDate;
+
+    private String departmentLabel;
+
+}

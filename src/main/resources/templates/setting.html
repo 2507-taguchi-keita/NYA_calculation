@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>個人設定画面</title>
+    <link rel="stylesheet" th:href="@{/css/setting.css}">
+</head>
+
+<body>
+
+<header>
+    <h1>NYA精算</h1>
+    <nav>
+        <a href="/admin" th:if="${loginUser.user.departmentId == 1}">管理者画面</a>
+        / <a href="/logout">ログアウト</a>
+    </nav>
+</header>
+
+<div class="container">
+    <h2>個人設定変更</h2>
+
+    <!-- エラーメッセージ表示 -->
+    <div th:if="${errorMessage != null}" th:text="${errorMessage}"></div>
+
+    <!-- フォーム開始 -->
+    <form th:action="@{/setting/update/{id}(id=${formModel.id})}" method="post" th:object="${formModel}">
+        <input type="hidden" th:field="*{id}">
+
+        <label for="password">パスワード</label>
+        <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error-message"></div>
+        <input type="password" id="password" th:field="*{password}" placeholder="新しいパスワードを入力">
+
+        <label for="confirmPassword">パスワード（確認用）</label>
+        <input type="password" id="confirmPassword" th:field="*{confirmPassword}" placeholder="もう一度入力">
+
+        <div class="pw-visible-box">
+            <input id="pwVisible" type="checkbox" onclick="passwordVisibility()">
+            <label for="pwVisible">パスワードを表示する</label>
+        </div>
+
+        <label for="approverId">承認者</label>
+        <div th:if="${#fields.hasErrors('approverId')}" th:errors="*{approverId}"></div>
+        <select id="approverId" name="approverId">
+            <option value="">選択してください</option>
+            <option th:each="a : ${approvers}"
+                    th:value="${a.id}"
+                    th:text="${a.name}"
+                    th:selected="${a.id == formModel.approverId}">
+            </option>
+        </select>
+
+        <div class="btn-area">
+            <button type="submit" class="btn">変更</button>
+        </div>
+    </form>
+
+    <a href="/" class="back-link">ホーム</a>
+</div>
+
+<script>
+    const form = document.querySelector("form");
+    form.addEventListener("submit", function(e) {
+        const pw = document.getElementById("password").value;
+        const confirmPw = document.getElementById("confirmPassword").value;
+        if (pw !== confirmPw) {
+            alert("パスワードと確認用パスワードが一致しません");
+            e.preventDefault();
+        }
+    });
+
+    <!-- パスワード表示切替 -->
+    function passwordVisibility() {
+        const pw = document.getElementById("password");
+        const confirmPw = document.getElementById("confirmPassword");
+        const visible = document.getElementById("pwVisible").checked;
+        pw.type = visible ? "text" : "password";
+        confirmPw.type = visible ? "text" : "password";
+    }
+</script>
+
+</body>
+</html>

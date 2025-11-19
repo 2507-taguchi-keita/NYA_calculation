@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>申請管理画面</title>
+    <link rel="stylesheet" th:href="@{/css/list.css}">
+</head>
+<body>
+<header>
+    <h1>NYA精算 管理者画面</h1>
+    <nav>
+        <a href="/admin">管理者トップ</a>
+        / <a href="/logout">ログアウト</a>
+    </nav>
+</header>
+
+<main class="list-container">
+    <h2>申請管理</h2>
+    <table class="list-table">
+        <thead>
+        <tr>
+            <th>社員番号</th>
+            <th>氏名</th>
+            <th>承認ステータス</th>
+            <th>承認ステップ</th>
+            <th>合計金額</th>
+            <th>部署名</th>
+            <th>申請者ID</th>
+            <th>承認者ID</th>
+            <th>作成日</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="s : ${slipList}">
+            <td th:text="${s.userAccount}"></td>
+            <td th:text="${s.userName}"></td>
+            <td th:text="${s.statusLabel}"></td>
+            <td th:text="${s.stepLabel}"></td>
+            <td th:text="${s.totalAmount}"></td>
+            <td th:text="${s.departmentName}"></td>
+            <td th:text="${s.userId}"></td>
+            <td th:text="${s.approverId}"></td>
+            <td th:text="${#dates.format(s.createdDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <!-- ページネーション -->
+    <div th:if="${totalPages > 1}" class="pagination">
+        <ul>
+            <li th:if="${currentPage > 0}">
+                <a th:href="@{/admin/requests(page=${currentPage - 1})}" class="page-link">« 前へ</a>
+            </li>
+
+            <li th:each="i : ${#numbers.sequence(startPage, endPage)}">
+                <a th:if="${i != currentPage}"
+                   th:href="@{/admin/requests(page=${i})}"
+                   th:text="${i + 1}"
+                   class="page-link"></a>
+                <span th:if="${i == currentPage}"
+                      th:text="${i + 1}"
+                      class="current-page"></span>
+            </li>
+            <li th:if="${currentPage < totalPages - 1}">
+                <a th:href="@{/admin/requests(page=${currentPage + 1})}"
+                   class="page-link">次へ »</a>
+            </li>
+        </ul>
+    </div>
+    <a th:href="@{/admin}" class="back-link">
+        <button type="button" class="btn-square">戻る</button>
+    </a>
+</main>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>NYA精算 ホーム画面</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body>
+
+<header>
+    <h1>NYA精算</h1>
+    <nav>
+        <a th:href="@{/setting/{id}(id=${loginUser.user.id})}">個人設定</a>/
+        <a href="/admin" th:if="${loginUser.user.departmentId == 1}">管理者画面</a>
+        /<a href="/logout">ログアウト</a>
+    </nav>
+</header>
+<section class="user-info">
+    <p>
+        所属部署：<span th:text="${department}"></span> ／
+        氏名：<span th:text="${userName}"></span> ／
+        役職：<span th:text="${authorityLabel}"></span>
+    </p>
+</section>
+
+<div id="flash-message" th:if="${successMessage}" class="success-message flash-success">
+    <p th:text="${successMessage}"></p>
+</div>
+
+<!-- ===== メインエリア ===== -->
+<main class="container">
+    <div th:if="${errorMessage != null}" class="error-message">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <a href="/slip/new" class="main-btn">🚊 交通費精算</a>
+
+    <div class="menu-grid">
+        <a th:href="@{/list/temporary}" class="menu-card">
+            <div class="menu-icon">💾</div>
+            <div class="menu-title">一時保存一覧</div>
+        </a>
+
+        <a th:href="@{/list/application}" class="menu-card">
+            <div class="menu-icon">📋</div>
+            <div class="menu-title">申請一覧</div>
+        </a>
+
+        <a th:href="@{/list/remand}" class="menu-card">
+            <div class="menu-icon">↩️</div>
+            <div class="menu-title">差戻一覧</div>
+        </a>
+
+        <a th:if="${loginUser.user.authority == 3 || loginUser.user.departmentId == 1}" th:href="@{/list/approval}" class="menu-card">
+            <div class="menu-icon">✅</div>
+            <div class="menu-title">未承認一覧</div>
+        </a>
+    </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        const flash = $("#flash-message");
+
+        if (flash.length) {
+            flash.fadeIn(200);
+
+            setTimeout(() => {
+                flash.fadeOut(500);
+            }, 2000);
+        }
+
+    });
+</script>
+
+</body>
+</html>
