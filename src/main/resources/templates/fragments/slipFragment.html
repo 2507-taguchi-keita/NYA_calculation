@@ -111,7 +111,7 @@
                             <th>小計</th>
                             <th>備考</th>
                             <th>領収書/請求書</th>
-                            <th></th>
+                            <th th:if="${status == 0 || status == 1 || status == 3}"></th>
                         </tr>
                         </thead>
 
@@ -155,8 +155,6 @@
                                 <button type="button" class="editDetailBtn" th:data-temp-id="${detail.tempId}">編集</button>
                                 <button type="button" class="deleteDetailBtn" th:data-temp-id="${detail.tempId}">削除</button>
                             </td>
-
-                            <td th:if="${status == 5 || status == 4 || status == 6}"></td>
                         </tr>
                         </tbody>
                     </table>

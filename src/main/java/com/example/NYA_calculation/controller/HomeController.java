@@ -39,6 +39,8 @@ public class HomeController {
         String authorityLabel = switch (loginUser.getUser().getAuthority()) {
             case 0 -> "一般社員";
             case 1 -> "承認者";
+            case 2 -> "経理部長";
+            case 3 -> "部長";
             default -> "未所属";
         };
 
@@ -48,20 +50,6 @@ public class HomeController {
             case 3 -> "営業部";
             default -> "未所属";
         };
-
-        if ("temporary".equals(success)) {
-            model.addAttribute("successMessage", "一時保存しました。");
-        } else if ("delete".equals(success)) {
-            model.addAttribute("successMessage", "削除しました。");
-        } else if ("application".equals(success)) {
-            model.addAttribute("successMessage", "申請しました。");
-        } else if ("cancel".equals(success)) {
-            model.addAttribute("successMessage", "取り下げました。");
-        } else if ("approval".equals(success)) {
-            model.addAttribute("successMessage", "承認しました。");
-        } else if ("remand".equals(success)) {
-            model.addAttribute("successMessage", "差戻しました。");
-        }
 
         model.addAttribute("loginUser", loginUser);
         model.addAttribute("userName", loginUser.getUser().getName());

@@ -13,14 +13,30 @@ $(document).ready(function() {
     // モーダル開閉（委譲）
     // ========================
     $(document).on("click", "#openModalBtn", function() {
+        // タイトル変更
         $("#detailModal h2").text("明細追加");
+
+        // モーダル表示
         $("#detailModal").show();
-        $("#detailForm")[0].reset();
-        $("#errorArea").empty();
-        $("#errorArea").hide();
+
+        // フォーム全体リセット
+        const form = $("#detailForm")[0];
+        form.reset();
+
+        // hidden 値や初期化したいフィールドを明示的にクリア
+        $("#uploadFile").val("");           // ファイル入力クリア
+        $("#removeFileFlag").val("false");  // 削除フラグ初期化
+        $("#currentFileLink").hide();       // 既存ファイルリンク非表示
+        $("#currentFileNone").show();       // 「ファイルなし」を表示
+
+        // エラー表示クリア
+        $("#errorArea").empty().hide();
+
+        // JavaScript 管理用の編集状態クリア
         editingTempId = null;
         editingSource = null;
     });
+
 
     $(document).on("click", "#detailCancelBtn, .close", function() {
         $("#detailModal").hide();

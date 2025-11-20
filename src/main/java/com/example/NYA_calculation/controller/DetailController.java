@@ -121,7 +121,6 @@ public class DetailController {
 
         slipForm.getDetailForms().sort(
                 Comparator.comparing(DetailForm::getBillingDate)
-                        .thenComparing(DetailForm::getId)
         );
 
 
@@ -154,7 +153,6 @@ public class DetailController {
 
         slipForm.getDetailForms().sort(
                 Comparator.comparing(DetailForm::getBillingDate)
-                        .thenComparing(DetailForm::getId)
         );
 
         // 合計計算
